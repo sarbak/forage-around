@@ -254,10 +254,8 @@ function fallbackNearby(lat: number, lng: number, month: number): Find[] {
 
 // Apply the in-season toggle and rank: ripe (peak first) -> unknown-season ->
 // out of season, nearest within each. Cap for a light list.
-export function applyView(finds: Find[], onlyInSeason: boolean, cap = 80): Find[] {
-  const filtered = onlyInSeason
-    ? finds.filter((f) => f.inSeason || !f.seasonKnown)
-    : finds;
+export function applyView(finds: Find[], onlyInSeason: boolean, cap = 1000): Find[] {
+  const filtered = onlyInSeason ? finds.filter((f) => f.inSeason) : finds;
   const rank = (f: Find) => (f.inSeason ? 0 : !f.seasonKnown ? 1 : 2);
   return filtered
     .slice()

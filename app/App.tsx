@@ -346,7 +346,7 @@ function Results({
         {view === "map"
           ? `${mapFinds.length} within a 10-min walk`
           : onlyInSeason
-          ? `${shown.length} ripe near you`
+          ? `${inSeasonCount} ripe near you`
           : `${edibleCount} edible nearby · ${inSeasonCount} ripe now`}
       </Text>
 
