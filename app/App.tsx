@@ -37,6 +37,7 @@ import {
   GeoPoint,
 } from "./src/lib";
 import MapView from "./src/MapView";
+import { track } from "./src/analytics";
 import * as ImagePicker from "expo-image-picker";
 import {
   communityEnabled,
@@ -96,46 +97,60 @@ export default function App() {
     }
   }, []);
 
-  async function go(point: GeoPoint, wasDenied = false) {
+  async function go(point: GeoPoint, opts: { method: string; denied?: boolean }) {
     const f = await fetchNearby(point.lat, point.lng, MONTH);
-    setDenied(wasDenied);
+    track("location_resolved", {
+      method: opts.method,
+      denied: !!opts.denied,
+      ripe_count: f.filter((x) => x.inSeason).length,
+      edible_count: f.length,
+    });
+    setDenied(!!opts.denied);
     setLoc(point);
     setFinds(f);
   }
 
   async function useAddress(query: string) {
     if (!query.trim()) return;
+    track("address_submitted", { form_location: "hero" });
     setBusy(true);
     setGeoError(null);
     try {
       const point = await geocode(query);
       if (!point) {
         setGeoError("Couldn't find that address. Try adding the city.");
+        track("address_not_found");
         return;
       }
-      await go(point);
+      await go(point, { method: "address" });
     } catch {
       setGeoError("Address lookup failed. Check your connection.");
+      track("address_error");
     } finally {
       setBusy(false);
     }
   }
 
   async function locateMe() {
+    track("locate_clicked", { form_location: "hero" });
     setBusy(true);
     setGeoError(null);
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        await go(FALLBACK, true);
+        track("geolocation_denied");
+        await go(FALLBACK, { method: "fallback", denied: true });
         return;
       }
       const pos = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.Balanced,
       });
-      await go({ lat: pos.coords.latitude, lng: pos.coords.longitude, label: "Your location" });
+      await go(
+        { lat: pos.coords.latitude, lng: pos.coords.longitude, label: "Your location" },
+        { method: "geolocation" }
+      );
     } catch {
-      await go(FALLBACK, true);
+      await go(FALLBACK, { method: "fallback", denied: true });
     } finally {
       setBusy(false);
     }
@@ -145,6 +160,16 @@ export default function App() {
     setLoc(null);
     setFinds(null);
     setView("list");
+  }
+
+  function handleSelect(f: Find) {
+    track("find_opened", {
+      species: f.type,
+      distance_m: Math.round(f.distM),
+      in_season: f.inSeason,
+      season_known: f.seasonKnown,
+    });
+    setSelected(f);
   }
 
   if (!ready) {
@@ -168,9 +193,12 @@ export default function App() {
           view={view}
           setView={setView}
           onReset={reset}
-          onSelect={setSelected}
+          onSelect={handleSelect}
           wallKey={wallKey}
-          onSubmitOwn={() => setSubmitTarget({ kind: "new_tree", lat: loc.lat, lng: loc.lng })}
+          onSubmitOwn={() => {
+            track("submit_opened", { kind: "new_tree", source: "wall" });
+            setSubmitTarget({ kind: "new_tree", lat: loc.lat, lng: loc.lng });
+          }}
         />
       ) : (
         <Landing
@@ -180,13 +208,17 @@ export default function App() {
           geoError={geoError}
           onLocate={locateMe}
           onAddress={useAddress}
-          onAbout={() => setAboutOpen(true)}
+          onAbout={() => {
+            track("about_opened");
+            setAboutOpen(true);
+          }}
         />
       )}
       <Detail
         find={selected}
         onClose={() => setSelected(null)}
         onWalk={(f) => {
+          track("submit_opened", { kind: "observation", source: "walk_here", species: f.type });
           setSelected(null);
           setSubmitTarget({
             kind: "observation",
@@ -259,6 +291,7 @@ function Landing({
             placeholderTextColor={C.inkSoft}
             value={addr}
             onChangeText={setAddr}
+            onFocus={() => track("address_input_focused", { form_location: "hero" })}
             onSubmitEditing={() => onAddress(addr)}
             returnKeyType="search"
             autoCapitalize="words"
@@ -365,7 +398,10 @@ function Results({
         </Pressable>
         <View style={styles.segment}>
           <Pressable
-            onPress={() => setView("list")}
+            onPress={() => {
+              track("view_toggled", { view: "list" });
+              setView("list");
+            }}
             style={[styles.segBtn, view === "list" && styles.segBtnOn]}
             accessibilityRole="button"
             accessibilityState={{ selected: view === "list" }}
@@ -373,7 +409,10 @@ function Results({
             <Text style={[styles.segText, view === "list" && styles.segTextOn]}>List</Text>
           </Pressable>
           <Pressable
-            onPress={() => setView("map")}
+            onPress={() => {
+              track("view_toggled", { view: "map" });
+              setView("map");
+            }}
             style={[styles.segBtn, view === "map" && styles.segBtnOn]}
             accessibilityRole="button"
             accessibilityState={{ selected: view === "map" }}
@@ -395,8 +434,22 @@ function Results({
       </Text>
 
       <View style={styles.toggleRow}>
-        <Chip label={`Ripe now · ${monthName(MONTH)}`} active={onlyInSeason} onPress={() => setOnlyInSeason(true)} />
-        <Chip label="Everything edible" active={!onlyInSeason} onPress={() => setOnlyInSeason(false)} />
+        <Chip
+          label={`Ripe now · ${monthName(MONTH)}`}
+          active={onlyInSeason}
+          onPress={() => {
+            track("season_toggled", { only_in_season: true });
+            setOnlyInSeason(true);
+          }}
+        />
+        <Chip
+          label="Everything edible"
+          active={!onlyInSeason}
+          onPress={() => {
+            track("season_toggled", { only_in_season: false });
+            setOnlyInSeason(false);
+          }}
+        />
       </View>
     </View>
   );
@@ -441,7 +494,10 @@ function PhotoWall({ refreshKey, onSubmit }: { refreshKey: number; onSubmit: () 
   useEffect(() => {
     let cancelled = false;
     getRecentSubmissions(limit).then((r) => {
-      if (!cancelled) setItems(r);
+      if (!cancelled) {
+        setItems(r);
+        track("photo_wall_viewed", { count: r.length });
+      }
     });
     return () => {
       cancelled = true;
@@ -491,7 +547,13 @@ function PhotoWall({ refreshKey, onSubmit }: { refreshKey: number; onSubmit: () 
           <Text style={styles.wallBtnText}>＋ Submit your own photos</Text>
         </Pressable>
         {items.length >= limit && (
-          <Pressable onPress={() => setLimit((l) => l + 30)} accessibilityRole="button">
+          <Pressable
+            onPress={() => {
+              track("wall_see_all");
+              setLimit((l) => l + 30);
+            }}
+            accessibilityRole="button"
+          >
             <Text style={styles.wallSeeAll}>See all</Text>
           </Pressable>
         )}
@@ -537,10 +599,12 @@ function SubmitModal({
     if (!res.canceled && res.assets[0]?.base64) {
       const a = res.assets[0];
       setPhoto({ base64: a.base64 as string, mime: a.mimeType || "image/jpeg", uri: a.uri });
+      track("submit_photo_added", { kind: t.kind });
     }
   }
 
   async function send() {
+    track("submit_submitted", { kind: t.kind, has_photo: !!photo, contribute_to_ff: isNewTree && contributeFF });
     setBusy(true);
     setErr(null);
     try {
@@ -548,6 +612,7 @@ function SubmitModal({
       if (photo) {
         photo_url = await uploadPhoto(photo.base64, photo.mime);
         if (!photo_url) {
+          track("submit_error", { kind: t.kind, stage: "upload" });
           setErr("Photo upload failed. Try a smaller image, or post without one.");
           setBusy(false);
           return;
@@ -566,10 +631,15 @@ function SubmitModal({
         contribute_to_ff: isNewTree && contributeFF,
       });
       if (ok) {
+        track("submit_success", { kind: t.kind, has_photo: !!photo });
         setDone(true);
         onDone();
-      } else setErr("Couldn't submit. Please try again.");
+      } else {
+        track("submit_error", { kind: t.kind, stage: "insert" });
+        setErr("Couldn't submit. Please try again.");
+      }
     } catch {
+      track("submit_error", { kind: t.kind, stage: "exception" });
       setErr("Something went wrong. Please try again.");
     } finally {
       setBusy(false);
@@ -795,6 +865,7 @@ function Detail({
   // Curated photos first; otherwise the photo pulled live from Wikipedia.
   const heroImages = find.images.length ? find.images : info.image ? [info.image] : [];
   const open = () => {
+    track("walk_here_clicked", { species: find.type, ff_location_id: find.id.split("-")[0] });
     Linking.openURL(directionsUrl(find.lat, find.lng, find.type));
     onWalk(find); // after sending them walking, invite them to share how it goes
   };
