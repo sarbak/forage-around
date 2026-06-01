@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { Credits, APP_URL } from "../components";
 
 export const metadata: Metadata = {
@@ -32,11 +31,15 @@ export default function About() {
       </p>
 
       <div className="author">
-        <Image
-          src="/emre.jpg"
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {/* This image lives only in the seo-site /public. When this page is
+            proxied through foragearound.com, a root-relative path would 404, so
+            load it from the seo origin directly. */}
+        <img
+          src="https://forage-around-seo.vercel.app/emre.jpg"
           alt="Emre Sarbak"
-          width={64}
-          height={64}
+          width={900}
+          height={1200}
         />
         <p style={{ margin: 0 }}>
           Made by{" "}

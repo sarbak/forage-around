@@ -13,6 +13,12 @@ const fraunces = Fraunces({
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://forage-around-seo.vercel.app";
 
+// Favicon/apple-touch-icon live only in this seo-site's /public. When the HTML
+// is proxied through foragearound.com, a root-relative path would 404 there, so
+// reference them on the seo origin directly. (OG/canonical URLs intentionally
+// stay on SITE_URL via metadataBase below.)
+const SEO_ORIGIN = "https://forage-around-seo.vercel.app";
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
@@ -22,8 +28,8 @@ export const metadata: Metadata = {
   description:
     "See what fruit is ripe near you and what you can make with it. A simple foraging map built on Falling Fruit's open data.",
   icons: {
-    icon: "/favicon.png",
-    apple: "/apple-touch-icon.png",
+    icon: `${SEO_ORIGIN}/favicon.png`,
+    apple: `${SEO_ORIGIN}/apple-touch-icon.png`,
   },
   openGraph: {
     type: "website",

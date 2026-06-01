@@ -199,19 +199,17 @@ ul.clean li {
   display: block;
 }
 
-.map-box {
+.tree-map {
   width: 100%;
-  height: 300px;
+  height: 260px;
   border-radius: 14px;
   overflow: hidden;
   border: 1px solid var(--line);
   background: var(--paper-deep);
 }
-.map-box img {
-  width: 100%;
+.tree-map .leaflet-container {
   height: 100%;
-  object-fit: cover;
-  display: block;
+  width: 100%;
 }
 
 .credit {
@@ -276,14 +274,19 @@ ul.clean li {
 
 .author {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
   gap: 14px;
-  margin: 24px 0;
+  margin: 28px 0;
 }
 .author img {
-  width: 64px;
-  height: 64px;
-  border-radius: 999px;
-  object-fit: cover;
+  width: auto;
+  height: auto;
+  max-height: 460px;
+  max-width: 100%;
+  border-radius: 14px;
+  object-fit: contain;
   border: 1px solid var(--line);
+  display: block;
 }

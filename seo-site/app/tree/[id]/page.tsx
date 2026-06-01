@@ -22,7 +22,7 @@ import { reverseGeocodeCity } from "@/lib/geocode";
 import { submissionsForTree } from "@/lib/submissions";
 import { Credits, APP_URL } from "../../components";
 import { SubmissionList } from "../../Submissions";
-import { StaticMap } from "../../StaticMap";
+import { TreeMap } from "../../TreeMap";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -169,7 +169,7 @@ export default async function TreePage({
         </span>
       </p>
 
-      <StaticMap lat={r.lat} lng={r.lng} alt={title} />
+      <TreeMap lat={r.lat} lng={r.lng} />
 
       <p style={{ margin: "16px 0" }}>
         <a className="btn" href={gmaps} rel="noopener">

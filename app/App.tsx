@@ -37,6 +37,24 @@ import {
   GeoPoint,
 } from "./src/lib";
 import MapView from "./src/MapView";
+import * as ImagePicker from "expo-image-picker";
+import {
+  communityEnabled,
+  getRecentSubmissions,
+  uploadPhoto,
+  submit,
+  Submission,
+} from "./src/community";
+
+type SubmitTarget = {
+  kind: "observation" | "new_tree";
+  ff_location_id?: string | null;
+  species?: string | null;
+  lat?: number | null;
+  lng?: number | null;
+} | null;
+
+const ffIdOf = (f: Find) => f.id.split("-")[0];
 
 // Live Oak Park, Berkeley — generic fallback when location is unavailable.
 const FALLBACK = { lat: 37.8814, lng: -122.2686, label: "Live Oak Park, Berkeley" };
@@ -62,6 +80,8 @@ export default function App() {
   const [view, setView] = useState<"list" | "map">("list");
   const [selected, setSelected] = useState<Find | null>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [submitTarget, setSubmitTarget] = useState<SubmitTarget>(null);
+  const [wallKey, setWallKey] = useState(0);
 
   const teaser = useMemo(() => inSeasonNames(MONTH, 4), []);
   const ripeNow = useMemo(() => inSeasonWithImages(MONTH, 8), []);
@@ -149,6 +169,8 @@ export default function App() {
           setView={setView}
           onReset={reset}
           onSelect={setSelected}
+          wallKey={wallKey}
+          onSubmitOwn={() => setSubmitTarget({ kind: "new_tree", lat: loc.lat, lng: loc.lng })}
         />
       ) : (
         <Landing
@@ -161,8 +183,26 @@ export default function App() {
           onAbout={() => setAboutOpen(true)}
         />
       )}
-      <Detail find={selected} onClose={() => setSelected(null)} />
+      <Detail
+        find={selected}
+        onClose={() => setSelected(null)}
+        onWalk={(f) => {
+          setSelected(null);
+          setSubmitTarget({
+            kind: "observation",
+            ff_location_id: ffIdOf(f),
+            species: f.type,
+            lat: f.lat,
+            lng: f.lng,
+          });
+        }}
+      />
       <About visible={aboutOpen} onClose={() => setAboutOpen(false)} />
+      <SubmitModal
+        target={submitTarget}
+        onClose={() => setSubmitTarget(null)}
+        onDone={() => setWallKey((k) => k + 1)}
+      />
     </View>
   );
 }
@@ -293,6 +333,8 @@ function Results({
   setView,
   onReset,
   onSelect,
+  wallKey,
+  onSubmitOwn,
 }: {
   loc: Loc;
   finds: Find[];
@@ -303,6 +345,8 @@ function Results({
   setView: (v: "list" | "map") => void;
   onReset: () => void;
   onSelect: (f: Find) => void;
+  wallKey: number;
+  onSubmitOwn: () => void;
 }) {
   const shown = useMemo(() => applyView(finds, onlyInSeason), [finds, onlyInSeason]);
   const mapFinds = useMemo(() => {
@@ -365,6 +409,7 @@ function Results({
           <MapView center={{ lat: loc.lat, lng: loc.lng }} finds={mapFinds} onSelect={onSelect} />
         </View>
         <Text style={styles.mapHint}>Tap a pin to see how to use & keep it.</Text>
+        <PhotoWall refreshKey={wallKey} onSubmit={onSubmitOwn} />
       </ScrollView>
     );
   }
@@ -382,7 +427,277 @@ function Results({
           Nothing ripe within reach this month. Try “Everything edible” to see what's coming.
         </Text>
       }
+      ListFooterComponent={<PhotoWall refreshKey={wallKey} onSubmit={onSubmitOwn} />}
     />
+  );
+}
+
+/* ----------------------------- Community ------------------------------- */
+
+function PhotoWall({ refreshKey, onSubmit }: { refreshKey: number; onSubmit: () => void }) {
+  const [items, setItems] = useState<Submission[]>([]);
+  const [limit, setLimit] = useState(10);
+
+  useEffect(() => {
+    let cancelled = false;
+    getRecentSubmissions(limit).then((r) => {
+      if (!cancelled) setItems(r);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [refreshKey, limit]);
+
+  if (!communityEnabled) return null;
+
+  return (
+    <View style={styles.wall}>
+      <Text style={styles.wallTitle}>What foragers found</Text>
+      {items.length ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 12, paddingVertical: 2 }}
+        >
+          {items.map((s) => (
+            <View key={s.id} style={styles.wallTile}>
+              {s.photo_url ? (
+                <Image source={{ uri: s.photo_url }} style={styles.wallImg} />
+              ) : (
+                <View style={[styles.wallImg, styles.wallImgEmpty]}>
+                  <Text style={{ fontSize: 26 }}>🧺</Text>
+                </View>
+              )}
+              {!!(s.species || s.plan || s.note) && (
+                <Text style={styles.wallCaption} numberOfLines={2}>
+                  {s.species ? `${s.species}. ` : ""}
+                  {s.plan || s.note || ""}
+                </Text>
+              )}
+            </View>
+          ))}
+        </ScrollView>
+      ) : (
+        <Text style={styles.wallEmpty}>
+          No shares yet. Be the first to post what you found and what you made.
+        </Text>
+      )}
+      <View style={styles.wallActions}>
+        <Pressable
+          onPress={onSubmit}
+          style={({ pressed }) => [styles.wallBtn, pressed && styles.ctaPressed]}
+          accessibilityRole="button"
+        >
+          <Text style={styles.wallBtnText}>＋ Submit your own photos</Text>
+        </Pressable>
+        {items.length >= limit && (
+          <Pressable onPress={() => setLimit((l) => l + 30)} accessibilityRole="button">
+            <Text style={styles.wallSeeAll}>See all</Text>
+          </Pressable>
+        )}
+      </View>
+    </View>
+  );
+}
+
+function SubmitModal({
+  target,
+  onClose,
+  onDone,
+}: {
+  target: SubmitTarget;
+  onClose: () => void;
+  onDone: () => void;
+}) {
+  const [photo, setPhoto] = useState<{ base64: string; mime: string; uri: string } | null>(null);
+  const [note, setNote] = useState("");
+  const [plan, setPlan] = useState("");
+  const [name, setName] = useState("");
+  const [contributeFF, setContributeFF] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  if (!target) return null;
+  const t = target;
+  const isNewTree = t.kind === "new_tree";
+
+  function reset() {
+    setPhoto(null);
+    setNote("");
+    setPlan("");
+    setName("");
+    setContributeFF(false);
+    setDone(false);
+    setErr(null);
+  }
+
+  async function pick() {
+    const res = await ImagePicker.launchImageLibraryAsync({ base64: true, quality: 0.6 });
+    if (!res.canceled && res.assets[0]?.base64) {
+      const a = res.assets[0];
+      setPhoto({ base64: a.base64 as string, mime: a.mimeType || "image/jpeg", uri: a.uri });
+    }
+  }
+
+  async function send() {
+    setBusy(true);
+    setErr(null);
+    try {
+      let photo_url: string | null = null;
+      if (photo) {
+        photo_url = await uploadPhoto(photo.base64, photo.mime);
+        if (!photo_url) {
+          setErr("Photo upload failed. Try a smaller image, or post without one.");
+          setBusy(false);
+          return;
+        }
+      }
+      const ok = await submit({
+        kind: t.kind,
+        ff_location_id: t.ff_location_id ?? null,
+        species: t.species ?? null,
+        lat: t.lat ?? null,
+        lng: t.lng ?? null,
+        note: note.trim() || null,
+        plan: plan.trim() || null,
+        photo_url,
+        author_name: name.trim() || null,
+        contribute_to_ff: isNewTree && contributeFF,
+      });
+      if (ok) {
+        setDone(true);
+        onDone();
+      } else setErr("Couldn't submit. Please try again.");
+    } catch {
+      setErr("Something went wrong. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Modal visible={!!target} animationType="slide" transparent={false} onRequestClose={onClose}>
+      <View style={styles.app}>
+        <ScrollView contentContainerStyle={styles.detailPad} keyboardShouldPersistTaps="handled">
+          <View style={styles.detailTop}>
+            <Pressable
+              onPress={() => {
+                reset();
+                onClose();
+              }}
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel="Close"
+            >
+              <Text style={styles.close}>✕</Text>
+            </Pressable>
+          </View>
+
+          {done ? (
+            <View style={{ paddingVertical: 40 }}>
+              <Text style={styles.detailName}>Thank you 🧺</Text>
+              <Text style={styles.aboutPara}>
+                Your post is in. We give every submission a quick look before it shows up on the
+                map, so others can see it soon.
+              </Text>
+              <Pressable
+                style={({ pressed }) => [styles.walkBtn, pressed && styles.ctaPressed]}
+                onPress={() => {
+                  reset();
+                  onClose();
+                }}
+                accessibilityRole="button"
+              >
+                <Text style={styles.ctaText}>Done</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <View>
+              <Text style={styles.detailName}>
+                {isNewTree ? "Add a spot" : `How did it go?`}
+              </Text>
+              <Text style={styles.aboutByline}>
+                {target.species ? `${target.species} · ` : ""}
+                {isNewTree
+                  ? "Share a tree you found here."
+                  : "Share a photo, a note, and what you're making."}
+              </Text>
+
+              <Pressable style={styles.photoPick} onPress={pick} accessibilityRole="button">
+                {photo ? (
+                  <Image source={{ uri: photo.uri }} style={styles.photoPreview} resizeMode="cover" />
+                ) : (
+                  <Text style={styles.photoPickText}>📷 Add a photo</Text>
+                )}
+              </Pressable>
+
+              <TextInput
+                style={styles.field}
+                placeholder="What you're planning to make (e.g. plum jam)"
+                placeholderTextColor={C.inkSoft}
+                value={plan}
+                onChangeText={setPlan}
+              />
+              <TextInput
+                style={[styles.field, styles.fieldMulti]}
+                placeholder="Notes (ripeness, how to reach it, taste…)"
+                placeholderTextColor={C.inkSoft}
+                value={note}
+                onChangeText={setNote}
+                multiline
+              />
+              <TextInput
+                style={styles.field}
+                placeholder="Your name (optional)"
+                placeholderTextColor={C.inkSoft}
+                value={name}
+                onChangeText={setName}
+                autoCapitalize="words"
+              />
+
+              {isNewTree && (
+                <Pressable
+                  style={styles.checkRow}
+                  onPress={() => setContributeFF((v) => !v)}
+                  accessibilityRole="checkbox"
+                  accessibilityState={{ checked: contributeFF }}
+                >
+                  <View style={[styles.checkbox, contributeFF && styles.checkboxOn]}>
+                    {contributeFF && <Text style={styles.checkboxTick}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkLabel}>
+                    Also share this tree with Falling Fruit, the open map this is built on.
+                  </Text>
+                </Pressable>
+              )}
+
+              {!!err && <Text style={styles.geoError}>{err}</Text>}
+
+              <Pressable
+                style={({ pressed }) => [
+                  styles.walkBtn,
+                  pressed && styles.ctaPressed,
+                  busy && { opacity: 0.7 },
+                ]}
+                onPress={send}
+                disabled={busy}
+                accessibilityRole="button"
+              >
+                {busy ? (
+                  <ActivityIndicator color={C.white} />
+                ) : (
+                  <Text style={styles.ctaText}>Post it</Text>
+                )}
+              </Pressable>
+              <Text style={styles.safety}>
+                Posts are anonymous unless you add a name, and get a quick review before they appear.
+              </Text>
+            </View>
+          )}
+        </ScrollView>
+      </View>
+    </Modal>
   );
 }
 
@@ -450,7 +765,15 @@ function Card({ find, onSelect }: { find: Find; onSelect: (f: Find) => void }) {
 
 /* -------------------------------- Detail ------------------------------- */
 
-function Detail({ find, onClose }: { find: Find | null; onClose: () => void }) {
+function Detail({
+  find,
+  onClose,
+  onWalk,
+}: {
+  find: Find | null;
+  onClose: () => void;
+  onWalk: (f: Find) => void;
+}) {
   const { width } = useWindowDimensions();
   const [info, setInfo] = useState<{ image?: string; about?: string }>({});
 
@@ -471,7 +794,10 @@ function Detail({ find, onClose }: { find: Find | null; onClose: () => void }) {
   const heroW = Math.min(width, 600) - 36;
   // Curated photos first; otherwise the photo pulled live from Wikipedia.
   const heroImages = find.images.length ? find.images : info.image ? [info.image] : [];
-  const open = () => Linking.openURL(directionsUrl(find.lat, find.lng, find.type));
+  const open = () => {
+    Linking.openURL(directionsUrl(find.lat, find.lng, find.type));
+    onWalk(find); // after sending them walking, invite them to share how it goes
+  };
 
   return (
     <Modal visible={!!find} animationType="slide" onRequestClose={onClose} transparent={false}>
@@ -595,7 +921,7 @@ function About({ visible, onClose }: { visible: boolean; onClose: () => void }) 
             </Pressable>
           </View>
 
-          <Image source={require("./assets/emre.jpg")} style={styles.aboutPhoto} />
+          <Image source={require("./assets/emre.jpg")} style={styles.aboutPhoto} resizeMode="contain" />
           <Text style={styles.detailName}>Why this exists</Text>
           <Text style={styles.aboutByline}>
             Made by <Link label="Emre Sarbak" url="https://emresarbak.com" />, in Berkeley.
@@ -724,7 +1050,7 @@ const styles = StyleSheet.create({
   footLink: { marginTop: 28, alignSelf: "center" },
   footnote: { fontSize: 13, color: C.forest, textAlign: "center", fontWeight: "600" },
   footCredit: { marginTop: 8, fontSize: 11.5, color: C.inkSoft, textAlign: "center" },
-  aboutPhoto: { width: "100%", height: 260, borderRadius: 18, backgroundColor: C.paperDeep, marginBottom: 6 },
+  aboutPhoto: { width: "100%", height: 420, borderRadius: 18, backgroundColor: C.paperDeep, marginBottom: 6 },
   aboutByline: { fontSize: 14, color: C.inkSoft, marginTop: 4, fontStyle: "italic" },
   aboutPara: { fontSize: 16, lineHeight: 24, color: C.ink, marginTop: 14 },
   link: { color: C.forest, fontWeight: "700", textDecorationLine: "underline" },
@@ -782,6 +1108,63 @@ const styles = StyleSheet.create({
   badgeTextOff: { color: C.inkSoft },
 
   empty: { textAlign: "center", color: C.inkSoft, fontSize: 15, lineHeight: 22, marginTop: 40, paddingHorizontal: 20 },
+
+  /* Community photo wall */
+  wall: { marginTop: 26, paddingTop: 22, borderTopWidth: 1, borderTopColor: C.line },
+  wallTitle: { fontFamily: F.display, fontSize: 22, color: C.ink, marginBottom: 14 },
+  wallTile: { width: 132 },
+  wallImg: { width: 132, height: 132, borderRadius: 14, backgroundColor: C.paperDeep },
+  wallImgEmpty: { alignItems: "center", justifyContent: "center" },
+  wallCaption: { fontSize: 12, lineHeight: 16, color: C.inkSoft, marginTop: 6 },
+  wallEmpty: { fontSize: 14, lineHeight: 21, color: C.inkSoft },
+  wallActions: { flexDirection: "row", alignItems: "center", gap: 16, marginTop: 16 },
+  wallBtn: { backgroundColor: C.forest, paddingVertical: 13, paddingHorizontal: 18, borderRadius: 12 },
+  wallBtnText: { color: C.white, fontWeight: "700", fontSize: 15, fontFamily: F.display },
+  wallSeeAll: { color: C.forest, fontWeight: "700", fontSize: 15 },
+
+  /* Submit form */
+  photoPick: {
+    height: 180,
+    borderRadius: 16,
+    backgroundColor: C.white,
+    borderWidth: 1,
+    borderColor: C.line,
+    borderStyle: "dashed",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    marginTop: 20,
+    marginBottom: 14,
+  },
+  photoPreview: { width: "100%", height: "100%" },
+  photoPickText: { color: C.inkSoft, fontSize: 16 },
+  field: {
+    backgroundColor: C.white,
+    borderWidth: 1,
+    borderColor: C.line,
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 13,
+    fontSize: 16,
+    color: C.ink,
+    marginBottom: 12,
+  },
+  fieldMulti: { minHeight: 84, textAlignVertical: "top" },
+  checkRow: { flexDirection: "row", alignItems: "flex-start", gap: 10, marginTop: 2, marginBottom: 6 },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: C.line,
+    backgroundColor: C.white,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 1,
+  },
+  checkboxOn: { backgroundColor: C.forest, borderColor: C.forest },
+  checkboxTick: { color: C.white, fontSize: 14, fontWeight: "800" },
+  checkLabel: { flex: 1, fontSize: 14, lineHeight: 20, color: C.inkSoft },
 
   /* Detail */
   detailPad: { paddingHorizontal: 18, paddingBottom: 48, paddingTop: 14, maxWidth: 600, alignSelf: "center", width: "100%" },
