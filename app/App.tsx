@@ -29,6 +29,7 @@ import {
   walkMins,
   monthName,
   inSeasonNames,
+  inSeasonWithImages,
   directionsUrl,
   geocode,
   fetchWikiInfo,
@@ -63,6 +64,7 @@ export default function App() {
   const [aboutOpen, setAboutOpen] = useState(false);
 
   const teaser = useMemo(() => inSeasonNames(MONTH, 4), []);
+  const ripeNow = useMemo(() => inSeasonWithImages(MONTH, 8), []);
 
   useEffect(() => {
     if (Platform.OS === "web" && typeof document !== "undefined") {
@@ -151,6 +153,7 @@ export default function App() {
       ) : (
         <Landing
           teaser={teaser}
+          ripeNow={ripeNow}
           busy={busy}
           geoError={geoError}
           onLocate={locateMe}
@@ -168,6 +171,7 @@ export default function App() {
 
 function Landing({
   teaser,
+  ripeNow,
   busy,
   geoError,
   onLocate,
@@ -175,6 +179,7 @@ function Landing({
   onAbout,
 }: {
   teaser: string[];
+  ripeNow: { name: string; image?: string; emoji: string }[];
   busy: boolean;
   geoError: string | null;
   onLocate: () => void;
@@ -200,7 +205,6 @@ function Landing({
         >
           {busy ? <ActivityIndicator color={C.white} /> : <Text style={styles.ctaText}>Find fruit near me</Text>}
         </Pressable>
-        <Text style={styles.noLogin}>No login. Just your location, once.</Text>
 
         <View style={styles.orRow}>
           <View style={styles.orLine} />
@@ -235,9 +239,31 @@ function Landing({
 
       <View style={styles.seasonCard}>
         <Text style={styles.seasonLabel}>Ripe right now · {monthName(MONTH)}</Text>
-        <Text style={styles.seasonList}>
-          {teaser.length ? teaser.join(" · ") : "the quiet season — mostly herbs and citrus"}
-        </Text>
+        {ripeNow.length ? (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.ripeStrip}
+            contentContainerStyle={{ gap: 12, paddingVertical: 2 }}
+          >
+            {ripeNow.map((r) => (
+              <View key={r.name} style={styles.ripeTile}>
+                {r.image ? (
+                  <Image source={{ uri: r.image }} style={styles.ripeImg} />
+                ) : (
+                  <View style={[styles.ripeImg, styles.ripeEmoji]}>
+                    <Text style={{ fontSize: 30 }}>{r.emoji}</Text>
+                  </View>
+                )}
+                <Text style={styles.ripeName} numberOfLines={1}>
+                  {r.name}
+                </Text>
+              </View>
+            ))}
+          </ScrollView>
+        ) : (
+          <Text style={styles.seasonList}>the quiet season — mostly herbs and citrus</Text>
+        )}
         <Text style={styles.seasonNote}>
           Knock on a neighbor's door before reaching over a fence. Take only what would otherwise fall.
         </Text>
@@ -569,9 +595,13 @@ function About({ visible, onClose }: { visible: boolean; onClose: () => void }) 
             </Pressable>
           </View>
 
+          <Image source={require("./assets/emre.jpg")} style={styles.aboutPhoto} />
           <Text style={styles.detailName}>Why this exists</Text>
+          <Text style={styles.aboutByline}>
+            Made by <Link label="Emre Sarbak" url="https://emresarbak.com" />, in Berkeley.
+          </Text>
 
-          <Text style={styles.aboutPara}>
+          <Text style={[styles.aboutPara, { marginTop: 18 }]}>
             I moved to Berkeley about nine months ago and got into fermentation around the same
             time. Walking around, I kept noticing how much fruit grows wild and unpicked right on
             the sidewalk: loquats, plums, figs, lemons, mostly going to the birds or the pavement.
@@ -685,10 +715,17 @@ const styles = StyleSheet.create({
   seasonCard: { backgroundColor: C.white, borderRadius: 20, padding: 22, borderWidth: 1, borderColor: C.line },
   seasonLabel: { fontSize: 12, letterSpacing: 1.5, color: C.ripe, fontWeight: "700", marginBottom: 8 },
   seasonList: { fontFamily: F.display, fontSize: 24, lineHeight: 32, color: C.ink, textTransform: "capitalize", marginBottom: 12 },
+  ripeStrip: { marginTop: 14, marginBottom: 14 },
+  ripeTile: { width: 84, alignItems: "center" },
+  ripeImg: { width: 84, height: 84, borderRadius: 14, backgroundColor: C.paperDeep },
+  ripeEmoji: { alignItems: "center", justifyContent: "center" },
+  ripeName: { fontSize: 12, color: C.ink, marginTop: 6, textAlign: "center", width: 84 },
   seasonNote: { fontSize: 14, lineHeight: 21, color: C.inkSoft },
   footLink: { marginTop: 28, alignSelf: "center" },
   footnote: { fontSize: 13, color: C.forest, textAlign: "center", fontWeight: "600" },
   footCredit: { marginTop: 8, fontSize: 11.5, color: C.inkSoft, textAlign: "center" },
+  aboutPhoto: { width: "100%", height: 260, borderRadius: 18, backgroundColor: C.paperDeep, marginBottom: 6 },
+  aboutByline: { fontSize: 14, color: C.inkSoft, marginTop: 4, fontStyle: "italic" },
   aboutPara: { fontSize: 16, lineHeight: 24, color: C.ink, marginTop: 14 },
   link: { color: C.forest, fontWeight: "700", textDecorationLine: "underline" },
 

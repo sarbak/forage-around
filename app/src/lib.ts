@@ -268,6 +268,28 @@ export function applyView(finds: Find[], onlyInSeason: boolean, cap = 80): Find[
     .slice(0, cap);
 }
 
+// What's ripe right now, with a photo for each (for the landing image strip).
+export function inSeasonWithImages(
+  month: number,
+  limit = 8
+): { name: string; image?: string; emoji: string }[] {
+  const names = Object.keys(SPECIES)
+    .filter((n) => {
+      const s = SPECIES[n];
+      return s.edible && s.season.includes(month) && s.cat !== "herb" && s.cat !== "other";
+    })
+    .sort((a, b) => {
+      const pa = SPECIES[a].peak?.includes(month) ? 0 : 1;
+      const pb = SPECIES[b].peak?.includes(month) ? 0 : 1;
+      return pa - pb;
+    });
+  return names.slice(0, limit).map((n) => ({
+    name: n,
+    image: (IMAGES[n] && IMAGES[n][0]) || undefined,
+    emoji: SPECIES[n].emoji,
+  }));
+}
+
 // What's ripe right now, as a friendly teaser line (distinct species names).
 export function inSeasonNames(month: number, limit = 4): string[] {
   const names = new Set<string>();

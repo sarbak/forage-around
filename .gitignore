@@ -11,3 +11,6 @@ OPPORTUNITY.md
 *.log
 
 .claude/
+
+app/.env
+.env.local
