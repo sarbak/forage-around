@@ -1,10 +1,10 @@
-# Scrump 🍐
+# Forage Around 🍐
 
-**The field guide to the free harvest.** Tell Scrump where you are; it shows the
+**The field guide to the free harvest.** Tell Forage Around where you are; it shows the
 fruit, herbs and greens growing wild and unpicked around you that are **in season
 right now** — and what to ferment them into.
 
-Live (web): **https://scrump-five.vercel.app**
+Live (web): **https://foragearound.com**
 
 ## What it does
 - Asks for your location once (no login, no account).
@@ -44,7 +44,7 @@ All business logic (distance, season, ranking, directions) lives in
 forage-app/
   data_raw.csv          Falling Fruit export (Berkeley)
   process_data.py       CSV -> trees.json + species.json (the season/ferment brain)
-  NAMING.md             why it's called "Scrump"
+  NAMING.md             naming history (was "Scrump")
   app/                  the Expo app
     App.tsx             screens (landing + results)
     src/lib.ts          pure logic (RN-portable)
@@ -62,7 +62,7 @@ npm run web      # or: npm run ios / npm run android
 
 ## Credits & data
 - **Tree & plant locations:** the [Falling Fruit](https://fallingfruit.org) open
-  dataset and API (a nonprofit urban-foraging map). Scrump is an independent
+  dataset and API (a nonprofit urban-foraging map). Forage Around is an independent
   project built on top of their public API and is not affiliated with Falling Fruit.
 - **Species photos & descriptions:** Wikipedia / Wikimedia Commons, fetched at
   build time and at runtime.

@@ -175,7 +175,7 @@ function Landing({
     <ScrollView contentContainerStyle={styles.landing} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
       <View style={styles.hero}>
         <Text style={styles.kicker}>FIELD GUIDE TO THE FREE HARVEST</Text>
-        <Text style={styles.wordmark}>Scrump</Text>
+        <Text style={styles.wordmark}>Forage{"\n"}Around</Text>
         <Text style={styles.tagline}>
           The fruit, herbs and greens growing wild and unpicked around you — what to make with them, and how to keep them.
         </Text>
@@ -273,7 +273,7 @@ function Results({
     <View>
       <View style={styles.topbar}>
         <Pressable onPress={onReset} hitSlop={10} accessibilityRole="button" accessibilityLabel="Back to start">
-          <Text style={styles.back}>‹ Scrump</Text>
+          <Text style={styles.back}>‹ Back</Text>
         </Pressable>
         <View style={styles.segment}>
           <Pressable
@@ -296,7 +296,7 @@ function Results({
       </View>
 
       <Text style={styles.locLabel}>{loc.label}</Text>
-      {denied && <Text style={styles.deniedNote}>Location off — showing Live Oak Park. Tap “Scrump” to retry.</Text>}
+      {denied && <Text style={styles.deniedNote}>Location off — showing Live Oak Park. Tap back to retry.</Text>}
 
       <Text style={styles.resultsH}>
         {view === "map"

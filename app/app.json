@@ -1,22 +1,22 @@
 {
   "expo": {
-    "name": "Scrump",
-    "slug": "scrump",
+    "name": "Forage Around",
+    "slug": "forage-around",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "scrump",
+    "scheme": "foragearound",
     "userInterfaceStyle": "light",
     "backgroundColor": "#F6F1E7",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.scrump.app",
+      "bundleIdentifier": "com.foragearound.app",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Scrump uses your location to show edible fruit, herbs and greens growing near you that are in season right now."
+        "NSLocationWhenInUseUsageDescription": "Forage Around uses your location to show edible fruit, herbs and greens growing near you that are in season right now."
       }
     },
     "android": {
-      "package": "com.scrump.app",
+      "package": "com.foragearound.app",
       "adaptiveIcon": {
         "backgroundColor": "#F6F1E7",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -34,7 +34,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Scrump uses your location to show edible plants growing near you that are in season."
+          "locationWhenInUsePermission": "Forage Around uses your location to show edible plants growing near you that are in season."
         }
       ],
       "expo-font"
