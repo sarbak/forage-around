@@ -60,6 +60,7 @@ export default function App() {
   const [onlyInSeason, setOnlyInSeason] = useState(true);
   const [view, setView] = useState<"list" | "map">("list");
   const [selected, setSelected] = useState<Find | null>(null);
+  const [aboutOpen, setAboutOpen] = useState(false);
 
   const teaser = useMemo(() => inSeasonNames(MONTH, 4), []);
 
@@ -148,9 +149,17 @@ export default function App() {
           onSelect={setSelected}
         />
       ) : (
-        <Landing teaser={teaser} busy={busy} geoError={geoError} onLocate={locateMe} onAddress={useAddress} />
+        <Landing
+          teaser={teaser}
+          busy={busy}
+          geoError={geoError}
+          onLocate={locateMe}
+          onAddress={useAddress}
+          onAbout={() => setAboutOpen(true)}
+        />
       )}
       <Detail find={selected} onClose={() => setSelected(null)} />
+      <About visible={aboutOpen} onClose={() => setAboutOpen(false)} />
     </View>
   );
 }
@@ -163,12 +172,14 @@ function Landing({
   geoError,
   onLocate,
   onAddress,
+  onAbout,
 }: {
   teaser: string[];
   busy: boolean;
   geoError: string | null;
   onLocate: () => void;
   onAddress: (q: string) => void;
+  onAbout: () => void;
 }) {
   const [addr, setAddr] = useState("");
   return (
@@ -232,7 +243,14 @@ function Landing({
         </Text>
       </View>
 
-      <Text style={styles.footnote}>Tree locations from the Falling Fruit open dataset</Text>
+      <Pressable onPress={onAbout} accessibilityRole="button" style={styles.footLink}>
+        <Text style={styles.footnote}>
+          The story behind this, and credits ›
+        </Text>
+      </Pressable>
+      <Text style={styles.footCredit}>
+        Tree locations from Falling Fruit, used under CC BY-NC-SA.
+      </Text>
     </ScrollView>
   );
 }
@@ -523,7 +541,76 @@ function Detail({ find, onClose }: { find: Find | null; onClose: () => void }) {
             never eat anything you're unsure of.
           </Text>
           <Text style={styles.attribution}>
-            Photos via Wikipedia · Tree locations via Falling Fruit
+            Photo & description via Wikipedia · Location from Falling Fruit (CC BY-NC-SA),
+            crowd-sourced and provided as-is — confirm before foraging.
+          </Text>
+        </ScrollView>
+      </View>
+    </Modal>
+  );
+}
+
+function Link({ label, url }: { label: string; url: string }) {
+  return (
+    <Text style={styles.link} onPress={() => Linking.openURL(url)} accessibilityRole="link">
+      {label}
+    </Text>
+  );
+}
+
+function About({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  return (
+    <Modal visible={visible} animationType="slide" onRequestClose={onClose} transparent={false}>
+      <View style={styles.app}>
+        <ScrollView contentContainerStyle={styles.detailPad} showsVerticalScrollIndicator={false}>
+          <View style={styles.detailTop}>
+            <Pressable onPress={onClose} hitSlop={12} accessibilityRole="button" accessibilityLabel="Close">
+              <Text style={styles.close}>✕</Text>
+            </Pressable>
+          </View>
+
+          <Text style={styles.detailName}>Why this exists</Text>
+
+          <Text style={styles.aboutPara}>
+            I moved to Berkeley about nine months ago and got into fermentation around the same
+            time. Walking around, I kept noticing how much fruit grows wild and unpicked right on
+            the sidewalk: loquats, plums, figs, lemons, mostly going to the birds or the pavement.
+          </Text>
+          <Text style={styles.aboutPara}>
+            I wanted a simple way to see what was ripe near me and what I could make with it, so I
+            built this for myself on top of Falling Fruit's lovely open map. I'm sharing it in case
+            your neighborhood is as quietly generous as mine.
+          </Text>
+          <Text style={styles.aboutPara}>
+            Take only what would otherwise fall, knock before reaching over a fence, and always
+            leave plenty for the birds and the next person.
+          </Text>
+
+          <Text style={[styles.sectionTitle, { color: C.inkSoft, marginTop: 28 }]}>
+            WHERE THE DATA COMES FROM
+          </Text>
+          <Text style={styles.aboutPara}>
+            The map of trees comes from <Link label="Falling Fruit" url="https://fallingfruit.org" />,
+            a nonprofit, volunteer-run map of the urban harvest. Their locations are used here under
+            the <Link label="CC BY-NC-SA license" url="https://creativecommons.org/licenses/by-nc-sa/4.0/" />.
+            I've added the season windows, the ways to use each plant, and the preservation ideas;
+            the locations are theirs and are crowd-sourced, so treat them as a starting point, not
+            gospel.
+          </Text>
+          <Text style={styles.aboutPara}>
+            Plant photos and descriptions come from{" "}
+            <Link label="Wikipedia" url="https://en.wikipedia.org" />. The map uses{" "}
+            <Link label="OpenStreetMap" url="https://www.openstreetmap.org/copyright" />.
+          </Text>
+          <Text style={styles.aboutPara}>
+            Forage Around is free and non-commercial, and it's{" "}
+            <Link label="open-source on GitHub" url="https://github.com/sarbak/forage-around" />.
+          </Text>
+
+          <Text style={styles.safety}>
+            This is a discovery aid, not an identification authority. Always confirm a plant's
+            identity yourself before eating anything, and only harvest from public land or with
+            permission.
           </Text>
         </ScrollView>
       </View>
@@ -599,7 +686,11 @@ const styles = StyleSheet.create({
   seasonLabel: { fontSize: 12, letterSpacing: 1.5, color: C.ripe, fontWeight: "700", marginBottom: 8 },
   seasonList: { fontFamily: F.display, fontSize: 24, lineHeight: 32, color: C.ink, textTransform: "capitalize", marginBottom: 12 },
   seasonNote: { fontSize: 14, lineHeight: 21, color: C.inkSoft },
-  footnote: { marginTop: 28, fontSize: 12, color: C.inkSoft, textAlign: "center" },
+  footLink: { marginTop: 28, alignSelf: "center" },
+  footnote: { fontSize: 13, color: C.forest, textAlign: "center", fontWeight: "600" },
+  footCredit: { marginTop: 8, fontSize: 11.5, color: C.inkSoft, textAlign: "center" },
+  aboutPara: { fontSize: 16, lineHeight: 24, color: C.ink, marginTop: 14 },
+  link: { color: C.forest, fontWeight: "700", textDecorationLine: "underline" },
 
   /* Results */
   listPad: { paddingHorizontal: 18, paddingBottom: 48, paddingTop: 18, maxWidth: 600, alignSelf: "center", width: "100%" },

@@ -60,16 +60,26 @@ npm install
 npm run web      # or: npm run ios / npm run android
 ```
 
-## Credits & data
-- **Tree & plant locations:** the [Falling Fruit](https://fallingfruit.org) open
-  dataset and API (a nonprofit urban-foraging map). Forage Around is an independent
-  project built on top of their public API and is not affiliated with Falling Fruit.
+## Data, photos & credits
+- **Tree & plant locations:** from [Falling Fruit](https://fallingfruit.org), a
+  nonprofit, volunteer-run map of the urban harvest. Their data is licensed
+  [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) and is used
+  here under those terms. This project **modifies** it (adds season windows, uses,
+  and preservation tips, and maps Falling Fruit type IDs to names). Locations are
+  crowd-sourced and provided as-is — confirm before foraging. See
+  [ATTRIBUTION.md](ATTRIBUTION.md).
 - **Species photos & descriptions:** Wikipedia / Wikimedia Commons, fetched at
   build time and at runtime.
 - **Maps:** OpenStreetMap tiles via Leaflet.
 
-The code is MIT licensed (see `LICENSE`). Please respect the terms of the
-underlying data sources above.
+Forage Around is an independent, **non-commercial** project and is not affiliated
+with or endorsed by Falling Fruit.
+
+## Licensing
+- The **code** in this repo is MIT (see [`LICENSE`](LICENSE)).
+- The **bundled location data** (`app/assets/data/trees.json`, derived from Falling
+  Fruit) stays under **CC BY-NC-SA 4.0**, © Falling Fruit contributors. If you reuse
+  it, preserve that license and attribution and keep your use non-commercial.
 
 ## Forage responsibly
 This is a discovery aid, not an identification authority. Always confirm a plant's
