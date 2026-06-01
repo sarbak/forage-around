@@ -1,0 +1,1857 @@
+{
+"Sugar maple": {
+"edible": false,
+"cat": "ornamental",
+"emoji": "\ud83c\udf41",
+"part": "\u2014",
+"season": [],
+"note": "Street tree. Not tapped for syrup in this climate.",
+"uses": [],
+"preserve": []
+},
+"Norfolk island pine": {
+"edible": false,
+"cat": "ornamental",
+"emoji": "\ud83c\udf32",
+"part": "\u2014",
+"season": [],
+"note": "Ornamental conifer.",
+"uses": [],
+"preserve": []
+},
+"Sydney golden wattle": {
+"edible": false,
+"cat": "ornamental",
+"emoji": "\ud83c\udf3f",
+"part": "\u2014",
+"season": [],
+"note": "Acacia. Skip \u2014 many wattles are mildly toxic raw.",
+"uses": [],
+"preserve": []
+},
+"Strawberry tree": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf53",
+"part": "Berries",
+"season": [
+10,
+11,
+12
+],
+"peak": [
+11
+],
+"note": "Arbutus unedo. Soft red berries, mealy-sweet when fully ripe.",
+"uses": [
+"Eat the ripe red berries straight off the tree",
+"Cook into a soft jam or fruit paste",
+"Fold into muffins and quick breads"
+],
+"preserve": [
+"Soft jam or fruit paste",
+"Country wine or liqueur (ferment)",
+"Dry the berries"
+]
+},
+"Pacific madrone": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83d\udfe0",
+"part": "Berries",
+"season": [
+10,
+11,
+12
+],
+"peak": [
+11
+],
+"note": "Small orange-red berries. Edible, a bit mealy \u2014 best cooked.",
+"uses": [
+"Best cooked into a sauce or syrup",
+"Dry and grind the berries into a meal",
+"Steep into a tea"
+],
+"preserve": [
+"Cook into a fruit sauce",
+"Tart syrup",
+"Dry and grind into a meal"
+]
+},
+"Lemon": {
+"edible": true,
+"cat": "citrus",
+"emoji": "\ud83c\udf4b",
+"part": "Fruit",
+"season": [
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12
+],
+"peak": [
+12,
+1,
+2,
+3
+],
+"note": "Backyard lemons fruit much of the year here.",
+"uses": [
+"Juice over everything; zest into baking",
+"Slice into water or tea",
+"Make lemonade or lemon curd"
+],
+"preserve": [
+"Preserved lemons (salt-ferment)",
+"Lemon marmalade",
+"Freeze juice in cubes",
+"Dry the zest"
+]
+},
+"Lime": {
+"edible": true,
+"cat": "citrus",
+"emoji": "\ud83d\udfe2",
+"part": "Fruit",
+"season": [
+6,
+7,
+8,
+9,
+10,
+11
+],
+"peak": [
+8,
+9,
+10
+],
+"note": "Backyard limes, peak late summer/fall.",
+"uses": [
+"Squeeze over tacos, fish and fruit",
+"Zest into desserts",
+"Limeade or a fresh marinade"
+],
+"preserve": [
+"Salt-preserved limes",
+"Lime cordial or syrup",
+"Freeze the juice"
+]
+},
+"Orange": {
+"edible": true,
+"cat": "citrus",
+"emoji": "\ud83c\udf4a",
+"part": "Fruit",
+"season": [
+12,
+1,
+2,
+3,
+4,
+5
+],
+"peak": [
+1,
+2,
+3
+],
+"note": "Navels winter-spring; Valencias trail into summer.",
+"uses": [
+"Eat fresh in segments",
+"Fresh-squeezed juice",
+"Candy the peel; zest into cakes"
+],
+"preserve": [
+"Marmalade",
+"Candied peel",
+"Orange wine (ferment)",
+"Freeze segments or juice"
+]
+},
+"Kumquat": {
+"edible": true,
+"cat": "citrus",
+"emoji": "\ud83d\udfe0",
+"part": "Whole fruit",
+"season": [
+11,
+12,
+1,
+2,
+3,
+4
+],
+"peak": [
+1,
+2
+],
+"note": "Eat whole, skin and all \u2014 sweet rind, tart flesh.",
+"uses": [
+"Eat whole, skin and all",
+"Slice into salads",
+"Simmer into marmalade"
+],
+"preserve": [
+"Whole-fruit marmalade",
+"Candy them",
+"Salt-cure (ferment)"
+]
+},
+"Apple": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf4f",
+"part": "Fruit",
+"season": [
+8,
+9,
+10
+],
+"peak": [
+9
+],
+"note": "Look for unsprayed neighborhood trees dropping fruit.",
+"uses": [
+"Eat fresh; slice with nut butter",
+"Bake into pies, crisps and sauce",
+"Press into fresh juice"
+],
+"preserve": [
+"Cider or scrumpy (ferment)",
+"Apple butter & sauce",
+"Apple cider vinegar",
+"Dry into rings"
+]
+},
+"Pear": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf50",
+"part": "Fruit",
+"season": [
+8,
+9,
+10
+],
+"peak": [
+9
+],
+"note": "Pick slightly firm and ripen on the counter.",
+"uses": [
+"Eat ripe and raw",
+"Poach in wine or spices",
+"Roast alongside savory dishes"
+],
+"preserve": [
+"Perry / pear cider (ferment)",
+"Pear butter or jam",
+"Spiced pickled pears (vinegar)",
+"Dry into chips"
+]
+},
+"European pear": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf50",
+"part": "Fruit",
+"season": [
+8,
+9,
+10
+],
+"peak": [
+9
+],
+"note": "Pick firm, ripen indoors.",
+"uses": [
+"Eat ripe and raw",
+"Poach in wine or spices",
+"Roast alongside savory dishes"
+],
+"preserve": [
+"Perry / pear cider (ferment)",
+"Pear butter or jam",
+"Spiced pickled pears (vinegar)",
+"Dry into chips"
+]
+},
+"Common fig": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83e\uded2",
+"part": "Fruit",
+"season": [
+6,
+7,
+8,
+9,
+10
+],
+"peak": [
+8,
+9
+],
+"note": "Breba crop early summer, main crop late summer. Ripe = soft and drooping.",
+"uses": [
+"Eat fresh, warm off the tree",
+"Roast with honey",
+"Dry for later; bake into tarts"
+],
+"preserve": [
+"Fig jam",
+"Fig vinegar",
+"Lacto-ferment whole",
+"Dry the figs"
+]
+},
+"Plum": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83e\uded0",
+"part": "Fruit",
+"season": [
+6,
+7,
+8
+],
+"peak": [
+7
+],
+"note": "Ornamental plums all over Berkeley fruit heavily in summer.",
+"uses": [
+"Eat fresh and ripe",
+"Bake into cakes and crumbles",
+"Cook into a quick jam"
+],
+"preserve": [
+"Plum jam or butter",
+"Umeboshi-style salt cure (ferment)",
+"Plum vinegar (shrub)",
+"Plum wine",
+"Dry into prunes"
+]
+},
+"Peach": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf51",
+"part": "Fruit",
+"season": [
+6,
+7,
+8
+],
+"peak": [
+7
+],
+"note": "Fragrant when ripe; bruises easily.",
+"uses": [
+"Eat fresh over the sink",
+"Grill in halves",
+"Bake into cobbler or pie"
+],
+"preserve": [
+"Peach jam",
+"Can in syrup",
+"Peach wine (ferment)",
+"Dry into leather"
+]
+},
+"Nectarine": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf51",
+"part": "Fruit",
+"season": [
+6,
+7,
+8
+],
+"peak": [
+7
+],
+"note": "Like peach, smooth-skinned.",
+"uses": [
+"Eat fresh",
+"Slice into salads",
+"Roast or grill"
+],
+"preserve": [
+"Jam",
+"Can or freeze in slices",
+"Stone-fruit soda (ferment)",
+"Dry into leather"
+]
+},
+"Persimmon": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83d\udfe0",
+"part": "Fruit",
+"season": [
+10,
+11,
+12,
+1
+],
+"peak": [
+11,
+12
+],
+"note": "Hachiya must be jelly-soft; Fuyu eaten firm.",
+"uses": [
+"Fuyu: eat firm like an apple",
+"Hachiya: scoop when jelly-soft",
+"Bake into pudding or bread"
+],
+"preserve": [
+"Persimmon vinegar (ferment)",
+"Dry into hoshigaki",
+"Persimmon jam or butter",
+"Freeze Hachiya pulp"
+]
+},
+"Loquat": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83d\udfe0",
+"part": "Fruit",
+"season": [
+4,
+5,
+6
+],
+"peak": [
+5
+],
+"note": "In season NOW. Sweet-tart, large seeds. Hugely common in Berkeley.",
+"uses": [
+"Eat fresh; spit the big seeds",
+"Poach into a light syrup",
+"Bake into a tart or crumble"
+],
+"preserve": [
+"Loquat jam",
+"Loquat wine or liqueur (ferment)",
+"Light poaching syrup",
+"Dry"
+]
+},
+"Feijoa": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83d\udfe2",
+"part": "Fruit",
+"season": [
+10,
+11,
+12
+],
+"peak": [
+11
+],
+"note": "Pineapple guava. Let them drop \u2014 ripe fruit falls.",
+"uses": [
+"Scoop the jelly center with a spoon",
+"Blend into smoothies",
+"Bake into muffins"
+],
+"preserve": [
+"Feijoa jam or chutney",
+"Tropical soda or wine (ferment)",
+"Freeze the pulp"
+]
+},
+"Strawberry guava": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf52",
+"part": "Fruit",
+"season": [
+8,
+9,
+10
+],
+"peak": [
+9
+],
+"note": "Small red guavas, eat skin and all.",
+"uses": [
+"Eat whole, skin and all",
+"Blend into juice",
+"Cook into jelly"
+],
+"preserve": [
+"Guava jelly",
+"Fruit vinegar or soda (ferment)",
+"Juice and freeze"
+]
+},
+"Guadalupe palm": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf34",
+"part": "Dates",
+"season": [
+7,
+8,
+9
+],
+"peak": [
+8
+],
+"note": "Brahea edulis. Black date-like fruit, sweet.",
+"uses": [
+"Eat the sweet date-like flesh",
+"Dry like dates",
+"Simmer into syrup"
+],
+"preserve": [
+"Dry like dates",
+"Date syrup",
+"Date wine (ferment)"
+]
+},
+"Grape": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf47",
+"part": "Fruit",
+"season": [
+8,
+9,
+10
+],
+"peak": [
+9
+],
+"note": "Backyard arbors and fences. Taste before picking.",
+"uses": [
+"Eat fresh off the vine",
+"Roast with meats",
+"Press into juice or verjus"
+],
+"preserve": [
+"Wine (ferment)",
+"Verjus from unripe clusters",
+"Grape jelly",
+"Grape vinegar",
+"Raisins (dry)"
+]
+},
+"Pomegranate": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83d\udfe5",
+"part": "Fruit",
+"season": [
+9,
+10,
+11
+],
+"peak": [
+10
+],
+"note": "Ripe when heavy and the skin turns leathery.",
+"uses": [
+"Eat the arils by the spoonful",
+"Scatter over salads and yogurt",
+"Juice for grenadine"
+],
+"preserve": [
+"Grenadine syrup",
+"Pomegranate vinegar or wine (ferment)",
+"Molasses (reduce)",
+"Freeze the arils"
+]
+},
+"Blackberry": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\u2b1b",
+"part": "Berries",
+"season": [
+7,
+8,
+9
+],
+"peak": [
+8
+],
+"note": "Himalayan blackberry is everywhere \u2014 creeks, fences, lots.",
+"uses": [
+"Eat fresh and warm",
+"Bake into cobbler or pie",
+"Cook into jam or syrup"
+],
+"preserve": [
+"Blackberry jam",
+"Wild soda or wine (ferment)",
+"Blackberry shrub (vinegar)",
+"Freeze whole"
+]
+},
+"Raspberry": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83d\udfe5",
+"part": "Berries",
+"season": [
+6,
+7,
+8,
+9
+],
+"peak": [
+7
+],
+"note": "Less common than blackberry; check garden edges.",
+"uses": [
+"Eat fresh",
+"Mash into a quick sauce",
+"Bake into muffins or tarts"
+],
+"preserve": [
+"Raspberry jam",
+"Raspberry shrub (vinegar)",
+"Cordial syrup",
+"Freeze"
+]
+},
+"Sour cherry": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf52",
+"part": "Fruit",
+"season": [
+5,
+6
+],
+"peak": [
+6
+],
+"note": "In season NOW. Tart \u2014 best cooked or preserved.",
+"uses": [
+"Best cooked, not eaten raw",
+"Pie, clafoutis, compote",
+"Cook into a tart syrup or preserve"
+],
+"preserve": [
+"Cherry preserves or jam",
+"Kriek-style sour (ferment)",
+"Cherry vinegar",
+"Dry into tart cherries"
+]
+},
+"Prickly pear": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf3b",
+"part": "Fruit + pads",
+"season": [
+8,
+9,
+10
+],
+"peak": [
+9
+],
+"note": "Tunas (fruit) late summer; nopales (pads) in spring. Mind the glochids.",
+"uses": [
+"Peel the tuna; eat the fruit chilled",
+"Blend the juice into agua fresca",
+"Grill the pads (nopales) as a veg"
+],
+"preserve": [
+"Prickly-pear jelly or syrup",
+"Lacto pads or fruit soda (ferment)",
+"Freeze the juice"
+]
+},
+"Olive": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83e\uded2",
+"part": "Fruit (cure first)",
+"season": [
+10,
+11,
+12
+],
+"peak": [
+11
+],
+"note": "Street-tree olives are edible ONLY after curing \u2014 raw they're brutally bitter.",
+"uses": [
+"Must be cured first \u2014 never raw",
+"Brine-cure for the table",
+"Press for oil (in quantity)"
+],
+"preserve": [
+"Brine-cure / ferment for the table",
+"Salt-cure (dry)",
+"Press for oil"
+]
+},
+"Paper mulberry": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83d\udfe3",
+"part": "Berries",
+"season": [
+5,
+6,
+7
+],
+"peak": [
+6
+],
+"note": "Soft red-orange fruit, mild and sweet. Messy but edible.",
+"uses": [
+"Eat the soft ripe fruit raw",
+"Mash into a sauce",
+"Blend into smoothies"
+],
+"preserve": [
+"Fruit soda (ferment)",
+"Mash into a sauce and freeze"
+]
+},
+"Lucuma": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83d\udfe1",
+"part": "Fruit",
+"season": [
+9,
+10,
+11
+],
+"peak": [
+10
+],
+"note": "Rare here. Dry, maple-custard flavor when ripe.",
+"uses": [
+"Scoop ripe flesh; maple-custard flavor",
+"Blend into ice cream or shakes",
+"Dry and powder as a sweetener"
+],
+"preserve": [
+"Dry and powder as a sweetener",
+"Cultured cream (ferment)",
+"Freeze the pulp"
+]
+},
+"Nasturtium": {
+"edible": true,
+"cat": "flower",
+"emoji": "\ud83c\udf3a",
+"part": "Leaves, flowers, seeds",
+"season": [
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12
+],
+"peak": [
+3,
+4,
+5
+],
+"note": "Peppery leaves & flowers year-round here; green seed pods in spring/summer.",
+"uses": [
+"Toss peppery leaves & flowers into salad",
+"Stuff the flowers",
+"Blend leaves into a pesto"
+],
+"preserve": [
+"'Poor man's capers' \u2014 brine the seed pods (ferment)",
+"Vinegar-pickle the pods",
+"Flower-infused vinegar"
+]
+},
+"Miner's lettuce": {
+"edible": true,
+"cat": "green",
+"emoji": "\ud83e\udd57",
+"part": "Leaves",
+"season": [
+12,
+1,
+2,
+3,
+4,
+5
+],
+"peak": [
+2,
+3
+],
+"note": "Native succulent green, mild. Loves shady, damp spots. Season ending now.",
+"uses": [
+"Eat raw as a mild salad green",
+"Wilt briefly like spinach",
+"Pile onto sandwiches"
+],
+"preserve": [
+"Best fresh \u2014 barely keeps",
+"Quick vinegar pickle of the stems"
+]
+},
+"Fennel": {
+"edible": true,
+"cat": "herb",
+"emoji": "\ud83c\udf3f",
+"part": "Fronds, pollen, seeds, bulb",
+"season": [
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12
+],
+"peak": [
+5,
+6,
+7
+],
+"note": "Wild fennel blankets Berkeley. Fronds & pollen spring/summer, seeds in fall.",
+"uses": [
+"Fronds: herb for fish & salads",
+"Pollen: sprinkle as seasoning",
+"Bulb: roast or shave raw"
+],
+"preserve": [
+"Dry the seeds",
+"Fennel-bulb kraut (ferment)",
+"Pickle the bulb (vinegar)",
+"Pollen keeps dry for months"
+]
+},
+"Rosemary": {
+"edible": true,
+"cat": "herb",
+"emoji": "\ud83c\udf3f",
+"part": "Leaves",
+"season": [
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12
+],
+"peak": [],
+"note": "Evergreen hedges everywhere. Snip year-round.",
+"uses": [
+"Roast with potatoes and meats",
+"Infuse oil or honey",
+"Steep into tea"
+],
+"preserve": [
+"Dry the sprigs",
+"Infuse oil, vinegar or honey",
+"Freeze in oil cubes"
+]
+},
+"Kale": {
+"edible": true,
+"cat": "green",
+"emoji": "\ud83e\udd6c",
+"part": "Leaves",
+"season": [
+10,
+11,
+12,
+1,
+2,
+3,
+4
+],
+"peak": [
+1,
+2
+],
+"note": "Cool-season garden escapee. Sweeter after frost.",
+"uses": [
+"Massage raw into a salad",
+"Saut\u00e9 with garlic",
+"Bake into chips"
+],
+"preserve": [
+"Kraut or kimchi (ferment)",
+"Blanch & freeze",
+"Dry into chips"
+]
+},
+"Tomato": {
+"edible": true,
+"cat": "veg",
+"emoji": "\ud83c\udf45",
+"part": "Fruit",
+"season": [
+7,
+8,
+9,
+10
+],
+"peak": [
+8,
+9
+],
+"note": "Volunteer tomatoes in lots and curb strips, late summer.",
+"uses": [
+"Eat fresh with salt",
+"Roast into sauce",
+"Slice onto everything"
+],
+"preserve": [
+"Can or freeze the sauce",
+"Lacto salsa or hot sauce (ferment)",
+"Tomato vinegar",
+"Sun-dry"
+]
+},
+"Pepper": {
+"edible": true,
+"cat": "veg",
+"emoji": "\ud83c\udf36",
+"part": "Fruit",
+"season": [
+7,
+8,
+9,
+10
+],
+"peak": [
+9
+],
+"note": "Garden escapees, late summer/fall.",
+"uses": [
+"Eat raw or roasted",
+"Blister in a hot pan",
+"Dry and grind to flakes"
+],
+"preserve": [
+"Fermented hot sauce",
+"Pickle (vinegar)",
+"Dry & grind to flakes",
+"Freeze whole"
+]
+},
+"Green bean": {
+"edible": true,
+"cat": "veg",
+"emoji": "\ud83e\uded8",
+"part": "Pods",
+"season": [
+6,
+7,
+8,
+9
+],
+"peak": [
+7
+],
+"note": "Garden volunteer, summer.",
+"uses": [
+"Blanch or saut\u00e9",
+"Add to stir-fries",
+"Roast with olive oil"
+],
+"preserve": [
+"Dilly beans \u2014 brine (ferment)",
+"Pickle (vinegar)",
+"Blanch & freeze"
+]
+},
+"Squash": {
+"edible": true,
+"cat": "veg",
+"emoji": "\ud83c\udf83",
+"part": "Fruit",
+"season": [
+8,
+9,
+10
+],
+"peak": [
+9
+],
+"note": "Summer & winter squash from garden escapees.",
+"uses": [
+"Saut\u00e9 summer squash; roast winter squash",
+"Grate into fritters",
+"Soups and gratins"
+],
+"preserve": [
+"Lacto summer squash (ferment)",
+"Pickle (vinegar)",
+"Freeze cubes",
+"Winter squash keeps for months"
+]
+},
+"Pumpkin": {
+"edible": true,
+"cat": "veg",
+"emoji": "\ud83c\udf83",
+"part": "Fruit",
+"season": [
+9,
+10,
+11
+],
+"peak": [
+10
+],
+"note": "Fall garden volunteer.",
+"uses": [
+"Roast the flesh",
+"Soups and pies",
+"Toast the seeds"
+],
+"preserve": [
+"Lacto-ferment cubes",
+"Pickle (vinegar)",
+"Freeze the puree",
+"Keeps whole for months"
+]
+},
+"Magenta lilly pilly": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83d\udfe3",
+"part": "Berries",
+"season": [
+11,
+12,
+1
+],
+"peak": [
+12
+],
+"note": "Syzygium. Crisp magenta berries, tart-sweet, faint clove note.",
+"uses": [
+"Eat raw, crisp and tart",
+"Cook into jam or jelly",
+"Scatter over desserts"
+],
+"preserve": [
+"Jam or jelly",
+"Pink shrub (vinegar)",
+"Tart soda (ferment)"
+]
+},
+"Cherry": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf52",
+"part": "Fruit",
+"season": [
+5,
+6,
+7
+],
+"peak": [
+6
+],
+"note": "Sweet cherries ripen late spring/early summer.",
+"uses": [
+"Eat fresh by the handful",
+"Bake into pies and clafoutis",
+"Cook into compote"
+],
+"preserve": [
+"Cherry jam",
+"Cherry soda or sour (ferment)",
+"Cherry vinegar",
+"Freeze pitted",
+"Dry"
+]
+},
+"Apricot": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf51",
+"part": "Fruit",
+"season": [
+5,
+6,
+7
+],
+"peak": [
+6
+],
+"note": "Fragrant, soft when ripe; ripens early summer.",
+"uses": [
+"Eat fresh and ripe",
+"Halve and grill or roast",
+"Dry, or cook into jam"
+],
+"preserve": [
+"Apricot jam",
+"Apricot wine (ferment)",
+"Can in syrup",
+"Dry into halves"
+]
+},
+"Mulberry": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83d\udfe3",
+"part": "Berries",
+"season": [
+5,
+6,
+7
+],
+"peak": [
+6
+],
+"note": "Black/red mulberries stain everything \u2014 ripe = falls at a touch.",
+"uses": [
+"Eat fresh (wear dark clothes)",
+"Bake into pies and crumbles",
+"Cook into syrup or jam"
+],
+"preserve": [
+"Mulberry jam",
+"Mulberry wine or soda (ferment)",
+"Cordial syrup",
+"Freeze whole"
+]
+},
+"Walnut": {
+"edible": true,
+"cat": "nut",
+"emoji": "\ud83e\udd0e",
+"part": "Nuts",
+"season": [
+9,
+10,
+11
+],
+"peak": [
+10
+],
+"note": "Drop in fall; husk stains hands. Dry before cracking.",
+"uses": [
+"Crack and eat the nutmeat",
+"Toast for salads and baking",
+"Press for oil; green ones for nocino"
+],
+"preserve": [
+"Dry & store in the shell",
+"Nocino from green nuts (infuse)",
+"Pickled green walnuts (vinegar)",
+"Press for oil"
+]
+},
+"Almond": {
+"edible": true,
+"cat": "nut",
+"emoji": "\ud83c\udf30",
+"part": "Nuts",
+"season": [
+8,
+9
+],
+"peak": [
+8
+],
+"note": "Splitting hulls in late summer. Avoid bitter (wild) almonds.",
+"uses": [
+"Eat raw or roasted (sweet types only)",
+"Blanch and slice for baking",
+"Grind into flour or milk"
+],
+"preserve": [
+"Dry & store",
+"Cultured almond cheese or milk (ferment)",
+"Grind into flour"
+]
+},
+"Pecan": {
+"edible": true,
+"cat": "nut",
+"emoji": "\ud83e\udd0e",
+"part": "Nuts",
+"season": [
+10,
+11
+],
+"peak": [
+10
+],
+"note": "Fall drop; dry and crack.",
+"uses": [
+"Eat raw or toasted",
+"Bake into pies and cookies",
+"Candy or spice them"
+],
+"preserve": [
+"Dry & store",
+"Candy or spice them",
+"Freeze the nutmeats"
+]
+},
+"Elderberry": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83e\uded0",
+"part": "Berries (cook first)",
+"season": [
+8,
+9
+],
+"peak": [
+8
+],
+"note": "Flowers late spring, berries late summer. Cook berries \u2014 raw are mildly toxic.",
+"uses": [
+"Cook the berries \u2014 never raw",
+"Simmer into syrup for colds",
+"Elderflowers: cordial & fritters"
+],
+"preserve": [
+"Elderberry syrup",
+"Elderflower cordial",
+"Elderberry wine or soda (ferment)",
+"Elderberry vinegar",
+"Dry the berries"
+]
+},
+"Quince": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83d\udfe1",
+"part": "Fruit (cook first)",
+"season": [
+10,
+11
+],
+"peak": [
+10
+],
+"note": "Hard and astringent raw; aromatic when cooked.",
+"uses": [
+"Always cook \u2014 too hard raw",
+"Poach into rosy slices",
+"Cook into membrillo or jelly"
+],
+"preserve": [
+"Membrillo (paste)",
+"Quince jelly",
+"Quince vinegar (ferment)",
+"Spiced quince (vinegar)"
+]
+},
+"Avocado": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83d\udfe2",
+"part": "Fruit",
+"season": [
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12
+],
+"peak": [
+3,
+4,
+5
+],
+"note": "Backyard trees fruit much of the year in the Bay Area.",
+"uses": [
+"Eat ripe with salt and lemon",
+"Mash into guacamole",
+"Slice onto toast and salads"
+],
+"preserve": [
+"Best fresh \u2014 barely keeps",
+"Freeze mashed with lime"
+]
+},
+"Crabapple": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf4f",
+"part": "Fruit",
+"season": [
+9,
+10
+],
+"peak": [
+9
+],
+"note": "Small, tart apples. Great for jelly and cider blends.",
+"uses": [
+"Too tart raw \u2014 cook them",
+"Cook into a rosy jelly",
+"Roast whole as a garnish"
+],
+"preserve": [
+"Crabapple jelly",
+"Cider blend (ferment)",
+"Spiced crabapple pickle (vinegar)",
+"Dry"
+]
+},
+"California bay": {
+"edible": true,
+"cat": "herb",
+"emoji": "\ud83c\udf3f",
+"part": "Leaves + nuts",
+"season": [
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12
+],
+"peak": [
+10,
+11
+],
+"note": "California bay / pepperwood (Umbellularia). One leaf does the work of two regular bay leaves \u2014 potent. 'Bay nuts' ripen in fall.",
+"uses": [
+"Use a leaf (half a regular bay) in soups & braises",
+"Roast the 'bay nuts' \u2014 taste of bitter chocolate-coffee",
+"Infuse into broth or oil"
+],
+"preserve": [
+"Dry the leaves for the spice rack",
+"Roast & store the bay nuts",
+"Bay-infused oil or vinegar"
+]
+},
+"Bay laurel": {
+"edible": true,
+"cat": "herb",
+"emoji": "\ud83c\udf3f",
+"part": "Leaves",
+"season": [
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12
+],
+"peak": [],
+"note": "Culinary bay (Laurus nobilis). Common hedge \u2014 pick a few leaves anytime.",
+"uses": [
+"Drop into soups, stews and braises",
+"Steep into b\u00e9chamel or rice",
+"Infuse oil or vinegar"
+],
+"preserve": [
+"Dry the leaves",
+"Bay-infused oil or vinegar",
+"Freeze fresh leaves"
+]
+},
+"Carob": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83d\udfeb",
+"part": "Pods",
+"season": [
+8,
+9,
+10
+],
+"peak": [
+9
+],
+"note": "Long leathery brown pods on a common street tree. Sweet, roasted-malt flavor \u2014 a caffeine-free cocoa substitute. Roast and grind the pods (not the hard seeds).",
+"uses": [
+"Roast & grind the pods into carob powder",
+"Snack on the sweet dried pods",
+"Simmer into a syrup"
+],
+"preserve": [
+"Dry & store the pods",
+"Carob powder keeps for months",
+"Carob syrup"
+]
+},
+"Date palm": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf34",
+"part": "Dates",
+"season": [
+9,
+10,
+11
+],
+"peak": [
+10
+],
+"note": "Tall feather palm. Dates ripen amber to brown in fall; many ornamental palms fruit lightly.",
+"uses": [
+"Eat ripe dates fresh or dried",
+"Chop into baking",
+"Blend into date paste"
+],
+"preserve": [
+"Dry the dates",
+"Date syrup",
+"Date paste (freezes well)",
+"Date wine (ferment)"
+]
+},
+"Pindo palm": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf34",
+"part": "Fruit",
+"season": [
+6,
+7,
+8
+],
+"peak": [
+7
+],
+"note": "Jelly palm (Butia). Yellow-orange fruit, tangy-sweet and fibrous \u2014 eat fresh or strain.",
+"uses": [
+"Eat the fruit fresh off the palm",
+"Strain into juice",
+"Cook down for a sauce"
+],
+"preserve": [
+"Pindo jelly",
+"Fruit wine (ferment)",
+"Freeze the pulp"
+]
+},
+"Hawthorn": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83d\udd34",
+"part": "Haws (berries)",
+"season": [
+9,
+10,
+11
+],
+"peak": [
+10
+],
+"note": "Thorny tree/shrub. Small red haws, mild apple-rosehip flavor. Don't eat the seeds.",
+"uses": [
+"Nibble the ripe haws (spit the seeds)",
+"Cook into a fruit leather or 'ketchup'",
+"Steep into tea"
+],
+"preserve": [
+"Hawthorn jelly",
+"Haw 'ketchup'",
+"Haw vinegar",
+"Dry the haws"
+]
+},
+"Hazelnut": {
+"edible": true,
+"cat": "nut",
+"emoji": "\ud83c\udf30",
+"part": "Nuts",
+"season": [
+9,
+10
+],
+"peak": [
+9
+],
+"note": "Filbert. Husked nuts drop in early fall \u2014 beat the squirrels.",
+"uses": [
+"Crack & eat raw or toasted",
+"Grind into meal or butter",
+"Bake into cakes"
+],
+"preserve": [
+"Dry & store in the shell",
+"Hazelnut butter",
+"Freeze shelled nuts"
+]
+},
+"Chestnut": {
+"edible": true,
+"cat": "nut",
+"emoji": "\ud83c\udf30",
+"part": "Nuts",
+"season": [
+10,
+11
+],
+"peak": [
+10
+],
+"note": "Spiny burrs split to drop glossy nuts. Always cooked, never raw.",
+"uses": [
+"Roast and peel",
+"Boil and puree",
+"Grind into flour"
+],
+"preserve": [
+"Dry for flour",
+"Candy (marrons)",
+"Freeze cooked"
+]
+},
+"Oak": {
+"edible": true,
+"cat": "nut",
+"emoji": "\ud83c\udf30",
+"part": "Acorns",
+"season": [
+9,
+10,
+11
+],
+"peak": [
+10
+],
+"note": "Acorns MUST be leached of tannins (cold or hot water) before eating \u2014 never raw.",
+"uses": [
+"Leach the acorns, then grind into flour",
+"Make acorn mush or pancakes",
+"Roast leached acorns as a snack"
+],
+"preserve": [
+"Dry the leached acorns",
+"Acorn flour (store cool & dry)",
+"Freeze the meal"
+]
+},
+"Juniper": {
+"edible": true,
+"cat": "herb",
+"emoji": "\ud83c\udf32",
+"part": "Berries",
+"season": [
+9,
+10,
+11
+],
+"peak": [
+10
+],
+"note": "Use the ripe blue berries as a spice (that gin aroma). A few go a long way; some species are better than others.",
+"uses": [
+"Crush a few berries into braises & brines",
+"Flavor a spice rub",
+"Steep sparingly into tea"
+],
+"preserve": [
+"Dry the berries as a spice",
+"Juniper salt or infused spirit (infuse)",
+"Juniper vinegar"
+]
+},
+"Rose": {
+"edible": true,
+"cat": "fruit",
+"emoji": "\ud83c\udf39",
+"part": "Hips + petals",
+"season": [
+9,
+10,
+11
+],
+"peak": [
+10
+],
+"note": "Rosehips ripen red in fall (sweeter after frost); fragrant petals in late spring. Strip the irritating seeds/hairs from hips.",
+"uses": [
+"Deseed the hips, eat raw or in tea",
+"Toss fresh petals into salad",
+"Rosehip puree for sauces"
+],
+"preserve": [
+"Rosehip jam or syrup",
+"Rose petal vinegar or honey",
+"Dry the hips for tea",
+"Dry the petals"
+]
+},
+"Dandelion": {
+"edible": true,
+"cat": "green",
+"emoji": "\ud83c\udf3c",
+"part": "Leaves, flowers, root",
+"season": [
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12
+],
+"peak": [
+3,
+4
+],
+"note": "The whole plant is edible. Young leaves are least bitter; flowers fry up, roots roast like chicory.",
+"uses": [
+"Young leaves raw or saut\u00e9ed",
+"Batter & fry the flowers",
+"Roast the root as a coffee substitute"
+],
+"preserve": [
+"Dandelion-flower 'wine' (ferment)",
+"Dandelion-flower syrup",
+"Lacto-ferment the greens",
+"Dry the roots"
+]
+},
+"Wild mustard": {
+"edible": true,
+"cat": "green",
+"emoji": "\ud83c\udf3c",
+"part": "Leaves, flowers, seeds",
+"season": [
+1,
+2,
+3,
+4,
+5,
+11,
+12
+],
+"peak": [
+3,
+4
+],
+"note": "Peppery greens and bright flowers in the cool months; collect seeds to make mustard.",
+"uses": [
+"Saut\u00e9 the greens like kale",
+"Toss the flowers into salad",
+"Grind the seeds into mustard"
+],
+"preserve": [
+"Whole-grain mustard from the seeds (ferment)",
+"Lacto-ferment the greens",
+"Pickle the flower buds (vinegar)"
+]
+},
+"Mallow": {
+"edible": true,
+"cat": "green",
+"emoji": "\ud83c\udf3f",
+"part": "Leaves + fruit",
+"season": [
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12
+],
+"peak": [
+4,
+5
+],
+"note": "Mild, slightly mucilaginous leaves; the little round 'cheeses' (fruit) are edible too.",
+"uses": [
+"Add leaves to salads & soups (they thicken)",
+"Snack on the green 'cheeses'",
+"Whip the boiled water like meringue"
+],
+"preserve": [
+"Best fresh",
+"Dry the leaves for tea",
+"Freeze blanched"
+]
+},
+"Wood sorrel": {
+"edible": true,
+"cat": "green",
+"emoji": "\ud83c\udf3f",
+"part": "Leaves, flowers",
+"season": [
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12
+],
+"peak": [
+3,
+4,
+5
+],
+"note": "Bright lemony leaves and yellow flowers (oxalis). A lovely sour garnish \u2014 use in moderation.",
+"uses": [
+"Scatter leaves as a sour garnish",
+"Blend into a tangy sauce",
+"Steep into a lemonade-like tea"
+],
+"preserve": [
+"Best fresh",
+"Sour-leaf vinegar",
+"Freeze into herb cubes"
+]
+},
+"Chickweed": {
+"edible": true,
+"cat": "green",
+"emoji": "\ud83c\udf3f",
+"part": "Leaves, stems",
+"season": [
+11,
+12,
+1,
+2,
+3,
+4
+],
+"peak": [
+2,
+3
+],
+"note": "Mild cool-season green with a corn-silk taste. Best raw in salads.",
+"uses": [
+"Pile raw into salads & sandwiches",
+"Blend into a pesto",
+"Wilt briefly into eggs"
+],
+"preserve": [
+"Best fresh",
+"Freeze in pesto",
+"Chickweed vinegar"
+]
+},
+"Plantain": {
+"edible": true,
+"cat": "green",
+"emoji": "\ud83c\udf3f",
+"part": "Leaves, seeds",
+"season": [
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10
+],
+"peak": [
+5,
+6
+],
+"note": "Broadleaf plantain (the weed, not the banana). Young leaves cooked; seeds are psyllium.",
+"uses": [
+"Cook young leaves like spinach",
+"Fry older leaves into chips",
+"Toast the seeds onto dishes"
+],
+"preserve": [
+"Dry the leaves for tea",
+"Freeze blanched",
+"Dry the psyllium seeds"
+]
+},
+"Purslane": {
+"edible": true,
+"cat": "green",
+"emoji": "\ud83c\udf3f",
+"part": "Leaves, stems",
+"season": [
+6,
+7,
+8,
+9
+],
+"peak": [
+7,
+8
+],
+"note": "Succulent, lemony, crunchy and omega-3 rich. Great raw or quickly cooked.",
+"uses": [
+"Eat raw in salads",
+"Stir-fry or add to soups",
+"Blend into a tangy dip"
+],
+"preserve": [
+"Lacto-ferment the stems (ferment)",
+"Pickle (vinegar)",
+"Freeze blanched"
+]
+}
+}

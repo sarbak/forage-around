@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "Scrump",
+    "slug": "scrump",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "scrump",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#F6F1E7",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.scrump.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Scrump uses your location to show edible fruit, herbs and greens growing near you that are in season right now."
+      }
+    },
+    "android": {
+      "package": "com.scrump.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#F6F1E7",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Scrump uses your location to show edible plants growing near you that are in season."
+        }
+      ],
+      "expo-font"
+    ]
+  }
+}
