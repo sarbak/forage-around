@@ -13,6 +13,8 @@ DESC = ("Find the fruit, herbs and greens growing wild and unpicked around you, 
 META = f"""
     <meta name="description" content="{DESC}" />
     <meta name="theme-color" content="#2E5E3A" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="canonical" href="{SITE}/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Forage Around" />
