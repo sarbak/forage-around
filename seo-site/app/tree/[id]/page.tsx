@@ -23,6 +23,7 @@ import { submissionsForTree } from "@/lib/submissions";
 import { Credits, APP_URL } from "../../components";
 import { SubmissionList } from "../../Submissions";
 import { TreeMap } from "../../TreeMap";
+import { TreePageViewed, WalkHereLink, MoreAboutLink } from "../../analytics";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -154,6 +155,7 @@ export default async function TreePage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <TreePageViewed id={id} species={speciesName} city={r.city} />
       <Link className="back-link" href="/">
         ← Forage Around
       </Link>
@@ -172,18 +174,24 @@ export default async function TreePage({
       <TreeMap lat={r.lat} lng={r.lng} />
 
       <p style={{ margin: "16px 0" }}>
-        <a className="btn" href={gmaps} rel="noopener">
+        <WalkHereLink
+          className="btn"
+          href={gmaps}
+          species={speciesName}
+          id={id}
+        >
           Walk here →
-        </a>
+        </WalkHereLink>
         {speciesName && allSpecies[speciesName] ? (
           <>
             {" "}
-            <Link
+            <MoreAboutLink
               className="btn-outline"
               href={`/species/${slugify(speciesName)}`}
+              species={speciesName}
             >
               More about {speciesName}
-            </Link>
+            </MoreAboutLink>
           </>
         ) : null}
       </p>

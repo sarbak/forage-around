@@ -16,6 +16,7 @@ import { getWikipedia } from "@/lib/wikipedia";
 import { submissionsForSpecies } from "@/lib/submissions";
 import { Credits, APP_URL } from "../../components";
 import { SubmissionList } from "../../Submissions";
+import { SpeciesPageViewed, ToAppLink } from "../../analytics";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -81,6 +82,7 @@ export default async function SpeciesPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <SpeciesPageViewed species={name} />
       <Link className="back-link" href="/">
         ← All plants
       </Link>
@@ -146,9 +148,9 @@ export default async function SpeciesPage({
       <SubmissionList items={subs} />
 
       <p style={{ margin: "28px 0" }}>
-        <a className="btn" href={APP_URL}>
+        <ToAppLink className="btn" href={APP_URL} from="species">
           Find {name} near you →
-        </a>
+        </ToAppLink>
       </p>
 
       <Credits />

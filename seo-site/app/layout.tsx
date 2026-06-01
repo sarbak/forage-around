@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces } from "next/font/google";
 import "./globals.css";
 import { SiteHeader, SiteFooter } from "./components";
+import { PostHogProvider } from "./PostHogProvider";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -48,11 +49,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={fraunces.variable}>
       <body>
-        <SiteHeader />
-        <main>
-          <div className="wrap">{children}</div>
-        </main>
-        <SiteFooter />
+        <PostHogProvider>
+          <SiteHeader />
+          <main>
+            <div className="wrap">{children}</div>
+          </main>
+          <SiteFooter />
+        </PostHogProvider>
       </body>
     </html>
   );

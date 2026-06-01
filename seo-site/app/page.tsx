@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { allSpeciesNames, species, slugify } from "@/lib/data";
 import { Credits, APP_URL } from "./components";
+import { SeoHomeViewed, ToAppLink } from "./analytics";
 
 export default function Home() {
   const names = allSpeciesNames()
@@ -9,6 +10,7 @@ export default function Home() {
 
   return (
     <>
+      <SeoHomeViewed />
       <p className="kicker">A quiet map of the urban harvest</p>
       <h1 className="title">
         See what fruit is ripe near you — and what to make with it.
@@ -24,9 +26,9 @@ export default function Home() {
       </p>
 
       <p style={{ margin: "22px 0" }}>
-        <a className="btn" href={APP_URL}>
+        <ToAppLink className="btn" href={APP_URL} from="home">
           Open the live map →
-        </a>{" "}
+        </ToAppLink>{" "}
         <Link className="btn-outline" href="/about">
           About this project
         </Link>

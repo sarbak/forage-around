@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Credits, APP_URL } from "../components";
+import { AboutPageViewed, ToAppLink } from "../analytics";
 
 export const metadata: Metadata = {
   title: "About",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 export default function About() {
   return (
     <>
+      <AboutPageViewed />
       <p className="kicker">About</p>
       <h1 className="title">Why I built this</h1>
 
@@ -51,9 +53,9 @@ export default function About() {
       </div>
 
       <p style={{ margin: "22px 0" }}>
-        <a className="btn" href={APP_URL}>
+        <ToAppLink className="btn" href={APP_URL} from="about">
           Open the live map →
-        </a>
+        </ToAppLink>
       </p>
 
       <Credits />
