@@ -2,7 +2,7 @@
 """Turn Falling Fruit CSV into a clean trees.json + species.json for Scrump.
 
 Season data in the raw CSV is sparse (11/500 rows), so we join each point to a
-curated species table with Berkeley/Mediterranean-climate harvest windows,
+curated species table with Mediterranean-climate harvest windows,
 edible part, and a fermentation idea (Scrump's hook: forage -> ferment).
 """
 import csv, json, re, os
@@ -10,8 +10,8 @@ import csv, json, re, os
 RAW = os.path.join(os.path.dirname(__file__), "data_raw.csv")
 OUT = os.path.join(os.path.dirname(__file__), "app", "assets", "data")
 
-# seasonMonths = months (1-12) the fruit/edible is typically ready in the Berkeley
-# climate. peakMonths optional. edible=False -> ornamental / not worth foraging.
+# seasonMonths = months (1-12) the fruit/edible is typically ready in a
+# Mediterranean climate. peakMonths optional. edible=False -> ornamental / not worth foraging.
 # cat: fruit | citrus | herb | green | flower | veg | nut
 SPECIES = {
     "Sugar maple":        dict(edible=False, cat="ornamental", emoji="\U0001F341", part="—", season=[], note="Street tree. Not tapped for syrup in this climate.", ferment=None),
@@ -27,11 +27,11 @@ SPECIES = {
     "Pear":               dict(edible=True, cat="fruit", emoji="\U0001F350", part="Fruit", season=[8,9,10], peak=[9], note="Pick slightly firm and ripen on the counter.", ferment="Ferment into perry (pear cider) or a lacto pear hot sauce."),
     "European pear":      dict(edible=True, cat="fruit", emoji="\U0001F350", part="Fruit", season=[8,9,10], peak=[9], note="Pick firm, ripen indoors.", ferment="Perry, or pear + ginger water kefir soda."),
     "Common fig":         dict(edible=True, cat="fruit", emoji="\U0001FAD2", part="Fruit", season=[6,7,8,9,10], peak=[8,9], note="Breba crop early summer, main crop late summer. Ripe = soft and drooping.", ferment="Lacto-ferment whole figs, or make a fig vinegar from the surplus."),
-    "Plum":               dict(edible=True, cat="fruit", emoji="\U0001FAD0", part="Fruit", season=[6,7,8], peak=[7], note="Ornamental plums all over Berkeley fruit heavily in summer.", ferment="Salt-cure into umeboshi-style sour plums, or ferment plum wine."),
+    "Plum":               dict(edible=True, cat="fruit", emoji="\U0001FAD0", part="Fruit", season=[6,7,8], peak=[7], note="Ornamental plums fruit heavily in summer.", ferment="Salt-cure into umeboshi-style sour plums, or ferment plum wine."),
     "Peach":              dict(edible=True, cat="fruit", emoji="\U0001F351", part="Fruit", season=[6,7,8], peak=[7], note="Fragrant when ripe; bruises easily.", ferment="Lacto peaches for a tart topping, or a peach country wine."),
     "Nectarine":          dict(edible=True, cat="fruit", emoji="\U0001F351", part="Fruit", season=[6,7,8], peak=[7], note="Like peach, smooth-skinned.", ferment="Lacto-ferment slices, or ferment into a stone-fruit soda."),
     "Persimmon":          dict(edible=True, cat="fruit", emoji="\U0001F7E0", part="Fruit", season=[10,11,12,1], peak=[11,12], note="Hachiya must be jelly-soft; Fuyu eaten firm.", ferment="Ferment a persimmon vinegar — a Korean staple (gam-sikcho)."),
-    "Loquat":             dict(edible=True, cat="fruit", emoji="\U0001F7E0", part="Fruit", season=[4,5,6], peak=[5], note="In season NOW. Sweet-tart, large seeds. Hugely common in Berkeley.", ferment="Loquat wine or liqueur; pit and lacto-ferment the flesh."),
+    "Loquat":             dict(edible=True, cat="fruit", emoji="\U0001F7E0", part="Fruit", season=[4,5,6], peak=[5], note="In season NOW. Sweet-tart, large seeds. Very common.", ferment="Loquat wine or liqueur; pit and lacto-ferment the flesh."),
     "Feijoa":             dict(edible=True, cat="fruit", emoji="\U0001F7E2", part="Fruit", season=[10,11,12], peak=[11], note="Pineapple guava. Let them drop — ripe fruit falls.", ferment="Scoop and ferment into a tropical-tasting soda or wine."),
     "Strawberry guava":   dict(edible=True, cat="fruit", emoji="\U0001F352", part="Fruit", season=[8,9,10], peak=[9], note="Small red guavas, eat skin and all.", ferment="Ferment into a pink fruit soda or vinegar."),
     "Guadalupe palm":     dict(edible=True, cat="fruit", emoji="\U0001F334", part="Dates", season=[7,8,9], peak=[8], note="Brahea edulis. Black date-like fruit, sweet.", ferment="Soak and ferment into a date wine."),
@@ -46,7 +46,7 @@ SPECIES = {
     "Lucuma":             dict(edible=True, cat="fruit", emoji="\U0001F7E1", part="Fruit", season=[9,10,11], peak=[10], note="Rare here. Dry, maple-custard flavor when ripe.", ferment="Blend into a fermented cream or fruit leather."),
     "Nasturtium":         dict(edible=True, cat="flower", emoji="\U0001F33A", part="Leaves, flowers, seeds", season=[1,2,3,4,5,6,7,8,9,10,11,12], peak=[3,4,5], note="Peppery leaves & flowers year-round here; green seed pods in spring/summer.", ferment="Brine-ferment the green seed pods into 'poor man's capers'."),
     "Miner's lettuce":    dict(edible=True, cat="green", emoji="\U0001F957", part="Leaves", season=[12,1,2,3,4,5], peak=[2,3], note="Native succulent green, mild. Loves shady, damp spots. Season ending now.", ferment="Best fresh in salad; not really a ferment."),
-    "Fennel":             dict(edible=True, cat="herb", emoji="\U0001F33F", part="Fronds, pollen, seeds, bulb", season=[1,2,3,4,5,6,7,8,9,10,11,12], peak=[5,6,7], note="Wild fennel blankets Berkeley. Fronds & pollen spring/summer, seeds in fall.", ferment="Ferment the bulb into a kraut, or seeds into a spiced brine."),
+    "Fennel":             dict(edible=True, cat="herb", emoji="\U0001F33F", part="Fronds, pollen, seeds, bulb", season=[1,2,3,4,5,6,7,8,9,10,11,12], peak=[5,6,7], note="Wild fennel grows everywhere. Fronds & pollen spring/summer, seeds in fall.", ferment="Ferment the bulb into a kraut, or seeds into a spiced brine."),
     "Rosemary":           dict(edible=True, cat="herb", emoji="\U0001F33F", part="Leaves", season=[1,2,3,4,5,6,7,8,9,10,11,12], peak=[], note="Evergreen hedges everywhere. Snip year-round.", ferment="Layer into vegetable krauts and brined olives for aroma."),
     "Kale":               dict(edible=True, cat="green", emoji="\U0001F96C", part="Leaves", season=[10,11,12,1,2,3,4], peak=[1,2], note="Cool-season garden escapee. Sweeter after frost.", ferment="The classic: ferment into a kraut or kimchi."),
     "Tomato":             dict(edible=True, cat="veg", emoji="\U0001F345", part="Fruit", season=[7,8,9,10], peak=[8,9], note="Volunteer tomatoes in lots and curb strips, late summer.", ferment="Lacto-ferment for a tangy salsa or a fermented hot sauce base."),
@@ -292,7 +292,7 @@ def main():
                 })
 
     # Write the FULL curated species table (runtime needs all of it, since the
-    # live API can return any of these names anywhere, not just Berkeley's subset).
+    # live API can return any of these names anywhere, not just the seed subset).
     # Shape each entry: drop the seed `ferment` field, add `uses` + `preserve`.
     species_out = {}
     for name, s in SPECIES.items():
@@ -303,7 +303,7 @@ def main():
         species_out[name] = entry
 
     with open(os.path.join(OUT, "trees.json"), "w") as f:
-        json.dump(trees, f, separators=(",", ":"))  # Berkeley offline fallback
+        json.dump(trees, f, separators=(",", ":"))  # offline fallback seed
     with open(os.path.join(OUT, "species.json"), "w") as f:
         json.dump(species_out, f, indent=0)
 

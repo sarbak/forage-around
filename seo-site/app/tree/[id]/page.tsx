@@ -18,7 +18,6 @@ import {
   species as allSpecies,
 } from "@/lib/data";
 import { getWikipedia } from "@/lib/wikipedia";
-import { reverseGeocodeCity } from "@/lib/geocode";
 import { submissionsForTree } from "@/lib/submissions";
 import { Credits, APP_URL } from "../../components";
 import { SubmissionList } from "../../Submissions";
@@ -28,13 +27,11 @@ import { TreePageViewed, WalkHereLink, MoreAboutLink } from "../../analytics";
 export const revalidate = 3600;
 export const dynamicParams = true;
 
-// Resolve a location from FF API; fall back to the bundled Berkeley seed.
+// Resolve a location from FF API; fall back to the bundled seed.
 async function resolve(id: string): Promise<{
   lat: number;
   lng: number;
   name: string | null;
-  city: string | null;
-  desc: string | null;
   author: string | null;
 } | null> {
   const ff: FFLocation | null = await getFFLocation(id);
@@ -43,26 +40,19 @@ async function resolve(id: string): Promise<{
   if (ff) {
     let name = nameFromTypeIds(ff.type_ids || []);
     if (!name && seed) name = seed.type;
-    let city = ff.city || null;
-    if (!city) city = await reverseGeocodeCity(ff.lat, ff.lng);
     return {
       lat: ff.lat,
       lng: ff.lng,
       name,
-      city,
-      desc: ff.description || seed?.desc || null,
       author: ff.author || null,
     };
   }
 
   if (seed) {
-    const city = await reverseGeocodeCity(seed.lat, seed.lng);
     return {
       lat: seed.lat,
       lng: seed.lng,
       name: seed.type,
-      city,
-      desc: seed.desc || null,
       author: null,
     };
   }
@@ -71,7 +61,7 @@ async function resolve(id: string): Promise<{
 }
 
 export async function generateStaticParams() {
-  // Seed the Berkeley fallback ids at build; any other id renders on demand (ISR).
+  // Seed the fallback ids at build; any other id renders on demand (ISR).
   const { trees } = await import("@/lib/data");
   return trees.slice(0, 60).map((t) => ({ id: String(t.id) }));
 }
@@ -85,17 +75,10 @@ export async function generateMetadata({
   const r = await resolve(id);
   if (!r) return { title: "Tree not found" };
   const speciesName = r.name || "Fruit tree";
-  const place = r.city || `${r.lat.toFixed(4)}, ${r.lng.toFixed(4)}`;
-  const title = r.city
-    ? `${speciesName} tree in ${place}`
-    : `${speciesName} tree near ${place}`;
+  const title = `${speciesName} tree`;
   return {
     title,
-    description:
-      `A ${speciesName.toLowerCase()} mapped at ${r.lat.toFixed(5)}, ${r.lng.toFixed(
-        5
-      )}` +
-      `${r.city ? ` in ${r.city}` : ""}. ${r.desc || "From the Falling Fruit foraging map."}`,
+    description: `A ${speciesName.toLowerCase()} from the Falling Fruit foraging map.`,
   };
 }
 
@@ -111,10 +94,7 @@ export default async function TreePage({
   const speciesName = r.name;
   const s = speciesName ? getSpecies(speciesName) : null;
   const emoji = emojiForName(speciesName);
-  const place = r.city || `${r.lat.toFixed(4)}, ${r.lng.toFixed(4)}`;
-  const title = r.city
-    ? `${speciesName || "Fruit tree"} tree in ${place}`
-    : `${speciesName || "Fruit tree"} tree near ${place}`;
+  const title = `${speciesName || "Fruit tree"} tree`;
 
   const wikiTitle = speciesName ? wikiTitleForName(speciesName) : null;
   const curated = speciesName ? imagesForName(speciesName) : [];
@@ -132,20 +112,11 @@ export default async function TreePage({
     "@context": "https://schema.org",
     "@type": "Place",
     name: title,
-    description: r.desc || undefined,
     geo: {
       "@type": "GeoCoordinates",
       latitude: r.lat,
       longitude: r.lng,
     },
-    ...(r.city
-      ? {
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: r.city,
-          },
-        }
-      : {}),
     url: `/tree/${id}`,
   };
 
@@ -155,7 +126,7 @@ export default async function TreePage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <TreePageViewed id={id} species={speciesName} city={r.city} />
+      <TreePageViewed id={id} species={speciesName} city={null} />
       <Link className="back-link" href="/">
         ← Forage Around
       </Link>
@@ -163,7 +134,7 @@ export default async function TreePage({
       <span className="emoji-big">{emoji}</span>
       <p className="kicker">Foraging spot</p>
       <h1 className="title">{title}</h1>
-      {r.desc ? <p className="lead">{r.desc}</p> : null}
+      {s?.note ? <p className="lead">{s.note}</p> : null}
 
       <p style={{ margin: "14px 0" }}>
         <span className="coords">

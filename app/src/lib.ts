@@ -197,7 +197,7 @@ function makeFind(
 type RawLoc = { id: number; lat: number; lng: number; type_ids?: number[]; distance?: number };
 
 // Fetch forageable plants near a point from the live Falling Fruit API (works
-// anywhere, CORS-open). Falls back to the bundled Berkeley dataset on failure.
+// anywhere, CORS-open). Falls back to the bundled seed dataset on failure.
 export async function fetchNearby(
   lat: number,
   lng: number,
@@ -232,7 +232,7 @@ export async function fetchNearby(
   return finds;
 }
 
-// Offline / API-down fallback: the bundled Berkeley dataset.
+// Offline / API-down fallback: the bundled seed dataset.
 function fallbackNearby(lat: number, lng: number, month: number): Find[] {
   const finds: Find[] = [];
   for (const t of TREES) {
@@ -306,11 +306,11 @@ export function inSeasonNames(month: number, limit = 4): string[] {
 export type GeoPoint = { lat: number; lng: number; label: string };
 
 // Geocode a typed address via OpenStreetMap Nominatim (free, no API key, works
-// on web + native). Biased toward Berkeley since that's the home turf.
+// on web + native). Biased toward the data region via the viewbox below.
 export async function geocode(query: string): Promise<GeoPoint | null> {
   const q = query.trim();
   if (!q) return null;
-  const enriched = q.includes(",") ? q : `${q}, Berkeley, CA`;
+  const enriched = q;
   const params = [
     `q=${encodeURIComponent(enriched)}`,
     "format=json",

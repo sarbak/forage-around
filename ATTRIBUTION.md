@@ -12,8 +12,8 @@ the urban harvest, accessed via their public API.
 - **Modifications:** Forage Around adds curated season windows, edible-part notes,
   ways to eat/use, and preservation ideas, and maps Falling Fruit numeric type IDs
   to names. The underlying location data is unchanged and remains Falling Fruit's.
-- **Original author/source attributions** within the data (e.g. the contributors
-  and imports such as "Forage Berkeley") are preserved per Falling Fruit's terms.
+- **Original author/source attributions** within the data (the contributors
+  and dataset import names) are preserved per Falling Fruit's terms.
 - **Non-commercial:** This project is non-commercial. Commercial use of Falling
   Fruit data requires contacting Falling Fruit directly.
 - **As-is:** Locations are crowd-sourced and provided as-is, with no guarantee of

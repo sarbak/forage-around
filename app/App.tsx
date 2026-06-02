@@ -57,8 +57,8 @@ type SubmitTarget = {
 
 const ffIdOf = (f: Find) => f.id.split("-")[0];
 
-// Live Oak Park, Berkeley — generic fallback when location is unavailable.
-const FALLBACK = { lat: 37.8814, lng: -122.2686, label: "Live Oak Park, Berkeley" };
+// Live Oak Park — generic fallback when location is unavailable.
+const FALLBACK = { lat: 37.8814, lng: -122.2686, label: "Live Oak Park" };
 const TEN_MIN_M = 810; // ~10 minutes at 1.35 m/s
 
 type Loc = { lat: number; lng: number; label: string };
@@ -287,7 +287,7 @@ function Landing({
         <View style={styles.addrRow}>
           <TextInput
             style={styles.addrInput}
-            placeholder="Live Oak Park, Berkeley"
+            placeholder="Enter an address or place"
             placeholderTextColor={C.inkSoft}
             value={addr}
             onChangeText={setAddr}
@@ -995,7 +995,7 @@ function About({ visible, onClose }: { visible: boolean; onClose: () => void }) 
           <Text style={styles.detailName}>Where the data comes from</Text>
 
           <Text style={[styles.aboutPara, { marginTop: 18 }]}>
-            Forage Around is a map of the fruit growing wild and unpicked around Berkeley. None of
+            Forage Around is a map of the fruit growing wild and unpicked near you. None of
             the underlying data is ours, so here is exactly where each piece comes from.
           </Text>
 

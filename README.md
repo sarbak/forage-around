@@ -15,8 +15,8 @@ Live (web): **https://foragearound.com**
 
 ## Data — works anywhere
 - Queries the **live [Falling Fruit](https://fallingfruit.org) API** by location
-  (`/api/0.3/locations?center=lat,lng`), so it works in any city, not just
-  Berkeley. The API is CORS-open and uses the public key from Falling Fruit's own
+  (`/api/0.3/locations?center=lat,lng`), so it works in any city, not just the
+  local area. The API is CORS-open and uses the public key from Falling Fruit's own
   open-source web client. No backend of our own.
 - `types.json` maps Falling Fruit's 4,500+ numeric type IDs to names; live results
   resolve onto our curated species table by exact-then-keyword match (so "Cherry
@@ -25,7 +25,7 @@ Live (web): **https://foragearound.com**
 - Season windows, edible part, and fermentation tips are a curated table in
   `process_data.py` (Falling Fruit's own season fields are sparse), tuned for a
   temperate / Mediterranean climate.
-- The bundled `data_raw.csv` (~500 Berkeley points) is kept only as an offline
+- The bundled `data_raw.csv` (~500 points for one city) is kept only as an offline
   fallback if the API is unreachable.
 - `python3 process_data.py` regenerates `app/assets/data/{trees,species,types}.json`.
 
@@ -42,7 +42,7 @@ All business logic (distance, season, ranking, directions) lives in
 ## Layout
 ```
 forage-app/
-  data_raw.csv          Falling Fruit export (Berkeley)
+  data_raw.csv          Falling Fruit export (one city)
   process_data.py       CSV -> trees.json + species.json (the season/ferment brain)
   NAMING.md             naming history (was "Scrump")
   app/                  the Expo app
