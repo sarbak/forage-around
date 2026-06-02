@@ -167,12 +167,6 @@ export default async function TreePage({
         ) : null}
       </p>
 
-      {r.author ? (
-        <p className="muted" style={{ fontSize: 14 }}>
-          Mapped by {r.author} on Falling Fruit.
-        </p>
-      ) : null}
-
       {photo ? (
         <div style={{ margin: "20px 0" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
