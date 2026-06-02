@@ -3,54 +3,56 @@ import { Credits, APP_URL } from "../components";
 import { AboutPageViewed, ToAppLink } from "../analytics";
 
 export const metadata: Metadata = {
-  title: "About",
+  title: "Where the data comes from",
   description:
-    "Why I built Forage Around — a simple map of the fruit growing wild and unpicked around Berkeley.",
+    "The data behind Forage Around: tree locations from Falling Fruit, plant photos and descriptions from Wikipedia, and maps from OpenStreetMap.",
 };
 
 export default function About() {
   return (
     <>
       <AboutPageViewed />
-      <p className="kicker">About</p>
-      <h1 className="title">Why I built this</h1>
+      <p className="kicker">About the data</p>
+      <h1 className="title">Where the data comes from</h1>
 
       <p className="lead">
-        I moved to Berkeley about nine months ago and got into fermentation
-        around the same time.
-      </p>
-      <p>
-        Walking around, I kept noticing how much fruit grows wild and unpicked
-        right on the sidewalk: loquats, plums, figs, lemons, mostly going to the
-        birds or the pavement. I wanted a simple way to see what was ripe near
-        me and what I could make with it, so I built this for myself on top of
-        Falling Fruit&apos;s lovely open map.
-      </p>
-      <p>
-        I&apos;m sharing it in case your neighborhood is as quietly generous as
-        mine. Take only what would otherwise fall, knock before reaching over a
-        fence, and always leave plenty for the birds and the next person.
+        Forage Around is a map of the fruit growing wild and unpicked around
+        Berkeley. None of the underlying data is ours, so here is exactly where
+        each piece comes from.
       </p>
 
-      <div className="author">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        {/* This image lives only in the seo-site /public. When this page is
-            proxied through foragearound.com, a root-relative path would 404, so
-            load it from the seo origin directly. */}
-        <img
-          src="https://forage-around-seo.vercel.app/emre.jpg"
-          alt="Emre Sarbak"
-          width={900}
-          height={1200}
-        />
-        <p style={{ margin: 0 }}>
-          Made by{" "}
-          <a href="https://emresarbak.com" rel="noopener">
-            Emre Sarbak
-          </a>
-          , in Berkeley
-        </p>
-      </div>
+      <p>
+        The map of trees comes from{" "}
+        <a href="https://fallingfruit.org" rel="noopener">
+          Falling Fruit
+        </a>
+        , a nonprofit, volunteer-run map of the urban harvest, used here under
+        the{" "}
+        <a
+          href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+          rel="license noopener"
+        >
+          CC BY-NC-SA 4.0 license
+        </a>
+        . The season windows, the ways to use each plant, and the preservation
+        ideas are added on top; the locations themselves are theirs and are
+        crowd-sourced, so treat them as a starting point, not gospel.
+      </p>
+      <p>
+        Plant photos and descriptions come from{" "}
+        <a href="https://en.wikipedia.org" rel="noopener">
+          Wikipedia
+        </a>{" "}
+        / Wikimedia Commons. The map uses{" "}
+        <a href="https://www.openstreetmap.org/copyright" rel="noopener">
+          OpenStreetMap
+        </a>
+        . Forage Around is free and non-commercial, and it&apos;s{" "}
+        <a href="https://github.com/sarbak/forage-around" rel="noopener">
+          open-source on GitHub
+        </a>
+        .
+      </p>
 
       <p style={{ margin: "22px 0" }}>
         <ToAppLink className="btn" href={APP_URL} from="about">

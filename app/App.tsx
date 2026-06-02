@@ -992,37 +992,20 @@ function About({ visible, onClose }: { visible: boolean; onClose: () => void }) 
             </Pressable>
           </View>
 
-          <Image source={require("./assets/emre.jpg")} style={styles.aboutPhoto} resizeMode="contain" />
-          <Text style={styles.detailName}>Why this exists</Text>
-          <Text style={styles.aboutByline}>
-            Made by <Link label="Emre Sarbak" url="https://emresarbak.com" />, in Berkeley.
-          </Text>
+          <Text style={styles.detailName}>Where the data comes from</Text>
 
           <Text style={[styles.aboutPara, { marginTop: 18 }]}>
-            I moved to Berkeley about nine months ago and got into fermentation around the same
-            time. Walking around, I kept noticing how much fruit grows wild and unpicked right on
-            the sidewalk: loquats, plums, figs, lemons, mostly going to the birds or the pavement.
-          </Text>
-          <Text style={styles.aboutPara}>
-            I wanted a simple way to see what was ripe near me and what I could make with it, so I
-            built this for myself on top of Falling Fruit's lovely open map. I'm sharing it in case
-            your neighborhood is as quietly generous as mine.
-          </Text>
-          <Text style={styles.aboutPara}>
-            Take only what would otherwise fall, knock before reaching over a fence, and always
-            leave plenty for the birds and the next person.
+            Forage Around is a map of the fruit growing wild and unpicked around Berkeley. None of
+            the underlying data is ours, so here is exactly where each piece comes from.
           </Text>
 
-          <Text style={[styles.sectionTitle, { color: C.inkSoft, marginTop: 28 }]}>
-            WHERE THE DATA COMES FROM
-          </Text>
           <Text style={styles.aboutPara}>
             The map of trees comes from <Link label="Falling Fruit" url="https://fallingfruit.org" />,
             a nonprofit, volunteer-run map of the urban harvest. Their locations are used here under
             the <Link label="CC BY-NC-SA license" url="https://creativecommons.org/licenses/by-nc-sa/4.0/" />.
-            I've added the season windows, the ways to use each plant, and the preservation ideas;
-            the locations are theirs and are crowd-sourced, so treat them as a starting point, not
-            gospel.
+            The season windows, the ways to use each plant, and the preservation ideas are added on
+            top; the locations are theirs and are crowd-sourced, so treat them as a starting point,
+            not gospel.
           </Text>
           <Text style={styles.aboutPara}>
             Plant photos and descriptions come from{" "}
@@ -1121,7 +1104,6 @@ const styles = StyleSheet.create({
   footLink: { marginTop: 28, alignSelf: "center" },
   footnote: { fontSize: 13, color: C.forest, textAlign: "center", fontWeight: "600" },
   footCredit: { marginTop: 8, fontSize: 11.5, color: C.inkSoft, textAlign: "center" },
-  aboutPhoto: { width: "100%", height: 420, borderRadius: 18, backgroundColor: C.paperDeep, marginBottom: 6 },
   aboutByline: { fontSize: 14, color: C.inkSoft, marginTop: 4, fontStyle: "italic" },
   aboutPara: { fontSize: 16, lineHeight: 24, color: C.ink, marginTop: 14 },
   link: { color: C.forest, fontWeight: "700", textDecorationLine: "underline" },
