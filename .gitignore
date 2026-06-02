@@ -16,3 +16,5 @@ data_raw.csv
 
 app/.env
 .env.local
+# local analytics secrets (PostHog query key) — never commit
+.analytics.env
