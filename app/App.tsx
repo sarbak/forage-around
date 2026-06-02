@@ -344,7 +344,7 @@ function Landing({
 
       <Pressable onPress={onAbout} accessibilityRole="button" style={styles.footLink}>
         <Text style={styles.footnote}>
-          The story behind this, and credits ›
+          Where the data comes from, and credits ›
         </Text>
       </Pressable>
       <Text style={styles.footCredit}>
