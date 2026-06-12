@@ -7,7 +7,7 @@ export const C = {
   line: "#DFD6C2", // hairline borders
   forest: "#2E5E3A", // brand green
   forestSoft: "#E3ECE0", // green tint chip bg
-  ripe: "#D9762B", // loquat / ripe-fruit orange (accent)
+  ripe: "#A6531B", // loquat / ripe-fruit orange (accent)
   ripeSoft: "#F6E3CF",
   berry: "#7A2E4A", // out-of-season / deep berry
   white: "#FFFDF8",
