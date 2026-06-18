@@ -108,7 +108,7 @@ export function ToAppLink({
   rel,
 }: {
   href: string;
-  from: "tree" | "species" | "about" | "home";
+  from: "tree" | "species" | "about" | "home" | "locations";
   className?: string;
   children: React.ReactNode;
   rel?: string;

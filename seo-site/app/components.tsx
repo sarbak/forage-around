@@ -9,9 +9,14 @@ export function SiteHeader() {
         <Link href="/" className="brand">
           <span>🍐</span> Forage Around
         </Link>
-        <a className="header-cta" href={APP_URL}>
-          Open the map
-        </a>
+        <div className="header-actions">
+          <Link className="header-link" href="/locations">
+            Find nearby
+          </Link>
+          <a className="header-cta" href={APP_URL}>
+            Open the map
+          </a>
+        </div>
       </div>
     </header>
   );
@@ -22,6 +27,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="wrap">
         Forage Around — a quiet map of the urban harvest.{" "}
+        <Link href="/locations">Find nearby harvests</Link> ·{" "}
         <a href={APP_URL}>Open the live map</a> ·{" "}
         <Link href="/about">Where the data comes from</Link>
       </div>
