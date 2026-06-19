@@ -327,7 +327,7 @@ function Landing({
                     source={{ uri: r.image }}
                     style={styles.ripeImg}
                     resizeMode="cover"
-                    alt={r.name}
+                    accessibilityLabel={r.name}
                   />
                 ) : (
                   <View style={[styles.ripeImg, styles.ripeEmoji]}>
@@ -528,7 +528,7 @@ function PhotoWall({ refreshKey, onSubmit }: { refreshKey: number; onSubmit: () 
                   source={{ uri: s.photo_url }}
                   style={styles.wallImg}
                   resizeMode="cover"
-                  alt={s.species || "Forager-submitted plant photo"}
+                  accessibilityLabel={s.species || "Forager-submitted plant photo"}
                 />
               ) : (
                 <View style={[styles.wallImg, styles.wallImgEmpty]}>
@@ -711,7 +711,7 @@ function SubmitModal({
                     source={{ uri: photo.uri }}
                     style={styles.photoPreview}
                     resizeMode="cover"
-                    alt="Selected submission photo"
+                    accessibilityLabel="Selected submission photo"
                   />
                 ) : (
                   <Text style={styles.photoPickText}>📷 Add a photo</Text>
@@ -827,7 +827,7 @@ function Card({ find, onSelect }: { find: Find; onSelect: (f: Find) => void }) {
           source={{ uri: find.images[0] }}
           style={styles.thumb}
           resizeMode="cover"
-          alt={find.type}
+          accessibilityLabel={find.type}
         />
       ) : (
         <View style={[styles.thumb, styles.thumbEmoji]}>
@@ -918,7 +918,7 @@ function Detail({
                   source={{ uri }}
                   style={[styles.heroImg, { width: heroW }]}
                   resizeMode="cover"
-                  alt={find.type}
+                  accessibilityLabel={find.type}
                 />
               ))}
             </ScrollView>
