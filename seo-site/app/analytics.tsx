@@ -99,6 +99,16 @@ export function MoreAboutLink({
   );
 }
 
+type ToAppSource =
+  | "tree"
+  | "species"
+  | "about"
+  | "home"
+  | "locations"
+  | "seasonal_guide"
+  | "nav_header"
+  | "nav_footer";
+
 // Any CTA pointing at the main app (foragearound.com / "Open the map").
 export function ToAppLink({
   href,
@@ -108,7 +118,7 @@ export function ToAppLink({
   rel,
 }: {
   href: string;
-  from: "tree" | "species" | "about" | "home" | "locations";
+  from: ToAppSource;
   className?: string;
   children: React.ReactNode;
   rel?: string;
