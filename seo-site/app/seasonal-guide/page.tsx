@@ -9,6 +9,7 @@ import {
   species,
   type Species,
 } from "@/lib/data";
+import { ToAppLink } from "../analytics";
 import { APP_URL, Credits } from "../components";
 
 export const revalidate = 86400;
@@ -77,9 +78,9 @@ export default function SeasonalGuide() {
       </p>
 
       <p style={{ margin: "22px 0" }}>
-        <a className="btn" href={APP_URL}>
+        <ToAppLink className="btn" href={APP_URL} from="seasonal_guide">
           Open the live map →
-        </a>
+        </ToAppLink>
       </p>
 
       <h2 className="section">Likely ripe in {currentMonthName}</h2>

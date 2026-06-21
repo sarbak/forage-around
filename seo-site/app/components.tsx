@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ToAppLink } from "./analytics";
 
 export const APP_URL = "https://foragearound.com";
 
@@ -9,9 +10,9 @@ export function SiteHeader() {
         <Link href="/" className="brand">
           <span>🍐</span> Forage Around
         </Link>
-        <a className="header-cta" href={APP_URL}>
+        <ToAppLink className="header-cta" href={APP_URL} from="nav_header">
           Open the map
-        </a>
+        </ToAppLink>
       </div>
     </header>
   );
@@ -22,7 +23,10 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="wrap">
         Forage Around — a quiet map of the urban harvest.{" "}
-        <a href={APP_URL}>Open the live map</a> ·{" "}
+        <ToAppLink href={APP_URL} from="nav_footer">
+          Open the live map
+        </ToAppLink>{" "}
+        ·{" "}
         <Link href="/about">Where the data comes from</Link>
       </div>
     </footer>
