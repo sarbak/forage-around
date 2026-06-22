@@ -296,6 +296,7 @@ function Landing({
             returnKeyType="search"
             autoCapitalize="words"
             autoCorrect={false}
+            accessibilityLabel="Address or place"
           />
           <Pressable
             style={({ pressed }) => [styles.addrGo, pressed && styles.addrGoPressed]}
@@ -322,7 +323,12 @@ function Landing({
             {ripeNow.map((r) => (
               <View key={r.name} style={styles.ripeTile}>
                 {r.image ? (
-                  <Image source={{ uri: r.image }} style={styles.ripeImg} />
+                  <Image
+                    source={{ uri: r.image }}
+                    style={styles.ripeImg}
+                    resizeMode="cover"
+                    accessibilityLabel={r.name}
+                  />
                 ) : (
                   <View style={[styles.ripeImg, styles.ripeEmoji]}>
                     <Text style={{ fontSize: 30 }}>{r.emoji}</Text>
@@ -518,7 +524,12 @@ function PhotoWall({ refreshKey, onSubmit }: { refreshKey: number; onSubmit: () 
           {items.map((s) => (
             <View key={s.id} style={styles.wallTile}>
               {s.photo_url ? (
-                <Image source={{ uri: s.photo_url }} style={styles.wallImg} />
+                <Image
+                  source={{ uri: s.photo_url }}
+                  style={styles.wallImg}
+                  resizeMode="cover"
+                  accessibilityLabel={s.species || "Forager-submitted plant photo"}
+                />
               ) : (
                 <View style={[styles.wallImg, styles.wallImgEmpty]}>
                   <Text style={{ fontSize: 26 }}>🧺</Text>
@@ -696,7 +707,12 @@ function SubmitModal({
 
               <Pressable style={styles.photoPick} onPress={pick} accessibilityRole="button">
                 {photo ? (
-                  <Image source={{ uri: photo.uri }} style={styles.photoPreview} resizeMode="cover" />
+                  <Image
+                    source={{ uri: photo.uri }}
+                    style={styles.photoPreview}
+                    resizeMode="cover"
+                    accessibilityLabel="Selected submission photo"
+                  />
                 ) : (
                   <Text style={styles.photoPickText}>📷 Add a photo</Text>
                 )}
@@ -708,6 +724,7 @@ function SubmitModal({
                 placeholderTextColor={C.inkSoft}
                 value={plan}
                 onChangeText={setPlan}
+                accessibilityLabel="What you're planning to make"
               />
               <TextInput
                 style={[styles.field, styles.fieldMulti]}
@@ -716,6 +733,7 @@ function SubmitModal({
                 value={note}
                 onChangeText={setNote}
                 multiline
+                accessibilityLabel="Notes about the find"
               />
               <TextInput
                 style={styles.field}
@@ -724,6 +742,7 @@ function SubmitModal({
                 value={name}
                 onChangeText={setName}
                 autoCapitalize="words"
+                accessibilityLabel="Your name"
               />
 
               {isNewTree && (
@@ -804,7 +823,12 @@ function Card({ find, onSelect }: { find: Find; onSelect: (f: Find) => void }) {
       accessibilityLabel={`${find.type}, ${fmtDist(find.distM)} away. See how to use it.`}
     >
       {find.images[0] ? (
-        <Image source={{ uri: find.images[0] }} style={styles.thumb} />
+        <Image
+          source={{ uri: find.images[0] }}
+          style={styles.thumb}
+          resizeMode="cover"
+          accessibilityLabel={find.type}
+        />
       ) : (
         <View style={[styles.thumb, styles.thumbEmoji]}>
           <Text style={{ fontSize: 26 }}>{species.emoji}</Text>
@@ -889,7 +913,13 @@ function Detail({
               contentContainerStyle={{ gap: 10 }}
             >
               {heroImages.map((uri) => (
-                <Image key={uri} source={{ uri }} style={[styles.heroImg, { width: heroW }]} />
+                <Image
+                  key={uri}
+                  source={{ uri }}
+                  style={[styles.heroImg, { width: heroW }]}
+                  resizeMode="cover"
+                  accessibilityLabel={find.type}
+                />
               ))}
             </ScrollView>
           ) : (
@@ -1088,7 +1118,7 @@ const styles = StyleSheet.create({
     color: C.ink,
   },
   addrGo: { backgroundColor: C.ripe, borderRadius: 14, paddingHorizontal: 22, alignItems: "center", justifyContent: "center" },
-  addrGoPressed: { backgroundColor: "#BB601F" },
+  addrGoPressed: { backgroundColor: "#8D3F10" },
   addrGoText: { color: C.white, fontSize: 16, fontWeight: "700", fontFamily: F.display },
   geoError: { color: C.berry, fontSize: 13, marginTop: 10, lineHeight: 19 },
 
