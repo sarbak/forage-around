@@ -11,14 +11,12 @@ export default function Home() {
   return (
     <>
       <SeoHomeViewed />
-      <p className="kicker">A quiet map of the urban harvest</p>
-      <h1 className="title">
-        See what fruit is ripe near you — and what to make with it.
-      </h1>
+      <p className="kicker">Urban foraging map</p>
+      <h1 className="title">Find fruit growing near you</h1>
       <p className="lead">
-        So much fruit grows wild and unpicked right on the sidewalk: loquats,
-        plums, figs, lemons. Forage Around is a simple map of what&apos;s out
-        there, built on{" "}
+        Open the live map to see nearby fruit, herbs, and greens that are wild,
+        unpicked, and in season. Forage Around adds plant guides and
+        preservation ideas on top of{" "}
         <a href="https://fallingfruit.org" rel="noopener">
           Falling Fruit&apos;s
         </a>{" "}
@@ -27,14 +25,18 @@ export default function Home() {
 
       <p style={{ margin: "22px 0" }}>
         <ToAppLink className="btn" href={APP_URL} from="home">
-          Open the live map →
+          Open the map near me →
         </ToAppLink>{" "}
         <Link className="btn-outline" href="/locations">
           Find nearby harvests
         </Link>{" "}
         <Link className="btn-outline" href="/about">
-          About this project
+          Where the data comes from
         </Link>
+      </p>
+      <p className="muted">
+        Locations are crowd-sourced starting points. Confirm the plant and
+        picking rules before harvesting.
       </p>
 
       <h2 className="section">Fruits &amp; plants to forage</h2>
