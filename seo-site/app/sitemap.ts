@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: `${SITE}/`, lastModified: now, priority: 1 },
+    { url: `${SITE}/locations`, lastModified: now, priority: 0.9 },
     { url: `${SITE}/about`, lastModified: now, priority: 0.8 },
   ];
 

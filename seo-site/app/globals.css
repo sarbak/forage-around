@@ -72,6 +72,20 @@ a:hover {
 .brand:hover {
   color: var(--ink);
 }
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.header-link {
+  font-size: 14px;
+  color: var(--forest);
+  white-space: nowrap;
+  text-decoration: none;
+}
+.header-link:hover {
+  color: var(--ripe);
+}
 .header-cta {
   font-size: 14px;
   background: var(--forest);
@@ -250,6 +264,10 @@ ul.clean li {
 .species-grid a:hover {
   border-color: var(--forest);
   color: var(--ink);
+}
+
+small {
+  font-size: 13px;
 }
 
 .sub {

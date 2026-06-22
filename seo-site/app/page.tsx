@@ -29,6 +29,9 @@ export default function Home() {
         <ToAppLink className="btn" href={APP_URL} from="home">
           Open the live map →
         </ToAppLink>{" "}
+        <Link className="btn-outline" href="/locations">
+          Find nearby harvests
+        </Link>{" "}
         <Link className="btn-outline" href="/about">
           About this project
         </Link>
