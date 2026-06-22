@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE}/`, lastModified: now, priority: 1 },
     { url: `${SITE}/locations`, lastModified: now, priority: 0.9 },
     { url: `${SITE}/about`, lastModified: now, priority: 0.8 },
+    { url: `${SITE}/seasonal-guide`, lastModified: now, priority: 0.85 },
   ];
 
   const speciesPages: MetadataRoute.Sitemap = allSpeciesNames()
