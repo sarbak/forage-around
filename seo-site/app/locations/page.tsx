@@ -9,7 +9,7 @@ import {
   trees,
 } from "@/lib/data";
 import { Credits, APP_URL } from "../components";
-import { ToAppLink } from "../analytics";
+import { LocationsPageViewed, ToAppLink } from "../analytics";
 
 export const metadata: Metadata = {
   title: "Find fruit and edible plants near you",
@@ -40,6 +40,7 @@ const edibleSpeciesCount = allSpeciesNames().filter(
 export default function LocationsPage() {
   return (
     <>
+      <LocationsPageViewed />
       <p className="kicker">Nearby harvests</p>
       <h1 className="title">Find fruit and edible plants near you</h1>
       <p className="lead">

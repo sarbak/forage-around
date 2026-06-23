@@ -9,7 +9,7 @@ import {
   species,
   type Species,
 } from "@/lib/data";
-import { ToAppLink } from "../analytics";
+import { SeasonalGuidePageViewed, ToAppLink } from "../analytics";
 import { APP_URL, Credits } from "../components";
 
 export const revalidate = 86400;
@@ -69,6 +69,7 @@ export default function SeasonalGuide() {
 
   return (
     <>
+      <SeasonalGuidePageViewed />
       <p className="kicker">Seasonal foraging guide</p>
       <h1 className="title">What fruit is ripe now?</h1>
       <p className="lead">
