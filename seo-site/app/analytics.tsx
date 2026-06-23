@@ -46,6 +46,20 @@ export function SeoHomeViewed() {
   return null;
 }
 
+export function LocationsPageViewed() {
+  useEffect(() => {
+    track("locations_page_viewed");
+  }, []);
+  return null;
+}
+
+export function SeasonalGuidePageViewed() {
+  useEffect(() => {
+    track("seasonal_guide_page_viewed");
+  }, []);
+  return null;
+}
+
 // ---- CTA / link click trackers ----
 
 // "Walk here" link on a tree page → Google Maps directions.
