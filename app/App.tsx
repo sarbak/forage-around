@@ -49,6 +49,8 @@ import {
 
 type SubmitTarget = {
   kind: "observation" | "new_tree";
+  source: "walk_here" | "wall";
+  map_source?: string | null;
   ff_location_id?: string | null;
   species?: string | null;
   lat?: number | null;
@@ -56,6 +58,52 @@ type SubmitTarget = {
 } | null;
 
 const ffIdOf = (f: Find) => f.id.split("-")[0];
+
+function cleanSource(value: string | null): string | null {
+  if (!value) return null;
+  const v = value.trim().toLowerCase().replace(/-/g, "_");
+  if (!/^[a-z0-9_]{1,40}$/.test(v)) return null;
+  return v;
+}
+
+function inferSourceFromPath(pathname: string): string | null {
+  if (pathname === "/" || pathname === "") return "home";
+  if (pathname.startsWith("/locations")) return "locations";
+  if (pathname.startsWith("/seasonal-guide")) return "seasonal_guide";
+  if (pathname.startsWith("/about")) return "about";
+  if (pathname.startsWith("/species/")) return "species";
+  if (pathname.startsWith("/tree/")) return "tree";
+  return null;
+}
+
+function readMapSource(): string | null {
+  if (Platform.OS !== "web" || typeof window === "undefined") return null;
+  try {
+    const url = new URL(window.location.href);
+    const direct = cleanSource(
+      url.searchParams.get("map_source") ||
+        url.searchParams.get("source") ||
+        url.searchParams.get("from")
+    );
+    if (direct) {
+      window.sessionStorage?.setItem("forage_map_source", direct);
+      return direct;
+    }
+
+    const stored = cleanSource(window.sessionStorage?.getItem("forage_map_source") || null);
+    if (stored) return stored;
+
+    if (document.referrer) {
+      const ref = new URL(document.referrer);
+      if (ref.host === window.location.host) return inferSourceFromPath(ref.pathname);
+    }
+  } catch {}
+  return null;
+}
+
+function withMapSource(source: string | null, props: Record<string, unknown>) {
+  return source ? { ...props, map_source: source } : props;
+}
 
 // Live Oak Park — generic fallback when location is unavailable.
 const FALLBACK = { lat: 37.8814, lng: -122.2686, label: "Live Oak Park" };
@@ -83,6 +131,7 @@ export default function App() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [submitTarget, setSubmitTarget] = useState<SubmitTarget>(null);
   const [wallKey, setWallKey] = useState(0);
+  const [mapSource] = useState(() => readMapSource());
 
   const teaser = useMemo(() => inSeasonNames(MONTH, 4), []);
   const ripeNow = useMemo(() => inSeasonWithImages(MONTH, 8), []);
@@ -99,12 +148,15 @@ export default function App() {
 
   async function go(point: GeoPoint, opts: { method: string; denied?: boolean }) {
     const f = await fetchNearby(point.lat, point.lng, MONTH);
-    track("location_resolved", {
-      method: opts.method,
-      denied: !!opts.denied,
-      ripe_count: f.filter((x) => x.inSeason).length,
-      edible_count: f.length,
-    });
+    track(
+      "location_resolved",
+      withMapSource(mapSource, {
+        method: opts.method,
+        denied: !!opts.denied,
+        ripe_count: f.filter((x) => x.inSeason).length,
+        edible_count: f.length,
+      })
+    );
     setDenied(!!opts.denied);
     setLoc(point);
     setFinds(f);
@@ -163,12 +215,16 @@ export default function App() {
   }
 
   function handleSelect(f: Find) {
-    track("find_opened", {
-      species: f.type,
-      distance_m: Math.round(f.distM),
-      in_season: f.inSeason,
-      season_known: f.seasonKnown,
-    });
+    track(
+      "find_opened",
+      withMapSource(mapSource, {
+        species: f.type,
+        ff_location_id: ffIdOf(f),
+        distance_m: Math.round(f.distM),
+        in_season: f.inSeason,
+        season_known: f.seasonKnown,
+      })
+    );
     setSelected(f);
   }
 
@@ -196,8 +252,17 @@ export default function App() {
           onSelect={handleSelect}
           wallKey={wallKey}
           onSubmitOwn={() => {
-            track("submit_opened", { kind: "new_tree", source: "wall" });
-            setSubmitTarget({ kind: "new_tree", lat: loc.lat, lng: loc.lng });
+            track(
+              "submit_opened",
+              withMapSource(mapSource, { kind: "new_tree", source: "wall" })
+            );
+            setSubmitTarget({
+              kind: "new_tree",
+              source: "wall",
+              map_source: mapSource,
+              lat: loc.lat,
+              lng: loc.lng,
+            });
           }}
         />
       ) : (
@@ -216,12 +281,23 @@ export default function App() {
       )}
       <Detail
         find={selected}
+        mapSource={mapSource}
         onClose={() => setSelected(null)}
         onWalk={(f) => {
-          track("submit_opened", { kind: "observation", source: "walk_here", species: f.type });
+          track(
+            "submit_opened",
+            withMapSource(mapSource, {
+              kind: "observation",
+              source: "walk_here",
+              species: f.type,
+              ff_location_id: ffIdOf(f),
+            })
+          );
           setSelected(null);
           setSubmitTarget({
             kind: "observation",
+            source: "walk_here",
+            map_source: mapSource,
             ff_location_id: ffIdOf(f),
             species: f.type,
             lat: f.lat,
@@ -615,7 +691,15 @@ function SubmitModal({
   }
 
   async function send() {
-    track("submit_submitted", { kind: t.kind, has_photo: !!photo, contribute_to_ff: isNewTree && contributeFF });
+    const submissionContext = withMapSource(t.map_source ?? null, {
+      kind: t.kind,
+      source: t.source,
+      species: t.species ?? null,
+      ff_location_id: t.ff_location_id ?? null,
+      has_photo: !!photo,
+      contribute_to_ff: isNewTree && contributeFF,
+    });
+    track("submit_submitted", submissionContext);
     setBusy(true);
     setErr(null);
     try {
@@ -642,7 +726,7 @@ function SubmitModal({
         contribute_to_ff: isNewTree && contributeFF,
       });
       if (ok) {
-        track("submit_success", { kind: t.kind, has_photo: !!photo });
+        track("submit_success", submissionContext);
         setDone(true);
         onDone();
       } else {
@@ -861,10 +945,12 @@ function Card({ find, onSelect }: { find: Find; onSelect: (f: Find) => void }) {
 
 function Detail({
   find,
+  mapSource,
   onClose,
   onWalk,
 }: {
   find: Find | null;
+  mapSource: string | null;
   onClose: () => void;
   onWalk: (f: Find) => void;
 }) {
@@ -889,7 +975,13 @@ function Detail({
   // Curated photos first; otherwise the photo pulled live from Wikipedia.
   const heroImages = find.images.length ? find.images : info.image ? [info.image] : [];
   const open = () => {
-    track("walk_here_clicked", { species: find.type, ff_location_id: find.id.split("-")[0] });
+    track(
+      "walk_here_clicked",
+      withMapSource(mapSource, {
+        species: find.type,
+        ff_location_id: find.id.split("-")[0],
+      })
+    );
     Linking.openURL(directionsUrl(find.lat, find.lng, find.type));
     onWalk(find); // after sending them walking, invite them to share how it goes
   };

@@ -109,6 +109,18 @@ type ToAppSource =
   | "nav_header"
   | "nav_footer";
 
+function hrefWithMapSource(href: string, from: ToAppSource) {
+  const isAbsolute = /^https?:\/\//i.test(href);
+  try {
+    const url = new URL(href, "https://foragearound.com");
+    url.searchParams.set("map_source", from);
+    return isAbsolute ? url.toString() : `${url.pathname}${url.search}${url.hash}`;
+  } catch {
+    const join = href.includes("?") ? "&" : "?";
+    return `${href}${join}map_source=${encodeURIComponent(from)}`;
+  }
+}
+
 // Any CTA pointing at the main app (foragearound.com / "Open the map").
 export function ToAppLink({
   href,
@@ -126,7 +138,7 @@ export function ToAppLink({
   return (
     <a
       className={className}
-      href={href}
+      href={hrefWithMapSource(href, from)}
       rel={rel}
       onClick={() => track("to_app_clicked", { from })}
     >
