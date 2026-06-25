@@ -23,11 +23,11 @@ const SEO_ORIGIN = "https://forage-around-seo.vercel.app";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Forage Around — a quiet map of the urban harvest",
+    default: "Forage Around | Free urban foraging map",
     template: "%s · Forage Around",
   },
   description:
-    "See what fruit is likely in season near you and what you can make with it. A simple foraging map built on Falling Fruit's open data.",
+    "Find fruit, herbs, and greens likely in season near you. Free open-source urban foraging map with Falling Fruit source notes and permission reminders.",
   icons: {
     icon: `${SEO_ORIGIN}/favicon.png`,
     apple: `${SEO_ORIGIN}/apple-touch-icon.png`,
@@ -35,9 +35,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Forage Around",
-    title: "Forage Around — a quiet map of the urban harvest",
+    title: "Forage Around | Free urban foraging map",
     description:
-      "See what fruit is likely in season near you and what you can make with it.",
+      "Find fruit, herbs, and greens likely in season near you, with source notes and permission reminders.",
   },
 };
 
