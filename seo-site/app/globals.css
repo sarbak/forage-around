@@ -135,6 +135,34 @@ h2.section {
   color: var(--ink-soft);
 }
 
+.faq-block {
+  margin: 34px 0 10px;
+}
+
+.faq-list {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.faq-list > div {
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+
+.faq-list > div:first-child {
+  border-top: 0;
+}
+
+.faq-list h3 {
+  font-size: 16px;
+  margin: 0 0 4px;
+}
+
+.faq-list p {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
 .emoji-big {
   font-size: 42px;
   line-height: 1;

@@ -39,6 +39,45 @@ export default function Home() {
         picking rules before harvesting.
       </p>
 
+      <section className="faq-block" aria-labelledby="homepage-faq-heading">
+        <h2 id="homepage-faq-heading" className="section">
+          Before you pick
+        </h2>
+        <div className="faq-list">
+          <div>
+            <h3>Is Forage Around free?</h3>
+            <p>
+              Yes. It is a free, open-source map built to make public food
+              data easier to use.
+            </p>
+          </div>
+          <div>
+            <h3>Where do the locations come from?</h3>
+            <p>
+              The map starts with crowd-sourced locations from{" "}
+              <a href="https://fallingfruit.org" rel="noopener">
+                Falling Fruit
+              </a>
+              , then adds season context and plant pages.
+            </p>
+          </div>
+          <div>
+            <h3>Are the locations guaranteed?</h3>
+            <p>
+              No. Treat every marker as a starting point, then confirm the
+              plant, ripeness, and current conditions yourself.
+            </p>
+          </div>
+          <div>
+            <h3>Can I pick from every spot?</h3>
+            <p>
+              Only pick where public access is clear or you have permission.
+              When in doubt, leave it alone.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <h2 className="section">Fruits &amp; plants to forage</h2>
       <p className="muted">
         Each plant has its own page: when it&apos;s ripe, what part to eat, and
