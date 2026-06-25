@@ -18,7 +18,7 @@ function initPostHog() {
     // We capture pageviews manually on route change (below) so the initial
     // automatic one isn't double-counted on client-side navigation.
     capture_pageview: false,
-    capture_pageleave: true,
+    capture_pageleave: false,
     autocapture: true,
   });
   // Expose for the lightweight lib/track.ts helper and for live verification.
