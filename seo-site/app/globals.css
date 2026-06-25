@@ -169,6 +169,17 @@ h2.section {
   font-size: 14px;
   margin: 0 6px 6px 0;
   color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.active-pill {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: var(--white);
+}
+
+.active-pill:hover {
+  color: var(--white);
 }
 
 ul.clean {

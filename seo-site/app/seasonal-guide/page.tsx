@@ -15,9 +15,9 @@ import { APP_URL, Credits } from "../components";
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: "What fruit is ripe now | Forage Around",
+  title: "What can I forage near me right now? | Forage Around",
   description:
-    "A month-by-month guide to fruit, herbs, and greens that may be ripe near you, with links to Forage Around plant guides and the live map.",
+    "See what fruit, herbs, and greens are likely in season this month, then open the Forage Around map to check nearby Falling Fruit locations.",
 };
 
 type SeasonalItem = {
@@ -56,6 +56,20 @@ function SpeciesGrid({ items }: { items: SeasonalItem[] }) {
   );
 }
 
+function MonthLink({
+  month,
+  current,
+}: {
+  month: string;
+  current: boolean;
+}) {
+  return (
+    <a className={current ? "pill active-pill" : "pill"} href={`#${month.toLowerCase()}`}>
+      {month}
+    </a>
+  );
+}
+
 export default function SeasonalGuide() {
   const currentMonth = monthNumber();
   const currentMonthName = MONTHS[currentMonth - 1];
@@ -70,25 +84,38 @@ export default function SeasonalGuide() {
   return (
     <>
       <SeasonalGuidePageViewed />
-      <p className="kicker">Seasonal foraging guide</p>
-      <h1 className="title">What fruit is ripe now?</h1>
+      <p className="kicker">Foraging near me</p>
+      <h1 className="title">What can I forage near me right now?</h1>
       <p className="lead">
-        Start with the plants that are usually in season this month, then open
-        the live map to see what may be growing near you. Seasons vary by
-        weather and neighborhood, so treat this as a useful starting point.
+        Start with what is usually in season in {currentMonthName}, then open
+        the live map to check nearby crowd-sourced locations. Seasons vary by
+        weather, access, and neighborhood, so use this page as a careful
+        starting point, not a guarantee.
       </p>
 
       <p style={{ margin: "22px 0" }}>
         <ToAppLink className="btn" href={APP_URL} from="seasonal_guide">
-          Open the live map →
+          Check the live map near me →
         </ToAppLink>
       </p>
+
+      <div className="card">
+        <p style={{ marginTop: 0 }}>
+          The map locations come from Falling Fruit and are crowd-sourced,
+          provided as-is, and used under CC BY-NC-SA. Forage Around adds a
+          curated season window and plant guide on top.
+        </p>
+        <p className="muted" style={{ marginBottom: 0 }}>
+          Before picking, confirm the plant yourself and make sure the spot is
+          public or you have permission.
+        </p>
+      </div>
 
       <h2 className="section">Likely ripe in {currentMonthName}</h2>
       <p className="muted">
         These are the edible plants in the guide with {currentMonthName} in
-        their usual season window. Confirm the plant and picking rules before
-        harvesting.
+        their usual season window. Open the map when you are ready to check
+        which reported locations are actually near you.
       </p>
       <SpeciesGrid items={currentItems} />
 
@@ -103,10 +130,36 @@ export default function SeasonalGuide() {
         </>
       ) : null}
 
+      <h2 className="section">How this answers “foraging near me”</h2>
+      <ul className="clean">
+        <li>Use the month to narrow the plants worth looking for today.</li>
+        <li>Open the map to search your location or use your device location.</li>
+        <li>Open a nearby plant detail to check distance, season, and source.</li>
+        <li>Use walking directions only after confirming access and identity.</li>
+      </ul>
+
+      <p style={{ margin: "22px 0" }}>
+        <ToAppLink className="btn" href={APP_URL} from="seasonal_guide">
+          Find what is near me →
+        </ToAppLink>{" "}
+        <Link className="btn-outline" href="/about">
+          Where the data comes from
+        </Link>
+      </p>
+
       <h2 className="section">Month-by-month guide</h2>
       <p className="muted">
         Use the full calendar when you are planning ahead or checking whether a
         tree is likely early, late, or out of season.
+      </p>
+      <p>
+        {MONTHS.map((month, index) => (
+          <MonthLink
+            key={month}
+            month={month}
+            current={index + 1 === currentMonth}
+          />
+        ))}
       </p>
 
       {MONTHS.map((month, index) => {
@@ -115,7 +168,7 @@ export default function SeasonalGuide() {
         );
 
         return (
-          <section className="card" key={month}>
+          <section className="card" key={month} id={month.toLowerCase()}>
             <h3 style={{ margin: "0 0 4px" }}>{month}</h3>
             <p className="muted" style={{ marginTop: 0 }}>
               {monthItems.length} edible guide
