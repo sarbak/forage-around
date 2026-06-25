@@ -80,7 +80,7 @@ export default function SeasonalGuide() {
 
       <p style={{ margin: "22px 0" }}>
         <ToAppLink className="btn" href={APP_URL} from="seasonal_guide">
-          Open the live map →
+          Open seasonal finds on the map →
         </ToAppLink>
       </p>
 
