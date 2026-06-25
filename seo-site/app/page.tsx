@@ -12,15 +12,15 @@ export default function Home() {
     <>
       <SeoHomeViewed />
       <p className="kicker">Urban foraging map</p>
-      <h1 className="title">Find fruit growing near you</h1>
+      <h1 className="title">Find edible plants in season near you</h1>
       <p className="lead">
-        Open the live map to see nearby fruit, herbs, and greens that are wild,
-        unpicked, and in season. Forage Around adds plant guides and
-        preservation ideas on top of{" "}
+        Forage Around is a free, open-source urban foraging map for nearby
+        fruit, herbs, and greens likely in season. Start with{" "}
         <a href="https://fallingfruit.org" rel="noopener">
           Falling Fruit&apos;s
         </a>{" "}
-        open data.
+        crowd-sourced locations, then verify the plant and public access or
+        permission before picking.
       </p>
 
       <p style={{ margin: "22px 0" }}>

@@ -5,10 +5,10 @@ import os
 ROOT = os.path.dirname(__file__)
 HTML = os.path.join(ROOT, "scrump", "index.html")
 SITE = "https://foragearound.com"
-TITLE = "Forage Around — field guide to the free harvest"
-DESC = ("Find the fruit, herbs and greens growing wild and unpicked around you, "
-        "what's in season right now, how to use them, and how to keep them. "
-        "No login.")
+TITLE = "Forage Around | Free urban foraging map"
+DESC = ("Find fruit, herbs, and greens likely in season near you. "
+        "Free open-source urban foraging map with Falling Fruit source notes "
+        "and permission reminders.")
 
 META = f"""
     <meta name="description" content="{DESC}" />
