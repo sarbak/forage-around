@@ -341,7 +341,7 @@ function Landing({
         <Text style={styles.kicker}>FIELD GUIDE TO THE FREE HARVEST</Text>
         <Text style={styles.wordmark}>Forage{"\n"}Around</Text>
         <Text style={styles.tagline}>
-          The fruit, herbs and greens growing wild and unpicked around you — what to make with them, and how to keep them.
+          Reported fruit, herbs and greens near you, with season and source notes to check before you pick.
         </Text>
 
         <Pressable
@@ -388,7 +388,7 @@ function Landing({
       </View>
 
       <View style={styles.seasonCard}>
-        <Text style={styles.seasonLabel}>Ripe right now · {monthName(MONTH)}</Text>
+        <Text style={styles.seasonLabel}>Likely in season · {monthName(MONTH)}</Text>
         {ripeNow.length ? (
           <ScrollView
             horizontal
@@ -511,13 +511,13 @@ function Results({
         {view === "map"
           ? `${mapFinds.length} within a 10-min walk`
           : onlyInSeason
-          ? `${inSeasonCount} ripe near you`
-          : `${edibleCount} edible nearby · ${inSeasonCount} ripe now`}
+          ? `${inSeasonCount} likely in season near you`
+          : `${edibleCount} edible nearby · ${inSeasonCount} likely in season`}
       </Text>
 
       <View style={styles.toggleRow}>
         <Chip
-          label={`Ripe now · ${monthName(MONTH)}`}
+          label={`Likely in season · ${monthName(MONTH)}`}
           active={onlyInSeason}
           onPress={() => {
             track("season_toggled", { only_in_season: true });
@@ -559,7 +559,7 @@ function Results({
       renderItem={({ item }) => <Card find={item} onSelect={onSelect} />}
       ListEmptyComponent={
         <Text style={styles.empty}>
-          Nothing ripe within reach this month. Try “Everything edible” to see what's coming.
+          Nothing likely in season within reach this month. Try “Everything edible” to see what's coming.
         </Text>
       }
       ListFooterComponent={<PhotoWall refreshKey={wallKey} onSubmit={onSubmitOwn} />}
@@ -932,7 +932,7 @@ function Card({ find, onSelect }: { find: Find; onSelect: (f: Find) => void }) {
       <View style={styles.cardRight}>
         <View style={[styles.badge, badgeStyle]}>
           <Text style={[styles.badgeText, badgeTextStyle]}>
-            {find.atPeak ? "PEAK" : find.inSeason ? "RIPE" : seasonRange(find)}
+            {find.atPeak ? "PEAK" : find.inSeason ? "IN SEASON" : seasonRange(find)}
           </Text>
         </View>
         <Text style={styles.chev}>›</Text>
@@ -1039,7 +1039,7 @@ function Detail({
                   find.atPeak ? styles.badgeTextPeak : find.inSeason ? styles.badgeTextSeason : styles.badgeTextOff,
                 ]}
               >
-                {find.atPeak ? "AT PEAK NOW" : find.inSeason ? "RIPE NOW" : seasonRange(find)}
+                {find.atPeak ? "AT PEAK NOW" : find.inSeason ? "IN SEASON" : seasonRange(find)}
               </Text>
             </View>
             <View style={[styles.dChip, styles.dChipPlain]}>
@@ -1117,8 +1117,8 @@ function About({ visible, onClose }: { visible: boolean; onClose: () => void }) 
           <Text style={styles.detailName}>Where the data comes from</Text>
 
           <Text style={[styles.aboutPara, { marginTop: 18 }]}>
-            Forage Around is a map of the fruit growing wild and unpicked near you. None of
-            the underlying data is ours, so here is exactly where each piece comes from.
+            Forage Around is a map of reported fruit trees and edible plants near you. None
+            of the underlying data is ours, so here is exactly where each piece comes from.
           </Text>
 
           <Text style={styles.aboutPara}>

@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     template: "%s · Forage Around",
   },
   description:
-    "See what fruit is ripe near you and what you can make with it. A simple foraging map built on Falling Fruit's open data.",
+    "See what fruit is likely in season near you and what you can make with it. A simple foraging map built on Falling Fruit's open data.",
   icons: {
     icon: `${SEO_ORIGIN}/favicon.png`,
     apple: `${SEO_ORIGIN}/apple-touch-icon.png`,
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     siteName: "Forage Around",
     title: "Forage Around — a quiet map of the urban harvest",
     description:
-      "See what fruit is ripe near you and what you can make with it.",
+      "See what fruit is likely in season near you and what you can make with it.",
   },
 };
 
