@@ -1,8 +1,8 @@
 # Forage Around 🍐
 
-**The field guide to the free harvest.** Tell Forage Around where you are; it shows the
-fruit, herbs and greens growing wild and unpicked around you that are **in season
-right now** — and what to ferment them into.
+**The field guide to the free harvest.** Tell Forage Around where you are; it shows
+reported fruit, herbs and greens near you with season and source notes to check
+before you pick, plus what to ferment them into.
 
 Live (web): **https://foragearound.com**
 
@@ -11,7 +11,7 @@ Live (web): **https://foragearound.com**
 - Lists nearby edible plants, **in-season first, nearest first**, with distance,
   walking time, the edible part, and a one-line fermentation idea per species.
 - "Walk here" opens turn-by-turn walking directions in your maps app.
-- Toggle between *Ripe now* and *Everything edible* (see what's coming).
+- Toggle between *Likely in season* and *Everything edible* (see what's coming).
 
 ## Data — works anywhere
 - Queries the **live [Falling Fruit](https://fallingfruit.org) API** by location

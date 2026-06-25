@@ -16,9 +16,9 @@ export default function About() {
       <h1 className="title">Where the data comes from</h1>
 
       <p className="lead">
-        Forage Around is a map of the fruit growing wild and unpicked near you.
-        None of the underlying data is ours, so here is exactly where each piece
-        comes from.
+        Forage Around is a map of reported fruit trees and edible plants near
+        you. None of the underlying data is ours, so here is exactly where each
+        piece comes from.
       </p>
 
       <p>
