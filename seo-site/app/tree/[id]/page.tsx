@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import {
   getFFLocation,
   type FFLocation,
@@ -89,7 +89,7 @@ export default async function TreePage({
 }) {
   const { id } = await params;
   const r = await resolve(id);
-  if (!r) notFound();
+  if (!r) redirect(`/?map_source=tree_not_found&tree_id=${encodeURIComponent(id)}`);
 
   const speciesName = r.name;
   const s = speciesName ? getSpecies(speciesName) : null;
