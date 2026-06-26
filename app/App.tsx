@@ -108,6 +108,7 @@ function withMapSource(source: string | null, props: Record<string, unknown>) {
 // Live Oak Park — generic fallback when location is unavailable.
 const FALLBACK = { lat: 37.8814, lng: -122.2686, label: "Live Oak Park" };
 const TEN_MIN_M = 810; // ~10 minutes at 1.35 m/s
+const SUPPORT_EMAIL = "foragearound@support.tin.computer";
 
 type Loc = { lat: number; lng: number; label: string };
 
@@ -1137,6 +1138,10 @@ function About({ visible, onClose }: { visible: boolean; onClose: () => void }) 
           <Text style={styles.aboutPara}>
             Forage Around is free and non-commercial, and it's{" "}
             <Link label="open-source on GitHub" url="https://github.com/sarbak/forage-around" />.
+          </Text>
+          <Text style={styles.aboutPara}>
+            Questions or corrections? Email{" "}
+            <Link label={SUPPORT_EMAIL} url={`mailto:${SUPPORT_EMAIL}`} />.
           </Text>
 
           <Text style={styles.safety}>
