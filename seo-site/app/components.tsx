@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ToAppLink } from "./analytics";
+import { SupportEmailLink, ToAppLink } from "./analytics";
 
 export const APP_URL = "https://foragearound.com";
 export const SUPPORT_EMAIL = "foragearound@support.tin.computer";
@@ -35,7 +35,12 @@ export function SiteFooter() {
         </ToAppLink>{" "}
         ·{" "}
         <Link href="/about">Where the data comes from</Link> ·{" "}
-        <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+        <SupportEmailLink
+          href={`mailto:${SUPPORT_EMAIL}`}
+          surface="site_footer"
+        >
+          {SUPPORT_EMAIL}
+        </SupportEmailLink>
       </div>
     </footer>
   );
