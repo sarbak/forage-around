@@ -4,7 +4,7 @@
 // to fire custom PostHog events without making the surrounding page a client
 // component (SSR/SEO output is unaffected). All events here are IN ADDITION to
 // autocapture + $pageview.
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import Link from "next/link";
 import { track } from "@/lib/track";
 
@@ -74,7 +74,7 @@ export function WalkHereLink({
   species: string | null;
   id: string;
   className?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <a
@@ -100,7 +100,7 @@ export function MoreAboutLink({
   href: string;
   species: string;
   className?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <Link
@@ -146,7 +146,7 @@ export function ToAppLink({
   href: string;
   from: ToAppSource;
   className?: string;
-  children: React.ReactNode;
+  children: ReactNode;
   rel?: string;
 }) {
   return (
@@ -155,6 +155,34 @@ export function ToAppLink({
       href={hrefWithMapSource(href, from)}
       rel={rel}
       onClick={() => track("to_app_clicked", { from })}
+    >
+      {children}
+    </a>
+  );
+}
+
+export function SupportEmailLink({
+  href,
+  surface,
+  className,
+  children,
+}: {
+  href: string;
+  surface: "site_footer";
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <a
+      className={className}
+      href={href}
+      onClick={() =>
+        track("support_email_clicked", {
+          source: surface,
+          surface,
+          path: window.location.pathname || "/",
+        })
+      }
     >
       {children}
     </a>
