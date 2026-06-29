@@ -58,11 +58,25 @@ type SubmitTarget = {
 } | null;
 
 const ffIdOf = (f: Find) => f.id.split("-")[0];
+const REFERRAL_PARAM_KEYS = [
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "ref",
+] as const;
 
-function cleanSource(value: string | null): string | null {
+type ReferralParamKey = (typeof REFERRAL_PARAM_KEYS)[number];
+type ReferralParams = Partial<Record<ReferralParamKey, string>>;
+
+function cleanSource(value: string | null, maxLength = 40): string | null {
   if (!value) return null;
-  const v = value.trim().toLowerCase().replace(/-/g, "_");
-  if (!/^[a-z0-9_]{1,40}$/.test(v)) return null;
+  const v = value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, maxLength);
+  if (!/^[a-z0-9_]+$/.test(v)) return null;
   return v;
 }
 
@@ -101,8 +115,44 @@ function readMapSource(): string | null {
   return null;
 }
 
-function withMapSource(source: string | null, props: Record<string, unknown>) {
-  return source ? { ...props, map_source: source } : props;
+function readReferralParams(): ReferralParams {
+  if (Platform.OS !== "web" || typeof window === "undefined") return {};
+  try {
+    const url = new URL(window.location.href);
+    const params = REFERRAL_PARAM_KEYS.reduce<ReferralParams>((acc, key) => {
+      const value = cleanSource(url.searchParams.get(key), 80);
+      if (value) acc[key] = value;
+      return acc;
+    }, {});
+    if (Object.keys(params).length > 0) {
+      window.sessionStorage?.setItem("forage_referral_params", JSON.stringify(params));
+      return params;
+    }
+
+    const stored = window.sessionStorage?.getItem("forage_referral_params");
+    if (!stored) return {};
+    const parsed = JSON.parse(stored) as Record<string, unknown>;
+    return REFERRAL_PARAM_KEYS.reduce<ReferralParams>((acc, key) => {
+      const raw = typeof parsed[key] === "string" ? parsed[key] : null;
+      const value = cleanSource(raw, 80);
+      if (value) acc[key] = value;
+      return acc;
+    }, {});
+  } catch {
+    return {};
+  }
+}
+
+function withMapSource(
+  source: string | null,
+  props: Record<string, unknown>,
+  referralParams: ReferralParams = {}
+) {
+  return {
+    ...props,
+    ...(source ? { map_source: source } : {}),
+    ...referralParams,
+  };
 }
 
 // Live Oak Park — generic fallback when location is unavailable.
@@ -133,6 +183,7 @@ export default function App() {
   const [submitTarget, setSubmitTarget] = useState<SubmitTarget>(null);
   const [wallKey, setWallKey] = useState(0);
   const [mapSource] = useState(() => readMapSource());
+  const [referralParams] = useState(() => readReferralParams());
 
   const teaser = useMemo(() => inSeasonNames(MONTH, 4), []);
   const ripeNow = useMemo(() => inSeasonWithImages(MONTH, 8), []);
@@ -156,7 +207,7 @@ export default function App() {
         denied: !!opts.denied,
         ripe_count: f.filter((x) => x.inSeason).length,
         edible_count: f.length,
-      })
+      }, referralParams)
     );
     setDenied(!!opts.denied);
     setLoc(point);
@@ -224,7 +275,7 @@ export default function App() {
         distance_m: Math.round(f.distM),
         in_season: f.inSeason,
         season_known: f.seasonKnown,
-      })
+      }, referralParams)
     );
     setSelected(f);
   }
@@ -255,7 +306,11 @@ export default function App() {
           onSubmitOwn={() => {
             track(
               "submit_opened",
-              withMapSource(mapSource, { kind: "new_tree", source: "wall" })
+              withMapSource(
+                mapSource,
+                { kind: "new_tree", source: "wall" },
+                referralParams
+              )
             );
             setSubmitTarget({
               kind: "new_tree",
@@ -283,6 +338,7 @@ export default function App() {
       <Detail
         find={selected}
         mapSource={mapSource}
+        referralParams={referralParams}
         onClose={() => setSelected(null)}
         onWalk={(f) => {
           track(
@@ -292,7 +348,7 @@ export default function App() {
               source: "walk_here",
               species: f.type,
               ff_location_id: ffIdOf(f),
-            })
+            }, referralParams)
           );
           setSelected(null);
           setSubmitTarget({
@@ -309,6 +365,7 @@ export default function App() {
       <About visible={aboutOpen} onClose={() => setAboutOpen(false)} />
       <SubmitModal
         target={submitTarget}
+        referralParams={referralParams}
         onClose={() => setSubmitTarget(null)}
         onDone={() => setWallKey((k) => k + 1)}
       />
@@ -652,10 +709,12 @@ function PhotoWall({ refreshKey, onSubmit }: { refreshKey: number; onSubmit: () 
 
 function SubmitModal({
   target,
+  referralParams,
   onClose,
   onDone,
 }: {
   target: SubmitTarget;
+  referralParams: ReferralParams;
   onClose: () => void;
   onDone: () => void;
 }) {
@@ -699,7 +758,7 @@ function SubmitModal({
       ff_location_id: t.ff_location_id ?? null,
       has_photo: !!photo,
       contribute_to_ff: isNewTree && contributeFF,
-    });
+    }, referralParams);
     track("submit_submitted", submissionContext);
     setBusy(true);
     setErr(null);
@@ -947,11 +1006,13 @@ function Card({ find, onSelect }: { find: Find; onSelect: (f: Find) => void }) {
 function Detail({
   find,
   mapSource,
+  referralParams,
   onClose,
   onWalk,
 }: {
   find: Find | null;
   mapSource: string | null;
+  referralParams: ReferralParams;
   onClose: () => void;
   onWalk: (f: Find) => void;
 }) {
@@ -981,7 +1042,7 @@ function Detail({
       withMapSource(mapSource, {
         species: find.type,
         ff_location_id: find.id.split("-")[0],
-      })
+      }, referralParams)
     );
     Linking.openURL(directionsUrl(find.lat, find.lng, find.type));
     onWalk(find); // after sending them walking, invite them to share how it goes
