@@ -41,6 +41,36 @@ create policy "anon can insert as pending"
   with check (status = 'pending');
 -- (approve / hide is done with the service role from the moderation view, never anon.)
 
+create table if not exists email_signups (
+  id              uuid primary key default gen_random_uuid(),
+  created_at      timestamptz not null default now(),
+  email           text not null,
+  consent_text    text not null,
+  consented_at    timestamptz not null default now(),
+  source_action   text not null
+                    check (source_action in ('walk_here','wall')),
+  submission_kind text not null
+                    check (submission_kind in ('observation','new_tree')),
+  map_source      text,
+  ff_location_id  text,
+  species         text,
+  lat             double precision,
+  lng             double precision,
+  referral_params jsonb not null default '{}'::jsonb
+);
+
+create index if not exists email_signups_created_idx
+  on email_signups (created_at desc);
+create index if not exists email_signups_email_idx
+  on email_signups (lower(email));
+
+-- Row Level Security: anon can add an email, but cannot read signups.
+alter table email_signups enable row level security;
+
+create policy "anon can insert email signups"
+  on email_signups for insert
+  with check (email <> '' and consent_text <> '');
+
 -- Storage: create a public bucket `submission-photos` in the dashboard (or):
 -- insert into storage.buckets (id, name, public) values ('submission-photos','submission-photos', true);
 -- Then allow anon uploads:

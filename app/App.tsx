@@ -44,6 +44,7 @@ import {
   getRecentSubmissions,
   uploadPhoto,
   submit,
+  submitEmailSignup,
   Submission,
 } from "./src/community";
 
@@ -155,10 +156,16 @@ function withMapSource(
   };
 }
 
+function validEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+}
+
 // Live Oak Park — generic fallback when location is unavailable.
 const FALLBACK = { lat: 37.8814, lng: -122.2686, label: "Live Oak Park" };
 const TEN_MIN_M = 810; // ~10 minutes at 1.35 m/s
 const SUPPORT_EMAIL = "foragearound@mail.tin.computer";
+const EMAIL_SIGNUP_CONSENT =
+  "Your email is optional; we'll only send Forage Around updates and seasonal harvest reminders.";
 
 type Loc = { lat: number; lng: number; label: string };
 
@@ -722,8 +729,12 @@ function SubmitModal({
   const [note, setNote] = useState("");
   const [plan, setPlan] = useState("");
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [contributeFF, setContributeFF] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [emailBusy, setEmailBusy] = useState(false);
+  const [emailDone, setEmailDone] = useState(false);
+  const [emailErr, setEmailErr] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -736,7 +747,11 @@ function SubmitModal({
     setNote("");
     setPlan("");
     setName("");
+    setEmail("");
     setContributeFF(false);
+    setEmailBusy(false);
+    setEmailDone(false);
+    setEmailErr(null);
     setDone(false);
     setErr(null);
   }
@@ -788,6 +803,7 @@ function SubmitModal({
       if (ok) {
         track("submit_success", submissionContext);
         setDone(true);
+        track("email_signup_prompt_viewed", submissionContext);
         onDone();
       } else {
         track("submit_error", { kind: t.kind, stage: "insert" });
@@ -799,6 +815,69 @@ function SubmitModal({
     } finally {
       setBusy(false);
     }
+  }
+
+  async function sendEmailSignup() {
+    const signupContext = withMapSource(t.map_source ?? null, {
+      source_action: t.source,
+      submission_kind: t.kind,
+      species: t.species ?? null,
+      ff_location_id: t.ff_location_id ?? null,
+    }, referralParams);
+    const emailValue = email.trim();
+
+    setEmailErr(null);
+    if (!validEmail(emailValue)) {
+      track("email_signup_error", { stage: "validation", ...signupContext });
+      setEmailErr("Enter a valid email, or skip this for now.");
+      return;
+    }
+
+    setEmailBusy(true);
+    track("email_signup_submitted", signupContext);
+    try {
+      const ok = await submitEmailSignup({
+        email: emailValue,
+        consent_text: EMAIL_SIGNUP_CONSENT,
+        source_action: t.source,
+        submission_kind: t.kind,
+        map_source: t.map_source ?? null,
+        ff_location_id: t.ff_location_id ?? null,
+        species: t.species ?? null,
+        lat: t.lat ?? null,
+        lng: t.lng ?? null,
+        referral_params: referralParams as Record<string, string>,
+      });
+      if (!ok) {
+        track("email_signup_error", { stage: "insert", ...signupContext });
+        setEmailErr("That didn't save. Check the address and try again.");
+        return;
+      }
+      track("email_signup_success", signupContext);
+      setEmail("");
+      setEmailDone(true);
+    } catch {
+      track("email_signup_error", { stage: "exception", ...signupContext });
+      setEmailErr("That didn't save. Check your connection and try again.");
+    } finally {
+      setEmailBusy(false);
+    }
+  }
+
+  function closeAfterDone(skipped = false) {
+    if (skipped && !emailDone) {
+      track(
+        "email_signup_skipped",
+        withMapSource(t.map_source ?? null, {
+          source_action: t.source,
+          submission_kind: t.kind,
+          species: t.species ?? null,
+          ff_location_id: t.ff_location_id ?? null,
+        }, referralParams)
+      );
+    }
+    reset();
+    onClose();
   }
 
   return (
@@ -826,12 +905,62 @@ function SubmitModal({
                 Your post is in. We give every submission a quick look before it shows up on the
                 map, so others can see it soon.
               </Text>
+              <View style={styles.emailSignupBox}>
+                {emailDone ? (
+                  <>
+                    <Text style={styles.emailSignupTitle}>You're on the list</Text>
+                    <Text style={styles.emailSignupCopy}>
+                      We'll use that address only for Forage Around updates and seasonal harvest reminders.
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Text style={styles.emailSignupTitle}>Get harvest reminders</Text>
+                    <Text style={styles.emailSignupCopy}>{EMAIL_SIGNUP_CONSENT}</Text>
+                    <TextInput
+                      style={[styles.field, styles.emailField]}
+                      placeholder="Email"
+                      placeholderTextColor={C.inkSoft}
+                      value={email}
+                      onChangeText={setEmail}
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      textContentType="emailAddress"
+                      accessibilityLabel="Email for Forage Around updates"
+                    />
+                    {!!emailErr && <Text style={styles.geoError}>{emailErr}</Text>}
+                    <View style={styles.signupActions}>
+                      <Pressable
+                        style={({ pressed }) => [
+                          styles.signupBtn,
+                          pressed && styles.ctaPressed,
+                          emailBusy && { opacity: 0.7 },
+                        ]}
+                        onPress={sendEmailSignup}
+                        disabled={emailBusy}
+                        accessibilityRole="button"
+                      >
+                        {emailBusy ? (
+                          <ActivityIndicator color={C.white} />
+                        ) : (
+                          <Text style={styles.signupBtnText}>Keep me posted</Text>
+                        )}
+                      </Pressable>
+                      <Pressable
+                        style={({ pressed }) => [styles.skipBtn, pressed && styles.skipBtnPressed]}
+                        onPress={() => closeAfterDone(true)}
+                        accessibilityRole="button"
+                      >
+                        <Text style={styles.skipBtnText}>Skip</Text>
+                      </Pressable>
+                    </View>
+                  </>
+                )}
+              </View>
               <Pressable
                 style={({ pressed }) => [styles.walkBtn, pressed && styles.ctaPressed]}
-                onPress={() => {
-                  reset();
-                  onClose();
-                }}
+                onPress={() => closeAfterDone(!emailDone)}
                 accessibilityRole="button"
               >
                 <Text style={styles.ctaText}>Done</Text>
@@ -1406,6 +1535,39 @@ const styles = StyleSheet.create({
   checkboxOn: { backgroundColor: C.forest, borderColor: C.forest },
   checkboxTick: { color: C.white, fontSize: 14, fontWeight: "800" },
   checkLabel: { flex: 1, fontSize: 14, lineHeight: 20, color: C.inkSoft },
+  emailSignupBox: {
+    backgroundColor: C.forestSoft,
+    borderRadius: 14,
+    padding: 14,
+    marginTop: 18,
+    marginBottom: 12,
+  },
+  emailSignupTitle: { fontFamily: F.display, fontSize: 18, color: C.forest, marginBottom: 5 },
+  emailSignupCopy: { fontSize: 13, lineHeight: 19, color: C.inkSoft, marginBottom: 12 },
+  emailField: { marginBottom: 0 },
+  signupActions: { flexDirection: "row", alignItems: "center", gap: 12, marginTop: 12 },
+  signupBtn: {
+    flex: 1,
+    minHeight: 48,
+    backgroundColor: C.forest,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 14,
+  },
+  signupBtnText: { color: C.white, fontWeight: "700", fontSize: 15, fontFamily: F.display },
+  skipBtn: {
+    minHeight: 48,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 14,
+    borderWidth: 1,
+    borderColor: C.line,
+    backgroundColor: C.white,
+  },
+  skipBtnPressed: { backgroundColor: C.paperDeep },
+  skipBtnText: { color: C.inkSoft, fontWeight: "700", fontSize: 15 },
 
   /* Detail */
   detailPad: { paddingHorizontal: 18, paddingBottom: 48, paddingTop: 14, maxWidth: 600, alignSelf: "center", width: "100%" },
