@@ -158,7 +158,7 @@ function withMapSource(
 // Live Oak Park — generic fallback when location is unavailable.
 const FALLBACK = { lat: 37.8814, lng: -122.2686, label: "Live Oak Park" };
 const TEN_MIN_M = 810; // ~10 minutes at 1.35 m/s
-const SUPPORT_EMAIL = "foragearound@support.tin.computer";
+const SUPPORT_EMAIL = "foragearound@mail.tin.computer";
 
 type Loc = { lat: number; lng: number; label: string };
 
