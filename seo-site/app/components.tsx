@@ -40,7 +40,12 @@ export function SiteFooter() {
           surface="site_footer"
         >
           {SUPPORT_EMAIL}
-        </SupportEmailLink>
+        </SupportEmailLink>{" "}
+        ·{" "}
+        <a className="tin-credit" href="https://tin.computer" rel="noopener">
+          <span className="tin-mark" aria-hidden="true" />
+          Growth by Tin
+        </a>
       </div>
     </footer>
   );
