@@ -270,6 +270,19 @@ ul.clean li {
   font-size: 13px;
   color: var(--ink-soft);
 }
+.tin-credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  color: inherit;
+}
+.tin-mark {
+  width: 1em;
+  height: 1em;
+  background: #66dc9d;
+  display: inline-block;
+  flex: 0 0 auto;
+}
 
 .species-grid {
   display: grid;
