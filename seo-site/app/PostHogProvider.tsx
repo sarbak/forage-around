@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider } from "posthog-js/react";
 
-const POSTHOG_KEY = "phc_oD2VKZzyJbwhoS5RpHS7fysrCbYsxoyaNU75yx9dQC5v";
+const POSTHOG_KEY = "phc_skySfZa6o44oxwoGTC7dm95wRrL3VB6YV2EeXbJBbVec";
 const POSTHOG_HOST = "https://us.i.posthog.com";
 
 function initPostHog() {
