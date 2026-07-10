@@ -38,6 +38,11 @@ import {
 } from "./src/lib";
 import MapView from "./src/MapView";
 import { track } from "./src/analytics";
+import {
+  EMAIL_SIGNUP_CONSENT,
+  shouldShowEmailSignup,
+  validEmail,
+} from "./src/emailSignup";
 import * as ImagePicker from "expo-image-picker";
 import {
   communityEnabled,
@@ -156,16 +161,10 @@ function withMapSource(
   };
 }
 
-function validEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-}
-
 // Live Oak Park — generic fallback when location is unavailable.
 const FALLBACK = { lat: 37.8814, lng: -122.2686, label: "Live Oak Park" };
 const TEN_MIN_M = 810; // ~10 minutes at 1.35 m/s
 const SUPPORT_EMAIL = "foragearound@mail.tin.computer";
-const EMAIL_SIGNUP_CONSENT =
-  "Your email is optional; we'll only send Forage Around updates and seasonal harvest reminders.";
 
 type Loc = { lat: number; lng: number; label: string };
 
@@ -494,9 +493,19 @@ function Landing({
           Where the data comes from, and credits ›
         </Text>
       </Pressable>
-      <Text style={styles.footCredit}>
-        Tree locations from Falling Fruit, used under CC BY-NC-SA.
-      </Text>
+      <View style={styles.footCredits}>
+        <Text style={styles.footCredit}>
+          Tree locations from Falling Fruit, used under CC BY-NC-SA.
+        </Text>
+        <Pressable
+          onPress={() => Linking.openURL("https://tin.computer")}
+          accessibilityRole="link"
+          style={styles.tinCredit}
+        >
+          <View style={styles.tinMark} />
+          <Text style={styles.footCredit}>Growth by Tin</Text>
+        </Pressable>
+      </View>
     </ScrollView>
   );
 }
@@ -734,9 +743,27 @@ function SubmitModal({
   const [busy, setBusy] = useState(false);
   const [emailBusy, setEmailBusy] = useState(false);
   const [emailDone, setEmailDone] = useState(false);
+  const [emailSkipped, setEmailSkipped] = useState(false);
   const [emailErr, setEmailErr] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!target || !shouldShowEmailSignup(target.source)) return;
+    track(
+      "email_signup_prompt_viewed",
+      withMapSource(
+        target.map_source ?? null,
+        {
+          source_action: target.source,
+          submission_kind: target.kind,
+          species: target.species ?? null,
+          ff_location_id: target.ff_location_id ?? null,
+        },
+        referralParams
+      )
+    );
+  }, [target, referralParams]);
 
   if (!target) return null;
   const t = target;
@@ -751,6 +778,7 @@ function SubmitModal({
     setContributeFF(false);
     setEmailBusy(false);
     setEmailDone(false);
+    setEmailSkipped(false);
     setEmailErr(null);
     setDone(false);
     setErr(null);
@@ -803,7 +831,6 @@ function SubmitModal({
       if (ok) {
         track("submit_success", submissionContext);
         setDone(true);
-        track("email_signup_prompt_viewed", submissionContext);
         onDone();
       } else {
         track("submit_error", { kind: t.kind, stage: "insert" });
@@ -818,6 +845,7 @@ function SubmitModal({
   }
 
   async function sendEmailSignup() {
+    if (!shouldShowEmailSignup(t.source) || t.kind !== "observation") return;
     const signupContext = withMapSource(t.map_source ?? null, {
       source_action: t.source,
       submission_kind: t.kind,
@@ -839,8 +867,8 @@ function SubmitModal({
       const ok = await submitEmailSignup({
         email: emailValue,
         consent_text: EMAIL_SIGNUP_CONSENT,
-        source_action: t.source,
-        submission_kind: t.kind,
+        source_action: "walk_here",
+        submission_kind: "observation",
         map_source: t.map_source ?? null,
         ff_location_id: t.ff_location_id ?? null,
         species: t.species ?? null,
@@ -864,18 +892,26 @@ function SubmitModal({
     }
   }
 
-  function closeAfterDone(skipped = false) {
-    if (skipped && !emailDone) {
-      track(
-        "email_signup_skipped",
-        withMapSource(t.map_source ?? null, {
+  function skipEmailSignup() {
+    track(
+      "email_signup_skipped",
+      withMapSource(
+        t.map_source ?? null,
+        {
           source_action: t.source,
           submission_kind: t.kind,
           species: t.species ?? null,
           ff_location_id: t.ff_location_id ?? null,
-        }, referralParams)
-      );
-    }
+        },
+        referralParams
+      )
+    );
+    setEmail("");
+    setEmailErr(null);
+    setEmailSkipped(true);
+  }
+
+  function closeAfterDone() {
     reset();
     onClose();
   }
@@ -905,62 +941,9 @@ function SubmitModal({
                 Your post is in. We give every submission a quick look before it shows up on the
                 map, so others can see it soon.
               </Text>
-              <View style={styles.emailSignupBox}>
-                {emailDone ? (
-                  <>
-                    <Text style={styles.emailSignupTitle}>You're on the list</Text>
-                    <Text style={styles.emailSignupCopy}>
-                      We'll use that address only for Forage Around updates and seasonal harvest reminders.
-                    </Text>
-                  </>
-                ) : (
-                  <>
-                    <Text style={styles.emailSignupTitle}>Get harvest reminders</Text>
-                    <Text style={styles.emailSignupCopy}>{EMAIL_SIGNUP_CONSENT}</Text>
-                    <TextInput
-                      style={[styles.field, styles.emailField]}
-                      placeholder="Email"
-                      placeholderTextColor={C.inkSoft}
-                      value={email}
-                      onChangeText={setEmail}
-                      keyboardType="email-address"
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      textContentType="emailAddress"
-                      accessibilityLabel="Email for Forage Around updates"
-                    />
-                    {!!emailErr && <Text style={styles.geoError}>{emailErr}</Text>}
-                    <View style={styles.signupActions}>
-                      <Pressable
-                        style={({ pressed }) => [
-                          styles.signupBtn,
-                          pressed && styles.ctaPressed,
-                          emailBusy && { opacity: 0.7 },
-                        ]}
-                        onPress={sendEmailSignup}
-                        disabled={emailBusy}
-                        accessibilityRole="button"
-                      >
-                        {emailBusy ? (
-                          <ActivityIndicator color={C.white} />
-                        ) : (
-                          <Text style={styles.signupBtnText}>Keep me posted</Text>
-                        )}
-                      </Pressable>
-                      <Pressable
-                        style={({ pressed }) => [styles.skipBtn, pressed && styles.skipBtnPressed]}
-                        onPress={() => closeAfterDone(true)}
-                        accessibilityRole="button"
-                      >
-                        <Text style={styles.skipBtnText}>Skip</Text>
-                      </Pressable>
-                    </View>
-                  </>
-                )}
-              </View>
               <Pressable
                 style={({ pressed }) => [styles.walkBtn, pressed && styles.ctaPressed]}
-                onPress={() => closeAfterDone(!emailDone)}
+                onPress={closeAfterDone}
                 accessibilityRole="button"
               >
                 <Text style={styles.ctaText}>Done</Text>
@@ -977,6 +960,62 @@ function SubmitModal({
                   ? "Share a tree you found here."
                   : "Share a photo, a note, and what you're making."}
               </Text>
+
+              {shouldShowEmailSignup(t.source) && !emailSkipped && (
+                <View style={styles.emailSignupBox}>
+                  {emailDone ? (
+                    <>
+                      <Text style={styles.emailSignupTitle}>You're on the list</Text>
+                      <Text style={styles.emailSignupCopy}>
+                        We'll use that address only for Forage Around updates and seasonal harvest reminders.
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text style={styles.emailSignupTitle}>Get harvest reminders</Text>
+                      <Text style={styles.emailSignupCopy}>{EMAIL_SIGNUP_CONSENT}</Text>
+                      <TextInput
+                        style={[styles.field, styles.emailField]}
+                        placeholder="Email"
+                        placeholderTextColor={C.inkSoft}
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        textContentType="emailAddress"
+                        accessibilityLabel="Email for Forage Around updates"
+                      />
+                      {!!emailErr && <Text style={styles.geoError}>{emailErr}</Text>}
+                      <View style={styles.signupActions}>
+                        <Pressable
+                          style={({ pressed }) => [
+                            styles.signupBtn,
+                            pressed && styles.ctaPressed,
+                            emailBusy && { opacity: 0.7 },
+                          ]}
+                          onPress={sendEmailSignup}
+                          disabled={emailBusy}
+                          accessibilityRole="button"
+                        >
+                          {emailBusy ? (
+                            <ActivityIndicator color={C.white} />
+                          ) : (
+                            <Text style={styles.signupBtnText}>Keep me posted</Text>
+                          )}
+                        </Pressable>
+                        <Pressable
+                          style={({ pressed }) => [styles.skipBtn, pressed && styles.skipBtnPressed]}
+                          onPress={skipEmailSignup}
+                          accessibilityRole="button"
+                        >
+                          <Text style={styles.skipBtnText}>Not now</Text>
+                        </Pressable>
+                      </View>
+                    </>
+                  )}
+                </View>
+              )}
 
               <Pressable style={styles.photoPick} onPress={pick} accessibilityRole="button">
                 {photo ? (
@@ -1420,7 +1459,10 @@ const styles = StyleSheet.create({
   seasonNote: { fontSize: 14, lineHeight: 21, color: C.inkSoft },
   footLink: { marginTop: 28, alignSelf: "center" },
   footnote: { fontSize: 13, color: C.forest, textAlign: "center", fontWeight: "600" },
-  footCredit: { marginTop: 8, fontSize: 11.5, color: C.inkSoft, textAlign: "center" },
+  footCredits: { alignItems: "center", gap: 7, marginTop: 8 },
+  footCredit: { fontSize: 11.5, color: C.inkSoft, textAlign: "center" },
+  tinCredit: { flexDirection: "row", alignItems: "center", gap: 4 },
+  tinMark: { width: 11, height: 11, backgroundColor: "#66DC9D" },
   aboutByline: { fontSize: 14, color: C.inkSoft, marginTop: 4, fontStyle: "italic" },
   aboutPara: { fontSize: 16, lineHeight: 24, color: C.ink, marginTop: 14 },
   link: { color: C.forest, fontWeight: "700", textDecorationLine: "underline" },

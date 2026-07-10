@@ -1,5 +1,6 @@
 import "react-native-url-polyfill/auto";
 import { createClient } from "@supabase/supabase-js";
+import { NewEmailSignup, saveEmailSignup } from "./emailSignup";
 
 // Anon key is public by design; row-level security guards the table.
 const URL = process.env.EXPO_PUBLIC_SUPABASE_URL as string | undefined;
@@ -35,19 +36,6 @@ export type NewSubmission = {
   photo_url?: string | null;
   author_name?: string | null;
   contribute_to_ff?: boolean;
-};
-
-export type NewEmailSignup = {
-  email: string;
-  consent_text: string;
-  source_action: "walk_here" | "wall";
-  submission_kind: "observation" | "new_tree";
-  map_source?: string | null;
-  ff_location_id?: string | null;
-  species?: string | null;
-  lat?: number | null;
-  lng?: number | null;
-  referral_params?: Record<string, string>;
 };
 
 export async function getRecentSubmissions(limit = 12): Promise<Submission[]> {
@@ -105,27 +93,15 @@ export async function uploadPhoto(base64: string, mime = "image/jpeg"): Promise<
 
 // Insert a submission. Always lands as 'pending' (held for review).
 export async function submit(payload: NewSubmission): Promise<boolean> {
-  if (typeof globalThis !== "undefined" && (globalThis as any).__FORAGE_TEST_SUBMIT_SUCCESS__) {
-    return true;
-  }
   if (!supabase) return false;
   const { error } = await supabase.from("submissions").insert([{ ...payload, status: "pending" }]);
   return !error;
 }
 
 export async function submitEmailSignup(payload: NewEmailSignup): Promise<boolean> {
-  if (typeof globalThis !== "undefined" && (globalThis as any).__FORAGE_TEST_SUBMIT_SUCCESS__) {
-    return true;
-  }
   if (!supabase) return false;
-  const email = payload.email.trim().toLowerCase();
-  if (!email) return false;
-  const { error } = await supabase.from("email_signups").insert([
-    {
-      ...payload,
-      email,
-      consented_at: new Date().toISOString(),
-    },
-  ]);
-  return !error;
+  return saveEmailSignup(payload, async (row) => {
+    const { error } = await supabase.from("email_signups").insert([row]);
+    return !error;
+  });
 }

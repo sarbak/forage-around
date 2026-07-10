@@ -46,11 +46,10 @@ create table if not exists email_signups (
   created_at      timestamptz not null default now(),
   email           text not null,
   consent_text    text not null,
-  consented_at    timestamptz not null default now(),
   source_action   text not null
-                    check (source_action in ('walk_here','wall')),
+                    check (source_action = 'walk_here'),
   submission_kind text not null
-                    check (submission_kind in ('observation','new_tree')),
+                    check (submission_kind = 'observation'),
   map_source      text,
   ff_location_id  text,
   species         text,
@@ -69,7 +68,11 @@ alter table email_signups enable row level security;
 
 create policy "anon can insert email signups"
   on email_signups for insert
-  with check (email <> '' and consent_text <> '');
+  with check (
+    email <> ''
+    and source_action = 'walk_here'
+    and consent_text = 'Your email is optional; we''ll only send Forage Around updates and seasonal harvest reminders.'
+  );
 
 -- Storage: create a public bucket `submission-photos` in the dashboard (or):
 -- insert into storage.buckets (id, name, public) values ('submission-photos','submission-photos', true);
