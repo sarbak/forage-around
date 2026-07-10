@@ -1,5 +1,6 @@
 import "react-native-url-polyfill/auto";
 import { createClient } from "@supabase/supabase-js";
+import { NewEmailSignup, saveEmailSignup } from "./emailSignup";
 
 // Anon key is public by design; row-level security guards the table.
 const URL = process.env.EXPO_PUBLIC_SUPABASE_URL as string | undefined;
@@ -95,4 +96,12 @@ export async function submit(payload: NewSubmission): Promise<boolean> {
   if (!supabase) return false;
   const { error } = await supabase.from("submissions").insert([{ ...payload, status: "pending" }]);
   return !error;
+}
+
+export async function submitEmailSignup(payload: NewEmailSignup): Promise<boolean> {
+  if (!supabase) return false;
+  return saveEmailSignup(payload, async (row) => {
+    const { error } = await supabase.from("email_signups").insert([row]);
+    return !error;
+  });
 }
