@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider } from "posthog-js/react";
 
-const POSTHOG_KEY = "phc_oD2VKZzyJbwhoS5RpHS7fysrCbYsxoyaNU75yx9dQC5v";
+const POSTHOG_KEY = "phc_skySfZa6o44oxwoGTC7dm95wRrL3VB6YV2EeXbJBbVec";
 const POSTHOG_HOST = "https://us.i.posthog.com";
 
 function initPostHog() {
@@ -18,7 +18,7 @@ function initPostHog() {
     // We capture pageviews manually on route change (below) so the initial
     // automatic one isn't double-counted on client-side navigation.
     capture_pageview: false,
-    capture_pageleave: true,
+    capture_pageleave: false,
     autocapture: true,
   });
   // Expose for the lightweight lib/track.ts helper and for live verification.
