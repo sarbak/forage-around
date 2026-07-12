@@ -22,10 +22,20 @@ import { submissionsForTree } from "@/lib/submissions";
 import { Credits, APP_URL } from "../../components";
 import { SubmissionList } from "../../Submissions";
 import { TreeMap } from "../../TreeMap";
-import { TreePageViewed, WalkHereLink, MoreAboutLink } from "../../analytics";
+import {
+  TreePageViewed,
+  WalkHereLink,
+  MoreAboutLink,
+  ToAppLink,
+} from "../../analytics";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
+
+function treeTitle(speciesName: string | null) {
+  const name = speciesName?.trim() || "Fruit tree";
+  return /\btree$/i.test(name) ? name : `${name} tree`;
+}
 
 // Resolve a location from FF API; fall back to the bundled seed.
 async function resolve(id: string): Promise<{
@@ -75,7 +85,7 @@ export async function generateMetadata({
   const r = await resolve(id);
   if (!r) return { title: "Tree not found" };
   const speciesName = r.name || "Fruit tree";
-  const title = `${speciesName} tree`;
+  const title = treeTitle(speciesName);
   return {
     title,
     description: `A ${speciesName.toLowerCase()} from the Falling Fruit foraging map.`,
@@ -94,7 +104,7 @@ export default async function TreePage({
   const speciesName = r.name;
   const s = speciesName ? getSpecies(speciesName) : null;
   const emoji = emojiForName(speciesName);
-  const title = `${speciesName || "Fruit tree"} tree`;
+  const title = treeTitle(speciesName);
 
   const wikiTitle = speciesName ? wikiTitleForName(speciesName) : null;
   const curated = speciesName ? imagesForName(speciesName) : [];
@@ -135,6 +145,12 @@ export default async function TreePage({
       <p className="kicker">Foraging spot</p>
       <h1 className="title">{title}</h1>
       {s?.note ? <p className="lead">{s.note}</p> : null}
+
+      <p style={{ margin: "18px 0 22px" }}>
+        <ToAppLink className="btn" href={APP_URL} from="tree">
+          Find more edible plants nearby →
+        </ToAppLink>
+      </p>
 
       <p style={{ margin: "14px 0" }}>
         <span className="coords">
