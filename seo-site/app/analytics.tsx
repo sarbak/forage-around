@@ -46,10 +46,22 @@ export function SeoHomeViewed() {
   return null;
 }
 
-export function LocationsPageViewed() {
+export function LocationsPageViewed({
+  pageType,
+  slug,
+  species,
+}: {
+  pageType?: "index" | "category" | "species_nearby";
+  slug?: string;
+  species?: string;
+} = {}) {
   useEffect(() => {
-    track("locations_page_viewed");
-  }, []);
+    track("locations_page_viewed", {
+      ...(pageType ? { page_type: pageType } : {}),
+      ...(slug ? { slug } : {}),
+      ...(species ? { species } : {}),
+    });
+  }, [pageType, slug, species]);
   return null;
 }
 
