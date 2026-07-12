@@ -47,21 +47,24 @@ export function SeoHomeViewed() {
 }
 
 export function LocationsPageViewed({
-  pageType,
-  slug,
-  species,
+  pageType = "index",
+  slug = null,
+  species = null,
+  city = null,
 }: {
-  pageType?: "index" | "category" | "species_nearby";
-  slug?: string;
-  species?: string;
+  pageType?: "index" | "category" | "species_nearby" | "city";
+  slug?: string | null;
+  species?: string | null;
+  city?: string | null;
 } = {}) {
   useEffect(() => {
     track("locations_page_viewed", {
-      ...(pageType ? { page_type: pageType } : {}),
-      ...(slug ? { slug } : {}),
-      ...(species ? { species } : {}),
+      page_type: pageType,
+      slug,
+      species,
+      city,
     });
-  }, [pageType, slug, species]);
+  }, [pageType, slug, species, city]);
   return null;
 }
 
