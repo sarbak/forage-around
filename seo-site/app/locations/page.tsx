@@ -1,124 +1,166 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
+  MONTHS,
   allSpeciesNames,
   emojiForName,
+  peakLabel,
   seasonLabel,
   slugify,
   species,
   trees,
+  type Species,
 } from "@/lib/data";
-import { Credits, APP_URL } from "../components";
 import { LocationsPageViewed, ToAppLink } from "../analytics";
+import { APP_URL, Credits } from "../components";
+
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: "Find fruit and edible plants near you",
+  title: "Nearby fruit and what's ripe near you",
   description:
-    "Find nearby fruit trees, herbs, and edible plants with Forage Around, a simple map of the urban harvest built on Falling Fruit open data.",
+    "See what fruit and edible plants may be ripe near you this month, browse practical plant guides, and open the free Forage Around map.",
+  alternates: {
+    canonical: "/locations",
+  },
+};
+
+type HarvestItem = {
+  name: string;
+  details: Species;
+  reportCount: number;
+  isPeak: boolean;
 };
 
 const edibleTrees = trees.filter((tree) => tree.edible !== false);
 
-const topSpecies = Array.from(
-  edibleTrees.reduce((counts, tree) => {
-    if (!species[tree.type]?.edible) return counts;
-    counts.set(tree.type, (counts.get(tree.type) ?? 0) + 1);
-    return counts;
-  }, new Map<string, number>()),
-)
-  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-  .slice(0, 8);
-
-const featuredSpots = edibleTrees
-  .filter((tree) => species[tree.type]?.edible)
-  .slice(0, 6);
+const reportCounts = edibleTrees.reduce((counts, tree) => {
+  if (!species[tree.type]?.edible) return counts;
+  counts.set(tree.type, (counts.get(tree.type) ?? 0) + 1);
+  return counts;
+}, new Map<string, number>());
 
 const edibleSpeciesCount = allSpeciesNames().filter(
   (name) => species[name]?.edible,
 ).length;
 
+function currentMonthNumber() {
+  return new Date().getUTCMonth() + 1;
+}
+
+function inSeasonHarvests(month: number): HarvestItem[] {
+  return allSpeciesNames()
+    .filter(
+      (name) =>
+        species[name]?.edible &&
+        species[name].season.includes(month) &&
+        reportCounts.has(name),
+    )
+    .map((name) => ({
+      name,
+      details: species[name],
+      reportCount: reportCounts.get(name) ?? 0,
+      isPeak: species[name].peak?.includes(month) ?? false,
+    }))
+    .sort(
+      (a, b) =>
+        Number(b.isPeak) - Number(a.isPeak) ||
+        b.reportCount - a.reportCount ||
+        a.name.localeCompare(b.name),
+    );
+}
+
 export default function LocationsPage() {
+  const currentMonth = currentMonthNumber();
+  const currentMonthName = MONTHS[currentMonth - 1];
+  const currentHarvests = inSeasonHarvests(currentMonth);
+
   return (
     <>
       <LocationsPageViewed />
       <p className="kicker">Nearby harvests</p>
       <h1 className="title">Find fruit and edible plants near you</h1>
       <p className="lead">
-        Forage Around helps you spot the fruit, herbs, and greens growing wild
-        and unpicked nearby. Open the map, share your location, and start with
-        what is closest.
+        Start with what may be ripe this month, learn how to identify and use
+        each plant, then open the map to search around your address.
       </p>
 
       <p style={{ margin: "22px 0" }}>
         <ToAppLink className="btn" href={APP_URL} from="locations">
-          Open the live map →
+          Search the live map →
         </ToAppLink>{" "}
-        <Link className="btn-outline" href="/species/apple">
-          See apple guide
+        <Link className="btn-outline" href="/seasonal-guide">
+          See the full season guide
         </Link>
       </p>
 
       <div className="card">
         <p style={{ marginTop: 0 }}>
-          The map uses Falling Fruit locations as a starting point, then adds
-          season windows and ways to use each plant. It currently has{" "}
-          {edibleTrees.length.toLocaleString()} harvest points in the bundled
-          starter dataset and guides for {edibleSpeciesCount.toLocaleString()} edible
-          plants.
+          Forage Around combines {edibleTrees.length.toLocaleString()} reported
+          harvest points in its bundled starter dataset with season notes and
+          guides for {edibleSpeciesCount.toLocaleString()} edible plants.
         </p>
         <p className="muted" style={{ marginBottom: 0 }}>
-          Always confirm the plant, check whether you are allowed to pick, and
-          take only what would otherwise go to waste.
+          Reports are starting points, not live inventory. Confirm the plant,
+          current conditions, and permission to pick when you arrive.
         </p>
       </div>
 
-      <h2 className="section">Common harvests to look for</h2>
+      <h2 className="section">What may be ripe in {currentMonthName}</h2>
       <p className="muted">
-        Start with plants people often find in cities, then open the live map to
-        check what is close to you.
+        These plants include {currentMonthName} in their usual season window and
+        have at least one report in the starter dataset. Weather and local
+        conditions can move a season earlier or later.
       </p>
-      <div className="species-grid">
-        {topSpecies.map(([name, count]) => {
-          const plant = species[name];
-          const when = plant ? seasonLabel(plant) : null;
-          return (
-            <Link key={name} href={`/species/${slugify(name)}`}>
-              <span>{emojiForName(name)}</span>
-              <span>
-                {name}
-                <br />
-                <small className="muted">
-                  {count} spots{when ? `, ripe ${when}` : ""}
-                </small>
-              </span>
-            </Link>
-          );
-        })}
-      </div>
 
-      <h2 className="section">Example spots</h2>
-      <p className="muted">
-        These are sample harvest points from the open dataset. The live map can
-        find spots near your actual location.
+      {currentHarvests.length > 0 ? (
+        <div className="species-grid">
+          {currentHarvests.map(({ name, details, reportCount, isPeak }) => {
+            const usualSeason = seasonLabel(details);
+            const typicalPeak = peakLabel(details);
+
+            return (
+              <Link key={name} href={`/species/${slugify(name)}`}>
+                <span>{emojiForName(name)}</span>
+                <span>
+                  {name}
+                  <br />
+                  <small className="muted">
+                    {reportCount.toLocaleString()} starter
+                    {reportCount === 1 ? " report" : " reports"}
+                    {isPeak && typicalPeak
+                      ? ` · peak ${typicalPeak}`
+                      : usualSeason
+                        ? ` · usually ${usualSeason}`
+                        : ""}
+                  </small>
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="card">
+          <p style={{ margin: 0 }}>
+            The starter dataset does not have an in-season match for this month.
+            Use the full season guide to plan ahead, or open the map to explore
+            nearby reports.
+          </p>
+        </div>
+      )}
+
+      <h2 className="section">How to use a reported spot</h2>
+      <ol className="clean">
+        <li>Open the map and search an address or share your location.</li>
+        <li>Choose a nearby report and read its plant guide.</li>
+        <li>Check the report, access rules, and ripeness when you arrive.</li>
+        <li>Take only what you can identify and use.</li>
+      </ol>
+
+      <p>
+        Looking ahead? The <Link href="/seasonal-guide">seasonal guide</Link>{" "}
+        shows the full year month by month.
       </p>
-      <ul className="clean">
-        {featuredSpots.map((tree) => (
-          <li key={tree.id}>
-            <Link href={`/tree/${tree.id}`}>{tree.type} spot</Link>{" "}
-            <span className="muted">
-              ({tree.lat.toFixed(3)}, {tree.lng.toFixed(3)})
-            </span>
-          </li>
-        ))}
-      </ul>
-
-      <h2 className="section">How to use the map</h2>
-      <ul className="clean">
-        <li>Open the live map and share your location once.</li>
-        <li>Check what is ripe now before walking over.</li>
-        <li>Use the plant page to see the edible part and preservation ideas.</li>
-        <li>Confirm the plant and picking rules before harvesting.</li>
-      </ul>
 
       <p style={{ margin: "28px 0" }}>
         <ToAppLink className="btn" href={APP_URL} from="locations">
