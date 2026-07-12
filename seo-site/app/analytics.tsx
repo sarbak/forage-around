@@ -46,10 +46,25 @@ export function SeoHomeViewed() {
   return null;
 }
 
-export function LocationsPageViewed() {
+export function LocationsPageViewed({
+  pageType = "index",
+  slug = null,
+  species = null,
+  city = null,
+}: {
+  pageType?: "index" | "category" | "species_nearby" | "city";
+  slug?: string | null;
+  species?: string | null;
+  city?: string | null;
+} = {}) {
   useEffect(() => {
-    track("locations_page_viewed");
-  }, []);
+    track("locations_page_viewed", {
+      page_type: pageType,
+      slug,
+      species,
+      city,
+    });
+  }, [pageType, slug, species, city]);
   return null;
 }
 

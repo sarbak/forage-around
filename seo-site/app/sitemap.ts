@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { cityHarvests } from "@/lib/city-harvests";
 import { allSpeciesNames, species, slugify, trees } from "@/lib/data";
 
 const SITE =
@@ -10,6 +11,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
     { url: `${SITE}/`, lastModified: now, priority: 1 },
     { url: `${SITE}/locations`, lastModified: now, priority: 0.9 },
+    {
+      url: `${SITE}/locations/strawberry-tree`,
+      lastModified: now,
+      priority: 0.85,
+    },
     { url: `${SITE}/about`, lastModified: now, priority: 0.8 },
     { url: `${SITE}/seasonal-guide`, lastModified: now, priority: 0.85 },
   ];
@@ -22,11 +28,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     }));
 
+  const cityPages: MetadataRoute.Sitemap = cityHarvests.map((city) => ({
+    url: `${SITE}/locations/${city.slug}`,
+    lastModified: now,
+    priority: 0.8,
+  }));
+
   const treePages: MetadataRoute.Sitemap = trees.map((t) => ({
     url: `${SITE}/tree/${t.id}`,
     lastModified: now,
     priority: 0.6,
   }));
 
-  return [...staticPages, ...speciesPages, ...treePages];
+  return [...staticPages, ...cityPages, ...speciesPages, ...treePages];
 }
