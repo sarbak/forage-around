@@ -151,6 +151,10 @@ export default async function SpeciesPage({
         <ToAppLink className="btn" href={APP_URL} from="species">
           Find {name} near you →
         </ToAppLink>
+        {" "}
+        <Link className="btn-outline" href="/locations">
+          Browse nearby harvest guides
+        </Link>
       </p>
 
       <Credits />

@@ -133,6 +133,10 @@ export default async function CityHarvestPage({ params }: PageProps) {
         <li>Use the walking-directions action only after checking access.</li>
         <li>Confirm the plant, local rules, and permission before picking.</li>
       </ol>
+      <p>
+        Searching somewhere else? Start again from the{" "}
+        <Link href="/">Forage Around homepage search</Link>.
+      </p>
 
       <p style={{ margin: "28px 0" }}>
         <ToAppLink className="btn" href={mapHref} from="locations">

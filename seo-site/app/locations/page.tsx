@@ -13,6 +13,7 @@ import {
 } from "@/lib/data";
 import { LocationsPageViewed, ToAppLink } from "../analytics";
 import { APP_URL, Credits } from "../components";
+import { cityHarvests } from "@/lib/city-harvests";
 
 export const revalidate = 86400;
 
@@ -104,6 +105,32 @@ export default function LocationsPage() {
           Reports are starting points, not live inventory. Confirm the plant,
           current conditions, and permission to pick when you arrive.
         </p>
+      </div>
+
+      <h2 className="section">Explore a nearby harvest guide</h2>
+      <p className="muted">
+        Start with a city guide or a focused plant page, then use your address
+        on the live map to narrow the search.
+      </p>
+      <div className="species-grid">
+        {cityHarvests.map((city) => (
+          <Link key={city.slug} href={`/locations/${city.slug}`}>
+            <span aria-hidden="true">📍</span>
+            <span>
+              {city.name} harvest guide
+              <br />
+              <small className="muted">Fruit and edible plants in {city.region}</small>
+            </span>
+          </Link>
+        ))}
+        <Link href="/locations/strawberry-tree">
+          <span aria-hidden="true">🍓</span>
+          <span>
+            Strawberry trees near you
+            <br />
+            <small className="muted">Season timing and starter reports</small>
+          </span>
+        </Link>
       </div>
 
       <h2 className="section">What may be ripe in {currentMonthName}</h2>

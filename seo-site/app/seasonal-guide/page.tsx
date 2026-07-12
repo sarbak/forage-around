@@ -92,6 +92,13 @@ export default function SeasonalGuide() {
       </p>
       <SpeciesGrid items={currentItems} />
 
+      <p className="muted">
+        Looking for a place to start? Read the{" "}
+        <Link href="/species/plum">Plum guide</Link> or the{" "}
+        <Link href="/species/apple">Apple guide</Link>, then browse all{" "}
+        <Link href="/locations">nearby harvest guides</Link>.
+      </p>
+
       {peakNow.length > 0 ? (
         <>
           <h2 className="section">Peaking now</h2>
