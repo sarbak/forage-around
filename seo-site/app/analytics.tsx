@@ -46,10 +46,22 @@ export function SeoHomeViewed() {
   return null;
 }
 
-export function LocationsPageViewed() {
+export function LocationsPageViewed({
+  pageType = "index",
+  slug = null,
+  city = null,
+}: {
+  pageType?: "index" | "city";
+  slug?: string | null;
+  city?: string | null;
+} = {}) {
   useEffect(() => {
-    track("locations_page_viewed");
-  }, []);
+    track("locations_page_viewed", {
+      page_type: pageType,
+      slug,
+      city,
+    });
+  }, [pageType, slug, city]);
   return null;
 }
 
