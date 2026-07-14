@@ -6,37 +6,31 @@ const SITE =
   process.env.NEXT_PUBLIC_SITE_URL || "https://forage-around-seo.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
-
   const staticPages: MetadataRoute.Sitemap = [
-    { url: `${SITE}/`, lastModified: now, priority: 1 },
-    { url: `${SITE}/locations`, lastModified: now, priority: 0.9 },
+    { url: `${SITE}/`, priority: 1 },
+    { url: `${SITE}/locations`, priority: 0.9 },
     {
       url: `${SITE}/locations/strawberry-tree`,
-      lastModified: now,
       priority: 0.85,
     },
-    { url: `${SITE}/about`, lastModified: now, priority: 0.8 },
-    { url: `${SITE}/seasonal-guide`, lastModified: now, priority: 0.85 },
+    { url: `${SITE}/about`, priority: 0.8 },
+    { url: `${SITE}/seasonal-guide`, priority: 0.85 },
   ];
 
   const speciesPages: MetadataRoute.Sitemap = allSpeciesNames()
     .filter((n) => species[n]?.edible)
     .map((n) => ({
       url: `${SITE}/species/${slugify(n)}`,
-      lastModified: now,
       priority: 0.7,
     }));
 
   const cityPages: MetadataRoute.Sitemap = cityHarvests.map((city) => ({
     url: `${SITE}/locations/${city.slug}`,
-    lastModified: now,
     priority: 0.8,
   }));
 
   const treePages: MetadataRoute.Sitemap = trees.map((t) => ({
     url: `${SITE}/tree/${t.id}`,
-    lastModified: now,
     priority: 0.6,
   }));
 
