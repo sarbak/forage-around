@@ -18,7 +18,7 @@ import { cityHarvests } from "@/lib/city-harvests";
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: "Nearby fruit and what's ripe near you",
+  title: "Fruit near me: what's usually ripe nearby",
   description:
     "See what fruit and edible plants may be ripe near you this month, browse practical plant guides, and open the free Forage Around map.",
   alternates: {
