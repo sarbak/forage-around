@@ -1,7 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { allSpeciesNames, species, slugify } from "@/lib/data";
 import { Credits, APP_URL } from "./components";
 import { SeoHomeViewed, ToAppLink } from "./analytics";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "https://foragearound.com/",
+  },
+};
 
 export default function Home() {
   const names = allSpeciesNames()
