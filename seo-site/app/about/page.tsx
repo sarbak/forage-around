@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Credits, APP_URL } from "../components";
 import { AboutPageViewed, ToAppLink } from "../analytics";
 
@@ -6,6 +7,9 @@ export const metadata: Metadata = {
   title: "Where the data comes from",
   description:
     "The data behind Forage Around: tree locations from Falling Fruit, plant photos and descriptions from Wikipedia, and maps from OpenStreetMap.",
+  alternates: {
+    canonical: "https://foragearound.com/about",
+  },
 };
 
 export default function About() {
@@ -57,7 +61,13 @@ export default function About() {
       <p style={{ margin: "22px 0" }}>
         <ToAppLink className="btn" href={APP_URL} from="about">
           Open the live map →
-        </ToAppLink>
+        </ToAppLink>{" "}
+        <Link className="btn-outline" href="/locations">
+          Find nearby harvests
+        </Link>{" "}
+        <Link className="btn-outline" href="/seasonal-guide">
+          See what may be in season
+        </Link>
       </p>
 
       <Credits />
