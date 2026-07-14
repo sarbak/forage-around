@@ -17,7 +17,10 @@ export const revalidate = 86400;
 export const metadata: Metadata = {
   title: "What fruit is ripe now | Forage Around",
   description:
-    "A month-by-month guide to fruit, herbs, and greens that may be ripe near you, with links to Forage Around plant guides and the live map.",
+    "See which fruit, herbs, and greens may be in season nearby, then use the free Forage Around map to check reported edible plants near you.",
+  alternates: {
+    canonical: "/seasonal-guide",
+  },
 };
 
 type SeasonalItem = {
