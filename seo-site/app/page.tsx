@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { allSpeciesNames, species, slugify } from "@/lib/data";
+import { SITE_ORIGIN } from "@/lib/site-origin";
 import { Credits, APP_URL } from "./components";
 import { SeoHomeViewed, ToAppLink } from "./analytics";
 
 export const metadata: Metadata = {
   alternates: {
-    canonical: "https://foragearound.com/",
+    canonical: `${SITE_ORIGIN}/`,
   },
 };
 

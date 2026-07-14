@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SITE_ORIGIN } from "@/lib/site-origin";
 import { Credits, APP_URL } from "../components";
 import { AboutPageViewed, ToAppLink } from "../analytics";
 
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
   description:
     "The data behind Forage Around: tree locations from Falling Fruit, plant photos and descriptions from Wikipedia, and maps from OpenStreetMap.",
   alternates: {
-    canonical: "https://foragearound.com/about",
+    canonical: `${SITE_ORIGIN}/about`,
   },
 };
 

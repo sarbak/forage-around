@@ -3,6 +3,7 @@ import { Fraunces } from "next/font/google";
 import "./globals.css";
 import { SiteHeader, SiteFooter } from "./components";
 import { PostHogProvider } from "./PostHogProvider";
+import { SITE_ORIGIN } from "@/lib/site-origin";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -11,17 +12,14 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://forage-around-seo.vercel.app";
-
 // Favicon/apple-touch-icon live only in this seo-site's /public. When the HTML
 // is proxied through foragearound.com, a root-relative path would 404 there, so
 // reference them on the seo origin directly. (OG/canonical URLs intentionally
-// stay on SITE_URL via metadataBase below.)
+// stay on SITE_ORIGIN via metadataBase below.)
 const SEO_ORIGIN = "https://forage-around-seo.vercel.app";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
+  metadataBase: new URL(SITE_ORIGIN),
   title: {
     default: "Forage Around | Free urban foraging map",
     template: "%s · Forage Around",
