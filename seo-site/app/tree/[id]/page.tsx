@@ -89,6 +89,9 @@ export async function generateMetadata({
   return {
     title,
     description: `A ${speciesName.toLowerCase()} from the Falling Fruit foraging map.`,
+    alternates: {
+      canonical: `/tree/${id}`,
+    },
   };
 }
 

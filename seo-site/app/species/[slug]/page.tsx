@@ -42,6 +42,9 @@ export async function generateMetadata({
     description:
       `${name}${when ? ` is ripe around ${when}.` : "."} ` +
       (s?.note || "When to pick it, what part to eat, and ways to keep it."),
+    alternates: {
+      canonical: `/species/${slug}`,
+    },
   };
 }
 
