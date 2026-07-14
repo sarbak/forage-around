@@ -1,11 +1,9 @@
 import type { MetadataRoute } from "next";
-
-const SITE =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://forage-around-seo.vercel.app";
+import { SITE_ORIGIN } from "@/lib/site-origin";
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [{ userAgent: "*", allow: "/" }],
-    sitemap: `${SITE}/sitemap.xml`,
+    sitemap: `${SITE_ORIGIN}/sitemap.xml`,
   };
 }
