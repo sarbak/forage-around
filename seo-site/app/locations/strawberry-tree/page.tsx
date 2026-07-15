@@ -73,7 +73,7 @@ export default function StrawberryTreeLocationsPage() {
 
       <p style={{ margin: "22px 0" }}>
         <ToAppLink className="btn" href={MAP_URL} from="locations">
-          Search the live map →
+          Open the Strawberry tree map
         </ToAppLink>{" "}
         <Link className="btn-outline" href="/species/strawberry-tree">
           Read the plant guide
