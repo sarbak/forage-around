@@ -40,6 +40,8 @@ import MapView from "./src/MapView";
 import { track } from "./src/analytics";
 import {
   EMAIL_SIGNUP_CONSENT,
+  emailSignupSuccessProperties,
+  isControlledSignupTestRun,
   shouldShowEmailSignup,
   validEmail,
 } from "./src/emailSignup";
@@ -146,6 +148,16 @@ function readReferralParams(): ReferralParams {
     }, {});
   } catch {
     return {};
+  }
+}
+
+function readSignupTestRun(): boolean {
+  if (Platform.OS !== "web" || typeof window === "undefined") return false;
+  try {
+    const url = new URL(window.location.href);
+    return isControlledSignupTestRun(url.searchParams.get("test_run"));
+  } catch {
+    return false;
   }
 }
 
@@ -882,7 +894,10 @@ function SubmitModal({
         setEmailErr("That didn't save. Check the address and try again.");
         return;
       }
-      track("email_signup_success", signupContext);
+      track(
+        "email_signup_success",
+        emailSignupSuccessProperties(signupContext, readSignupTestRun())
+      );
       setEmail("");
       setEmailDone(true);
     } catch {
