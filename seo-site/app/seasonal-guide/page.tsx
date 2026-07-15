@@ -15,7 +15,7 @@ import { APP_URL, Credits } from "../components";
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: "What fruit is ripe now | Forage Around",
+  title: "What can I forage near me right now?",
   description:
     "See which fruit, herbs, and greens may be in season nearby, then use the free Forage Around map to check reported edible plants near you.",
   alternates: {
@@ -74,7 +74,7 @@ export default function SeasonalGuide() {
     <>
       <SeasonalGuidePageViewed />
       <p className="kicker">Seasonal foraging guide</p>
-      <h1 className="title">What fruit is ripe now?</h1>
+      <h1 className="title">What can I forage near me right now?</h1>
       <p className="lead">
         Start with the plants that are usually in season this month, then open
         the live map to see what may be growing near you. Seasons vary by
