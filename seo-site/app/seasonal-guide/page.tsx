@@ -81,11 +81,14 @@ export default function SeasonalGuide() {
         weather and neighborhood, so treat this as a useful starting point.
       </p>
 
-      <p style={{ margin: "22px 0" }}>
+      <div className="locations-actions">
         <ToAppLink className="btn" href={APP_URL} from="seasonal_guide">
           Open seasonal finds on the map →
         </ToAppLink>
-      </p>
+        <small className="locations-availability-note muted">
+          Season windows are typical, not a ripeness check
+        </small>
+      </div>
 
       <h2 className="section">Likely ripe in {currentMonthName}</h2>
       <p className="muted">
