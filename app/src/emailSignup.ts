@@ -20,6 +20,20 @@ export type EmailSignupRow = NewEmailSignup & {
   created_at: string;
 };
 
+export function isControlledSignupTestRun(value: string | null | undefined): boolean {
+  return value === "true";
+}
+
+export function emailSignupSuccessProperties(
+  context: Record<string, unknown>,
+  testRun: boolean
+): Record<string, unknown> & { test_run: boolean } {
+  return {
+    ...context,
+    test_run: testRun,
+  };
+}
+
 export function shouldShowEmailSignup(sourceAction: string): boolean {
   return sourceAction === EMAIL_SIGNUP_TRIGGER;
 }
