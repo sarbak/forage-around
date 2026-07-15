@@ -86,14 +86,17 @@ export default function LocationsPage() {
         each plant, then open the map to search around your address.
       </p>
 
-      <p style={{ margin: "22px 0" }}>
+      <div className="locations-actions">
         <ToAppLink className="btn" href={APP_URL} from="locations">
           Search the live map →
-        </ToAppLink>{" "}
+        </ToAppLink>
+        <small className="locations-availability-note muted">
+          Reports are a starting point, not live availability
+        </small>
         <Link className="btn-outline" href="/seasonal-guide">
           See the full season guide
         </Link>
-      </p>
+      </div>
 
       <div className="card">
         <p style={{ marginTop: 0 }}>
