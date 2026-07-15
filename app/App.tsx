@@ -448,6 +448,7 @@ function Landing({
             <Text style={styles.addrGoText}>Go</Text>
           </Pressable>
         </View>
+        <Text style={styles.noLogin}>No account needed</Text>
         {!!geoError && <Text style={styles.geoError}>{geoError}</Text>}
       </View>
 
