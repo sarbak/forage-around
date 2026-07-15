@@ -233,6 +233,18 @@ ul.clean li {
   font-size: 15px;
 }
 
+.locations-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  margin: 22px 0;
+}
+.locations-availability-note {
+  max-width: 190px;
+  line-height: 1.35;
+}
+
 .photo {
   width: 100%;
   height: auto;
