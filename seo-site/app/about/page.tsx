@@ -24,6 +24,8 @@ export default function About() {
         Forage Around is a map of reported fruit trees and edible plants near
         you. None of the underlying data is ours, so here is exactly where each
         piece comes from.
+        <br />
+        Free, no account needed
       </p>
 
       <p>
