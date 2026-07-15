@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   EMAIL_SIGNUP_CONSENT,
-  emailSignupSuccessProperties,
+  emailSignupAnalyticsProperties,
   isControlledSignupTestRun,
   shouldShowEmailSignup,
   validEmail,
@@ -36,7 +36,7 @@ test("marks only an explicit controlled signup test", () => {
   assert.equal(isControlledSignupTestRun(null), false);
 });
 
-test("keeps signup attribution while distinguishing real and controlled events", () => {
+test("keeps signup attribution while distinguishing real and controlled analytics", () => {
   const attribution = {
     source_action: "walk_here",
     submission_kind: "observation",
@@ -46,11 +46,11 @@ test("keeps signup attribution while distinguishing real and controlled events",
     ref: "resource_page",
   };
 
-  assert.deepEqual(emailSignupSuccessProperties(attribution, false), {
+  assert.deepEqual(emailSignupAnalyticsProperties(attribution, false), {
     ...attribution,
     test_run: false,
   });
-  assert.deepEqual(emailSignupSuccessProperties(attribution, true), {
+  assert.deepEqual(emailSignupAnalyticsProperties(attribution, true), {
     ...attribution,
     test_run: true,
   });

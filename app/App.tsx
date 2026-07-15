@@ -40,7 +40,7 @@ import MapView from "./src/MapView";
 import { track } from "./src/analytics";
 import {
   EMAIL_SIGNUP_CONSENT,
-  emailSignupSuccessProperties,
+  emailSignupAnalyticsProperties,
   isControlledSignupTestRun,
   shouldShowEmailSignup,
   validEmail,
@@ -765,15 +765,18 @@ function SubmitModal({
     if (!target || !shouldShowEmailSignup(target.source)) return;
     track(
       "email_signup_prompt_viewed",
-      withMapSource(
-        target.map_source ?? null,
-        {
-          source_action: target.source,
-          submission_kind: target.kind,
-          species: target.species ?? null,
-          ff_location_id: target.ff_location_id ?? null,
-        },
-        referralParams
+      emailSignupAnalyticsProperties(
+        withMapSource(
+          target.map_source ?? null,
+          {
+            source_action: target.source,
+            submission_kind: target.kind,
+            species: target.species ?? null,
+            ff_location_id: target.ff_location_id ?? null,
+          },
+          referralParams
+        ),
+        readSignupTestRun()
       )
     );
   }, [target, referralParams]);
@@ -896,7 +899,7 @@ function SubmitModal({
       }
       track(
         "email_signup_success",
-        emailSignupSuccessProperties(signupContext, readSignupTestRun())
+        emailSignupAnalyticsProperties(signupContext, readSignupTestRun())
       );
       setEmail("");
       setEmailDone(true);
