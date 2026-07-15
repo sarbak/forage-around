@@ -24,7 +24,7 @@ export function isControlledSignupTestRun(value: string | null | undefined): boo
   return value === "true";
 }
 
-export function emailSignupSuccessProperties(
+export function emailSignupAnalyticsProperties(
   context: Record<string, unknown>,
   testRun: boolean
 ): Record<string, unknown> & { test_run: boolean } {
