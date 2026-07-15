@@ -66,6 +66,10 @@ export default async function CityHarvestPage({ params }: PageProps) {
 
   const plants = plantsForCity(city);
   const mapHref = `${APP_URL}?ref=nearby_harvest_${city.slug}`;
+  const mapActionLabel =
+    city.slug === "seattle"
+      ? "Open the Seattle foraging map"
+      : `Open the map and search ${city.name} →`;
 
   return (
     <>
@@ -85,7 +89,7 @@ export default async function CityHarvestPage({ params }: PageProps) {
 
       <p style={{ margin: "22px 0" }}>
         <ToAppLink className="btn" href={mapHref} from="locations">
-          Open the map and search {city.name} →
+          {mapActionLabel}
         </ToAppLink>{" "}
         <Link className="btn-outline" href="/seasonal-guide">
           Check the seasonal guide
