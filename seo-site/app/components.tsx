@@ -39,7 +39,7 @@ export function SiteFooter() {
           href={`mailto:${SUPPORT_EMAIL}`}
           surface="site_footer"
         >
-          {SUPPORT_EMAIL}
+          Email Forage Around
         </SupportEmailLink>{" "}
         ·{" "}
         <a className="tin-credit" href="https://tin.computer" rel="noopener">
