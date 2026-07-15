@@ -184,6 +184,12 @@ export default async function TreePage({
             </MoreAboutLink>
           </>
         ) : null}
+        <span
+          className="muted"
+          style={{ display: "block", marginTop: 8, fontSize: 14 }}
+        >
+          Verify the plant and access before harvesting
+        </span>
       </p>
 
       {photo ? (
