@@ -12,6 +12,9 @@ export function SiteHeader() {
           <span>🍐</span> Forage Around
         </Link>
         <div className="header-actions">
+          <Link className="header-link" href="/seasonal-guide">
+            In season now
+          </Link>
           <Link className="header-link" href="/locations">
             Find nearby
           </Link>
@@ -29,6 +32,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="wrap">
         Forage Around — a quiet map of the urban harvest.{" "}
+        <Link href="/seasonal-guide">What&apos;s in season</Link> ·{" "}
         <Link href="/locations">Find nearby harvests</Link> ·{" "}
         <ToAppLink href={APP_URL} from="nav_footer">
           Open the live map

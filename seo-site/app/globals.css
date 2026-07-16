@@ -100,6 +100,17 @@ a:hover {
   color: var(--white);
 }
 
+@media (max-width: 520px) {
+  .site-header .wrap {
+    flex-wrap: wrap;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
 main {
   padding-top: 28px;
   padding-bottom: 56px;
@@ -230,6 +241,19 @@ ul.clean li {
   border-radius: 999px;
   text-decoration: none;
   font-weight: 600;
+  font-size: 15px;
+}
+
+.home-primary-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 22px 0 10px;
+}
+
+.home-secondary-actions {
+  margin: 0 0 18px;
   font-size: 15px;
 }
 

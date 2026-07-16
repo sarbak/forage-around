@@ -31,16 +31,17 @@ export default function Home() {
         permission before picking.
       </p>
 
-      <p style={{ margin: "22px 0" }}>
+      <div className="home-primary-actions">
         <ToAppLink className="btn" href={APP_URL} from="home">
           Open the map near me →
-        </ToAppLink>{" "}
-        <Link className="btn-outline" href="/locations">
-          Find nearby harvests
-        </Link>{" "}
-        <Link className="btn-outline" href="/about">
-          Where the data comes from
+        </ToAppLink>
+        <Link className="btn-outline" href="/seasonal-guide">
+          See what&apos;s in season near me
         </Link>
+      </div>
+      <p className="home-secondary-actions muted">
+        <Link href="/locations">Find nearby harvests</Link> ·{" "}
+        <Link href="/about">Where the data comes from</Link>
       </p>
       <p className="muted">
         Locations are crowd-sourced starting points. Confirm the plant and

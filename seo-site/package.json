@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "check:seasonal-discoverability": "node scripts/check-seasonal-discoverability.mjs",
     "check:search-origin": "node scripts/check-search-origin.mjs",
     "check:sitemap": "node scripts/check-sitemap.mjs",
     "check:www-redirect": "node scripts/check-www-redirect.mjs",

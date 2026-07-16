@@ -14,12 +14,26 @@ import { APP_URL, Credits } from "../components";
 
 export const revalidate = 86400;
 
+const META_TITLE = "What can I forage near me right now? | Forage Around";
+const META_DESCRIPTION =
+  "See which fruit, herbs, and greens may be in season nearby, then use the free Forage Around map to check reported edible plants near you.";
+
 export const metadata: Metadata = {
   title: "What can I forage near me right now?",
-  description:
-    "See which fruit, herbs, and greens may be in season nearby, then use the free Forage Around map to check reported edible plants near you.",
+  description: META_DESCRIPTION,
   alternates: {
     canonical: "/seasonal-guide",
+  },
+  openGraph: {
+    type: "website",
+    title: META_TITLE,
+    description: META_DESCRIPTION,
+    url: "/seasonal-guide",
+  },
+  twitter: {
+    card: "summary",
+    title: META_TITLE,
+    description: META_DESCRIPTION,
   },
 };
 
