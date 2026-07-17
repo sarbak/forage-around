@@ -34,6 +34,40 @@ if (countLinks(seasonalGuide, "/seasonal-guide") < 2) {
   );
 }
 
+const orientationIndex = seasonalGuide.indexOf("Before you use the map");
+const mapLinkIndex = seasonalGuide.indexOf(
+  "https://foragearound.com/?map_source=seasonal_guide",
+);
+
+if (
+  orientationIndex === -1 ||
+  mapLinkIndex === -1 ||
+  orientationIndex > mapLinkIndex
+) {
+  throw new Error(
+    "Seasonal confidence cues must render before the attributed map handoff.",
+  );
+}
+
+for (const expectedCue of [
+  "reported leads",
+  "season windows are typical",
+  "plant&#x27;s identity",
+  "public access or permission",
+]) {
+  if (!seasonalGuide.includes(expectedCue)) {
+    throw new Error(`Seasonal guide is missing confidence cue: ${expectedCue}`);
+  }
+}
+
+for (const expectedStatus of ["Peaking now", "Likely in season"]) {
+  if (!seasonalGuide.includes(`species-season-status\">${expectedStatus}`)) {
+    throw new Error(
+      `Current-month plant cards are missing status: ${expectedStatus}`,
+    );
+  }
+}
+
 const canonical = seasonalGuide.match(
   /<link rel="canonical" href="([^"]+)"\/>/,
 )?.[1];
@@ -71,5 +105,5 @@ if (
 }
 
 console.log(
-  "Seasonal discoverability check passed: homepage and shared navigation links render, canonical is preserved, and sharing metadata matches the near-me promise.",
+  "Seasonal discoverability check passed: confidence cues precede the attributed map handoff, current plants show season status, navigation links render, and sharing metadata matches the near-me promise.",
 );
