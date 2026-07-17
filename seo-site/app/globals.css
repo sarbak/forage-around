@@ -269,6 +269,21 @@ ul.clean li {
   line-height: 1.35;
 }
 
+.seasonal-orientation {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--forest);
+  border-radius: 12px;
+  margin: 20px 0 0;
+  padding: 14px 16px;
+}
+.seasonal-orientation p {
+  margin: 3px 0 0;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
 .photo {
   width: 100%;
   height: auto;
@@ -341,6 +356,15 @@ ul.clean li {
 .species-grid a:hover {
   border-color: var(--forest);
   color: var(--ink);
+}
+.species-grid-label {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+.species-season-status {
+  color: var(--ink-soft);
+  font-weight: 500;
 }
 
 small {

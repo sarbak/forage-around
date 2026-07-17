@@ -60,13 +60,28 @@ function monthNumber() {
   return new Date().getUTCMonth() + 1;
 }
 
-function SpeciesGrid({ items }: { items: SeasonalItem[] }) {
+function SpeciesGrid({
+  items,
+  statusMonth,
+}: {
+  items: SeasonalItem[];
+  statusMonth?: number;
+}) {
   return (
     <div className="species-grid">
       {items.map(({ name, details }) => (
         <Link key={name} href={`/species/${slugify(name)}`}>
-          <span>{details.emoji ?? "🌿"}</span>
-          <span>{name}</span>
+          <span aria-hidden="true">{details.emoji ?? "🌿"}</span>
+          <span className="species-grid-label">
+            <span>{name}</span>
+            {statusMonth ? (
+              <small className="species-season-status">
+                {details.peak?.includes(statusMonth)
+                  ? "Peaking now"
+                  : "Likely in season"}
+              </small>
+            ) : null}
+          </span>
         </Link>
       ))}
     </div>
@@ -95,6 +110,15 @@ export default function SeasonalGuide() {
         weather and neighborhood, so treat this as a useful starting point.
       </p>
 
+      <div className="seasonal-orientation" aria-label="Before you use the map">
+        <strong>Before you use the map</strong>
+        <p>
+          Locations are reported leads, and season windows are typical, not a
+          ripeness guarantee. Confirm the plant&apos;s identity and public access
+          or permission before harvesting.
+        </p>
+      </div>
+
       <div className="locations-actions">
         <ToAppLink className="btn" href={APP_URL} from="seasonal_guide">
           Open seasonal finds on the map →
@@ -110,7 +134,7 @@ export default function SeasonalGuide() {
         their usual season window. Confirm the plant and picking rules before
         harvesting.
       </p>
-      <SpeciesGrid items={currentItems} />
+      <SpeciesGrid items={currentItems} statusMonth={currentMonth} />
 
       <p className="muted">
         Looking for a place to start? Read the{" "}
