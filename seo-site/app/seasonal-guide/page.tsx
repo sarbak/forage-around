@@ -77,8 +77,8 @@ function SpeciesGrid({
             {statusMonth ? (
               <small className="species-season-status">
                 {details.peak?.includes(statusMonth)
-                  ? "Typical peak this month"
-                  : "Likely in season"}
+                  ? `Typical peak in ${MONTHS[statusMonth - 1]}`
+                  : `Broader season includes ${MONTHS[statusMonth - 1]}`}
               </small>
             ) : null}
           </span>
@@ -102,20 +102,23 @@ export default function SeasonalGuide() {
   return (
     <>
       <SeasonalGuidePageViewed />
-      <p className="kicker">Seasonal foraging guide</p>
+      <p className="kicker">
+        Seasonal foraging guide · {currentMonthName}
+      </p>
       <h1 className="title">What can I forage near me right now?</h1>
       <p className="lead">
-        Start with the plants that are usually in season this month, then open
-        the live map to see what may be growing near you. Seasons vary by
-        weather and neighborhood, so treat this as a useful starting point.
+        Start with plants whose typical season includes {currentMonthName}, then
+        open the live map to check reported locations near you. This calendar is
+        tuned for temperate and Mediterranean climates; weather and neighborhood
+        conditions can move a season earlier or later.
       </p>
 
       <div className="seasonal-orientation" aria-label="Before you use the map">
         <strong>Before you use the map</strong>
         <p>
-          Locations are reported leads, and season windows are typical, not a
-          ripeness guarantee. Confirm the plant&apos;s identity and public access
-          or permission before harvesting.
+          Locations are reported leads, and season windows are typical. A month
+          or peak label is not a local ripeness guarantee. Confirm the
+          plant&apos;s identity and public access or permission before harvesting.
         </p>
       </div>
 
@@ -124,15 +127,18 @@ export default function SeasonalGuide() {
           Open seasonal finds on the map →
         </ToAppLink>
         <small className="locations-availability-note muted">
-          Season windows are typical, not a ripeness check
+          Reported locations do not confirm ripeness
         </small>
       </div>
 
       <h2 className="section">Likely in season in {currentMonthName}</h2>
       <p className="muted">
-        These guide entries include {currentMonthName} in their typical season
-        window. The month label does not confirm identity, edibility, or local
-        ripeness, so check the linked species information before harvesting.
+        <strong>Typical peak in {currentMonthName}</strong> marks the narrower
+        peak window in the guide data. <strong>Broader season includes{" "}
+        {currentMonthName}</strong> means the plant&apos;s usual season spans this
+        month without listing it as a peak. These labels do not confirm identity,
+        edibility, or local ripeness, so check the linked species information
+        before harvesting.
       </p>
       <SpeciesGrid items={currentItems} statusMonth={currentMonth} />
 
@@ -147,8 +153,9 @@ export default function SeasonalGuide() {
         <>
           <h2 className="section">Typical peak this month</h2>
           <p className="muted">
-            These entries list {currentMonthName} as a typical peak month. Use
-            the species page to learn more before opening the map.
+            These entries list {currentMonthName} as a typical peak month in the
+            climate-tuned calendar. Local timing may run earlier or later, so
+            use the species page to learn more before opening the map.
           </p>
           <SpeciesGrid items={peakNow} />
         </>
@@ -157,7 +164,8 @@ export default function SeasonalGuide() {
       <h2 className="section">Month-by-month guide</h2>
       <p className="muted">
         Use the full calendar when you are planning ahead or checking whether a
-        tree is likely early, late, or out of season.
+        tree is likely early, late, or out of season. These are typical windows,
+        not local forecasts.
       </p>
 
       {MONTHS.map((month, index) => {
@@ -180,7 +188,10 @@ export default function SeasonalGuide() {
 
       <h2 className="section">How to use this responsibly</h2>
       <ul className="clean">
-        <li>Use the season window to decide what is worth looking for today.</li>
+        <li>
+          Use the season window to decide what is worth checking today, not as a
+          report that a mapped plant is ready.
+        </li>
         <li>
           Use the linked description and photo as a starting point, then verify
           the plant and edible part with a trusted local source.

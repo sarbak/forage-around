@@ -55,6 +55,8 @@ for (const expectedCue of [
   "season windows are typical",
   "plant&#x27;s identity",
   "public access or permission",
+  "tuned for temperate and Mediterranean climates",
+  "Reported locations do not confirm ripeness",
 ]) {
   if (!seasonalGuide.includes(expectedCue)) {
     throw new Error(`Seasonal guide is missing confidence cue: ${expectedCue}`);
@@ -62,12 +64,26 @@ for (const expectedCue of [
 }
 
 for (const expectedStatus of [
-  "Typical peak this month",
-  "Likely in season",
+  "Typical peak in",
+  "Broader season includes",
 ]) {
   if (!seasonalGuide.includes(`species-season-status\">${expectedStatus}`)) {
     throw new Error(
       `Current-month plant cards are missing status: ${expectedStatus}`,
+    );
+  }
+}
+
+for (const expectedFreshnessCue of [
+  "marks the narrower peak window in the guide data",
+  "without listing it as a peak",
+  "Local timing may run earlier or later",
+  "These are typical windows, not local forecasts",
+  "not as a report that a mapped plant is ready",
+]) {
+  if (!seasonalGuide.includes(expectedFreshnessCue)) {
+    throw new Error(
+      `Seasonal guide is missing freshness cue: ${expectedFreshnessCue}`,
     );
   }
 }
@@ -109,7 +125,7 @@ if (
 }
 
 for (const expectedCue of [
-  "does not confirm identity, edibility, or local ripeness",
+  "do not confirm identity, edibility, or local ripeness",
   "verify the plant and edible part with a trusted local source",
   "If the details do not match or you are unsure, leave it",
 ]) {
