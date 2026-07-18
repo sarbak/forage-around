@@ -50,11 +50,39 @@ if (
   );
 }
 
+const orientationMarkup = seasonalGuide.match(
+  /<div class="seasonal-orientation" aria-label="Before you use the map">([\s\S]*?)<\/div>/,
+)?.[1];
+
+if (!orientationMarkup) {
+  throw new Error("Seasonal guide must render its first-time orientation.");
+}
+
+if (
+  [...orientationMarkup.matchAll(/<p>/g)].length !== 1 ||
+  orientationMarkup.includes("<strong>") ||
+  orientationMarkup.includes("<a ")
+) {
+  throw new Error(
+    "Seasonal first-time orientation must stay one plain paragraph without a competing action.",
+  );
+}
+
+for (const expectedOrientationCue of [
+  "See which plants are typically in season",
+  "open the map to check reported locations near you",
+  "Season labels do not confirm ripeness or plant identity",
+  "reports do not establish ownership, public access, or permission to enter or pick",
+  "Verify the plant and site before harvesting",
+]) {
+  if (!orientationMarkup.includes(expectedOrientationCue)) {
+    throw new Error(
+      `Seasonal orientation is missing first-time cue: ${expectedOrientationCue}`,
+    );
+  }
+}
+
 for (const expectedCue of [
-  "reported leads",
-  "season windows are typical",
-  "plant&#x27;s identity",
-  "does not establish ownership, public access, or permission to enter or pick",
   "tuned for temperate and Mediterranean climates",
   "Reports do not confirm ripeness, public access, or permission to pick",
 ]) {
