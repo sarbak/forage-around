@@ -38,10 +38,10 @@ export async function generateMetadata({
   const s = getSpecies(name);
   const when = s ? seasonLabel(s) : null;
   return {
-    title: `Foraging ${name}: when it's ripe and what to make`,
+    title: `Foraging ${name}: typical season and guide notes`,
     description:
-      `${name}${when ? ` is ripe around ${when}.` : "."} ` +
-      (s?.note || "When to pick it, what part to eat, and ways to keep it."),
+      `See ${name}${when ? `'s typical season around ${when}` : " guide notes"}, ` +
+      "reported locations, and identification reminders before harvesting.",
     alternates: {
       canonical: `/species/${slug}`,
     },
@@ -95,6 +95,15 @@ export default async function SpeciesPage({
       <h1 className="title">Foraging {name}</h1>
       {s.note ? <p className="lead">{s.note}</p> : null}
 
+      <div className="seasonal-orientation" aria-label="Identification reminder">
+        <strong>Confirm before eating</strong>
+        <p>
+          This page is a starting point, not proof of identity or edibility.
+          Compare the plant with the linked Wikipedia description and a trusted
+          local source. If the details do not match or you are unsure, leave it.
+        </p>
+      </div>
+
       {photo ? (
         <div style={{ margin: "20px 0" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -103,16 +112,19 @@ export default async function SpeciesPage({
       ) : null}
 
       <div style={{ margin: "18px 0" }}>
-        {when ? <span className="pill">Ripe: {when}</span> : null}
-        {peak ? <span className="pill">Peak: {peak}</span> : null}
+        {when ? <span className="pill">Typical season: {when}</span> : null}
+        {peak ? <span className="pill">Typical peak: {peak}</span> : null}
         {s.part && s.part !== "—" ? (
-          <span className="pill">Eat the: {s.part}</span>
+          <span className="pill">Part noted: {s.part}</span>
         ) : null}
       </div>
 
       {s.uses && s.uses.length > 0 ? (
         <>
-          <h2 className="section">What to do with it</h2>
+          <h2 className="section">Guide ideas after identification</h2>
+          <p className="muted">
+            Use these ideas only after confirming the species and edible part.
+          </p>
           <ul className="clean">
             {s.uses.map((u, i) => (
               <li key={i}>{u}</li>
@@ -152,7 +164,7 @@ export default async function SpeciesPage({
 
       <p style={{ margin: "28px 0" }}>
         <ToAppLink className="btn" href={APP_URL} from="species">
-          Find {name} near you →
+          Check reported {name} locations →
         </ToAppLink>
         {" "}
         <Link className="btn-outline" href="/locations">

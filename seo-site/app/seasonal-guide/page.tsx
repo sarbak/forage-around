@@ -16,7 +16,7 @@ export const revalidate = 86400;
 
 const META_TITLE = "What can I forage near me right now? | Forage Around";
 const META_DESCRIPTION =
-  "See which fruit, herbs, and greens may be in season nearby, then use the free Forage Around map to check reported edible plants near you.";
+  "See which fruit, herbs, and greens may be in season nearby, then use the free Forage Around map to check reported plant locations near you.";
 
 export const metadata: Metadata = {
   title: "What can I forage near me right now?",
@@ -77,7 +77,7 @@ function SpeciesGrid({
             {statusMonth ? (
               <small className="species-season-status">
                 {details.peak?.includes(statusMonth)
-                  ? "Peaking now"
+                  ? "Typical peak this month"
                   : "Likely in season"}
               </small>
             ) : null}
@@ -128,11 +128,11 @@ export default function SeasonalGuide() {
         </small>
       </div>
 
-      <h2 className="section">Likely ripe in {currentMonthName}</h2>
+      <h2 className="section">Likely in season in {currentMonthName}</h2>
       <p className="muted">
-        These are the edible plants in the guide with {currentMonthName} in
-        their usual season window. Confirm the plant and picking rules before
-        harvesting.
+        These guide entries include {currentMonthName} in their typical season
+        window. The month label does not confirm identity, edibility, or local
+        ripeness, so check the linked species information before harvesting.
       </p>
       <SpeciesGrid items={currentItems} statusMonth={currentMonth} />
 
@@ -145,10 +145,10 @@ export default function SeasonalGuide() {
 
       {peakNow.length > 0 ? (
         <>
-          <h2 className="section">Peaking now</h2>
+          <h2 className="section">Typical peak this month</h2>
           <p className="muted">
-            These entries list {currentMonthName} as a peak month, so they are
-            especially good pages to check before opening the map.
+            These entries list {currentMonthName} as a typical peak month. Use
+            the species page to learn more before opening the map.
           </p>
           <SpeciesGrid items={peakNow} />
         </>
@@ -169,7 +169,7 @@ export default function SeasonalGuide() {
           <section className="card" key={month}>
             <h3 style={{ margin: "0 0 4px" }}>{month}</h3>
             <p className="muted" style={{ marginTop: 0 }}>
-              {monthItems.length} edible guide
+              {monthItems.length} guide
               {monthItems.length === 1 ? " entry" : " entries"} are usually in
               season.
             </p>
@@ -181,8 +181,13 @@ export default function SeasonalGuide() {
       <h2 className="section">How to use this responsibly</h2>
       <ul className="clean">
         <li>Use the season window to decide what is worth looking for today.</li>
+        <li>
+          Use the linked description and photo as a starting point, then verify
+          the plant and edible part with a trusted local source.
+        </li>
+        <li>If the details do not match or you are unsure, leave it.</li>
         <li>Open the live map when you are ready to check nearby locations.</li>
-        <li>Confirm the plant, local rules, and whether you are welcome to pick.</li>
+        <li>Confirm local rules and whether you are welcome to pick.</li>
       </ul>
 
       <Credits />
