@@ -17,9 +17,10 @@ function metaContent(html, attribute, value) {
   return html.match(pattern)?.[1];
 }
 
-const [homepage, seasonalGuide] = await Promise.all([
+const [homepage, seasonalGuide, appleGuide] = await Promise.all([
   readOutput("index.html"),
   readOutput("seasonal-guide.html"),
+  readOutput("species/apple.html"),
 ]);
 
 if (countLinks(homepage, "/seasonal-guide") < 3) {
@@ -60,7 +61,10 @@ for (const expectedCue of [
   }
 }
 
-for (const expectedStatus of ["Peaking now", "Likely in season"]) {
+for (const expectedStatus of [
+  "Typical peak this month",
+  "Likely in season",
+]) {
   if (!seasonalGuide.includes(`species-season-status\">${expectedStatus}`)) {
     throw new Error(
       `Current-month plant cards are missing status: ${expectedStatus}`,
@@ -78,7 +82,7 @@ if (canonical !== "https://foragearound.com/seasonal-guide") {
 
 const expectedTitle = "What can I forage near me right now? | Forage Around";
 const expectedDescription =
-  "See which fruit, herbs, and greens may be in season nearby, then use the free Forage Around map to check reported edible plants near you.";
+  "See which fruit, herbs, and greens may be in season nearby, then use the free Forage Around map to check reported plant locations near you.";
 
 if (metaContent(seasonalGuide, "property", "og:title") !== expectedTitle) {
   throw new Error("Seasonal guide Open Graph title is missing or incorrect.");
@@ -104,6 +108,52 @@ if (
   throw new Error("Seasonal guide Twitter description is missing or incorrect.");
 }
 
+for (const expectedCue of [
+  "does not confirm identity, edibility, or local ripeness",
+  "verify the plant and edible part with a trusted local source",
+  "If the details do not match or you are unsure, leave it",
+]) {
+  if (!seasonalGuide.includes(expectedCue)) {
+    throw new Error(`Seasonal guide is missing species cue: ${expectedCue}`);
+  }
+}
+
+for (const unsupportedClaim of [
+  "Likely ripe",
+  "reported edible plants",
+  "edible plants in the guide",
+  "edible guide",
+  "Peaking now",
+]) {
+  if (seasonalGuide.includes(unsupportedClaim)) {
+    throw new Error(
+      `Seasonal guide still contains an unsupported certainty claim: ${unsupportedClaim}`,
+    );
+  }
+}
+
+for (const expectedCue of [
+  "Confirm before eating",
+  "starting point, not proof of identity or edibility",
+  "Typical season:",
+  "Typical peak:",
+  "Part noted:",
+  "Guide ideas after identification",
+  "Check reported",
+]) {
+  if (!appleGuide.includes(expectedCue)) {
+    throw new Error(`Species guide is missing confidence cue: ${expectedCue}`);
+  }
+}
+
+for (const unsupportedClaim of ["Ripe:", "Eat the:", "Find Apple near you"]) {
+  if (appleGuide.includes(unsupportedClaim)) {
+    throw new Error(
+      `Species guide still contains an unsupported certainty claim: ${unsupportedClaim}`,
+    );
+  }
+}
+
 console.log(
-  "Seasonal discoverability check passed: confidence cues precede the attributed map handoff, current plants show season status, navigation links render, and sharing metadata matches the near-me promise.",
+  "Seasonal discoverability check passed: confidence cues precede the map handoff, species labels avoid unsupported certainty, navigation links render, and sharing metadata matches the near-me promise.",
 );
