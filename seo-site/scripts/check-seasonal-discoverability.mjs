@@ -54,12 +54,37 @@ for (const expectedCue of [
   "reported leads",
   "season windows are typical",
   "plant&#x27;s identity",
-  "public access or permission",
+  "does not establish ownership, public access, or permission to enter or pick",
   "tuned for temperate and Mediterranean climates",
-  "Reported locations do not confirm ripeness",
+  "Reports do not confirm ripeness, public access, or permission to pick",
 ]) {
   if (!seasonalGuide.includes(expectedCue)) {
     throw new Error(`Seasonal guide is missing confidence cue: ${expectedCue}`);
+  }
+}
+
+for (const expectedPermissionCue of [
+  "Species guides do not confirm access at a reported location",
+  "a marker does not establish ownership, public access, or picking rights",
+  "Before entering or picking, confirm land status, local rules, and permission",
+]) {
+  if (!seasonalGuide.includes(expectedPermissionCue)) {
+    throw new Error(
+      `Seasonal guide is missing permission cue: ${expectedPermissionCue}`,
+    );
+  }
+}
+
+for (const unsupportedAccessClaim of [
+  "public locations",
+  "public harvest locations",
+  "free to pick",
+  "permission granted",
+]) {
+  if (seasonalGuide.includes(unsupportedAccessClaim)) {
+    throw new Error(
+      `Seasonal guide still contains an unsupported access claim: ${unsupportedAccessClaim}`,
+    );
   }
 }
 
@@ -171,5 +196,5 @@ for (const unsupportedClaim of ["Ripe:", "Eat the:", "Find Apple near you"]) {
 }
 
 console.log(
-  "Seasonal discoverability check passed: confidence cues precede the map handoff, species labels avoid unsupported certainty, navigation links render, and sharing metadata matches the near-me promise.",
+  "Seasonal discoverability check passed: confidence and permission cues precede the map handoff, species labels avoid unsupported certainty, navigation links render, and sharing metadata matches the near-me promise.",
 );

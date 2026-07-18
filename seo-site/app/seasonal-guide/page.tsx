@@ -117,8 +117,10 @@ export default function SeasonalGuide() {
         <strong>Before you use the map</strong>
         <p>
           Locations are reported leads, and season windows are typical. A month
-          or peak label is not a local ripeness guarantee. Confirm the
-          plant&apos;s identity and public access or permission before harvesting.
+          or peak label is not a local ripeness guarantee. A report does not
+          establish ownership, public access, or permission to enter or pick.
+          Confirm the plant&apos;s identity, land status, local rules, and
+          permission before harvesting.
         </p>
       </div>
 
@@ -127,7 +129,7 @@ export default function SeasonalGuide() {
           Open seasonal finds on the map →
         </ToAppLink>
         <small className="locations-availability-note muted">
-          Reported locations do not confirm ripeness
+          Reports do not confirm ripeness, public access, or permission to pick
         </small>
       </div>
 
@@ -138,7 +140,8 @@ export default function SeasonalGuide() {
         {currentMonthName}</strong> means the plant&apos;s usual season spans this
         month without listing it as a peak. These labels do not confirm identity,
         edibility, or local ripeness, so check the linked species information
-        before harvesting.
+        before harvesting. Species guides do not confirm access at a reported
+        location.
       </p>
       <SpeciesGrid items={currentItems} statusMonth={currentMonth} />
 
@@ -146,7 +149,7 @@ export default function SeasonalGuide() {
         Looking for a place to start? Read the{" "}
         <Link href="/species/plum">Plum guide</Link> or the{" "}
         <Link href="/species/apple">Apple guide</Link>, then browse all{" "}
-        <Link href="/locations">nearby harvest guides</Link>.
+        <Link href="/locations">nearby location guides</Link>.
       </p>
 
       {peakNow.length > 0 ? (
@@ -197,8 +200,14 @@ export default function SeasonalGuide() {
           the plant and edible part with a trusted local source.
         </li>
         <li>If the details do not match or you are unsure, leave it.</li>
-        <li>Open the live map when you are ready to check nearby locations.</li>
-        <li>Confirm local rules and whether you are welcome to pick.</li>
+        <li>
+          Open the live map when you are ready to check nearby reports; a marker
+          does not establish ownership, public access, or picking rights.
+        </li>
+        <li>
+          Before entering or picking, confirm land status, local rules, and
+          permission from whoever controls the site.
+        </li>
       </ul>
 
       <Credits />
