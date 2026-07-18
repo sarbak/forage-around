@@ -114,13 +114,12 @@ export default function SeasonalGuide() {
       </p>
 
       <div className="seasonal-orientation" aria-label="Before you use the map">
-        <strong>Before you use the map</strong>
         <p>
-          Locations are reported leads, and season windows are typical. A month
-          or peak label is not a local ripeness guarantee. A report does not
-          establish ownership, public access, or permission to enter or pick.
-          Confirm the plant&apos;s identity, land status, local rules, and
-          permission before harvesting.
+          See which plants are typically in season, then open the map to check
+          reported locations near you. Season labels do not confirm ripeness or
+          plant identity, and reports do not establish ownership, public access,
+          or permission to enter or pick. Verify the plant and site before
+          harvesting.
         </p>
       </div>
 
