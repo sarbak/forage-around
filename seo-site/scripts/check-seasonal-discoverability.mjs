@@ -17,6 +17,20 @@ function metaContent(html, attribute, value) {
   return html.match(pattern)?.[1];
 }
 
+function textContent(markup) {
+  return markup
+    .replace(/<[^>]+>/g, "")
+    .replaceAll("&amp;", "&")
+    .replaceAll("&apos;", "'")
+    .trim();
+}
+
+function headings(html) {
+  return [...html.matchAll(/<(h[1-3])[^>]*>([\s\S]*?)<\/\1>/g)].map(
+    ([, tag, content]) => ({ level: Number(tag[1]), text: textContent(content) }),
+  );
+}
+
 const [homepage, seasonalGuide, appleGuide] = await Promise.all([
   readOutput("index.html"),
   readOutput("seasonal-guide.html"),
@@ -150,8 +164,60 @@ if (canonical !== "https://foragearound.com/seasonal-guide") {
 }
 
 const expectedTitle = "What can I forage near me right now? | Forage Around";
+const expectedTitleTag =
+  "What can I forage near me right now? · Forage Around";
 const expectedDescription =
   "See which fruit, herbs, and greens may be in season nearby, then use the free Forage Around map to check reported plant locations near you.";
+
+const titleTag = seasonalGuide.match(/<title>([^<]+)<\/title>/)?.[1];
+
+if (titleTag !== expectedTitleTag) {
+  throw new Error(
+    "Seasonal guide title tag no longer matches the near-me intent.",
+  );
+}
+
+if (
+  metaContent(seasonalGuide, "name", "description") !== expectedDescription
+) {
+  throw new Error(
+    "Seasonal guide meta description no longer explains the seasonal guide and map handoff.",
+  );
+}
+
+const currentMonth = new Intl.DateTimeFormat("en", {
+  month: "long",
+  timeZone: "UTC",
+}).format(new Date());
+const expectedHeadings = [
+  { level: 1, text: "What can I forage near me right now?" },
+  { level: 2, text: `Likely in season in ${currentMonth}` },
+  { level: 2, text: "Typical peak this month" },
+  { level: 2, text: "Month-by-month guide" },
+  ...[
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ].map((text) => ({ level: 3, text })),
+  { level: 2, text: "How to use this responsibly" },
+];
+
+if (
+  JSON.stringify(headings(seasonalGuide)) !== JSON.stringify(expectedHeadings)
+) {
+  throw new Error(
+    "Seasonal guide heading hierarchy no longer moves cleanly from the near-me H1 through current, calendar, and responsible-use sections.",
+  );
+}
 
 if (metaContent(seasonalGuide, "property", "og:title") !== expectedTitle) {
   throw new Error("Seasonal guide Open Graph title is missing or incorrect.");
@@ -224,5 +290,5 @@ for (const unsupportedClaim of ["Ripe:", "Eat the:", "Find Apple near you"]) {
 }
 
 console.log(
-  "Seasonal discoverability check passed: confidence and permission cues precede the map handoff, species labels avoid unsupported certainty, navigation links render, and sharing metadata matches the near-me promise.",
+  "Seasonal discoverability check passed: the title, description, and heading hierarchy match the near-me promise; confidence and permission cues precede the map handoff; and navigation and sharing metadata remain intact.",
 );
