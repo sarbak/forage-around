@@ -40,6 +40,11 @@ import MapView from "./src/MapView";
 import { track } from "./src/analytics";
 import { readInitialLocationQuery } from "./src/webEntry";
 import {
+  speciesContextForEntry,
+  speciesContextFromHref,
+  withWebAttribution,
+} from "./src/webAttribution";
+import {
   EMAIL_SIGNUP_CONSENT,
   emailSignupAnalyticsProperties,
   isControlledSignupTestRun,
@@ -62,6 +67,7 @@ type SubmitTarget = {
   map_source?: string | null;
   ff_location_id?: string | null;
   species?: string | null;
+  species_context?: string | null;
   lat?: number | null;
   lng?: number | null;
 } | null;
@@ -152,6 +158,29 @@ function readReferralParams(): ReferralParams {
   }
 }
 
+function readSpeciesContext(): string | null {
+  if (Platform.OS !== "web" || typeof window === "undefined") return null;
+  try {
+    const url = new URL(window.location.href);
+    const direct = speciesContextFromHref(url.toString());
+    if (direct) {
+      window.sessionStorage?.setItem("forage_species_context", direct);
+      return direct;
+    }
+
+    if (url.searchParams.has("map_source")) {
+      window.sessionStorage?.removeItem("forage_species_context");
+      return null;
+    }
+
+    const stored =
+      window.sessionStorage?.getItem("forage_species_context") || null;
+    return speciesContextForEntry(url.toString(), stored);
+  } catch {
+    return null;
+  }
+}
+
 function readSignupTestRun(): boolean {
   if (Platform.OS !== "web" || typeof window === "undefined") return false;
   try {
@@ -165,13 +194,10 @@ function readSignupTestRun(): boolean {
 function withMapSource(
   source: string | null,
   props: Record<string, unknown>,
-  referralParams: ReferralParams = {}
+  referralParams: ReferralParams = {},
+  speciesContext: string | null = null,
 ) {
-  return {
-    ...props,
-    ...(source ? { map_source: source } : {}),
-    ...referralParams,
-  };
+  return withWebAttribution(source, speciesContext, props, referralParams);
 }
 
 // Live Oak Park — generic fallback when location is unavailable.
@@ -203,6 +229,7 @@ export default function App() {
   const [wallKey, setWallKey] = useState(0);
   const [mapSource] = useState(() => readMapSource());
   const [referralParams] = useState(() => readReferralParams());
+  const [speciesContext] = useState(() => readSpeciesContext());
   const initialLocationHandled = useRef(false);
 
   const teaser = useMemo(() => inSeasonNames(MONTH, 4), []);
@@ -222,12 +249,17 @@ export default function App() {
     const f = await fetchNearby(point.lat, point.lng, MONTH);
     track(
       "location_resolved",
-      withMapSource(mapSource, {
-        method: opts.method,
-        denied: !!opts.denied,
-        ripe_count: f.filter((x) => x.inSeason).length,
-        edible_count: f.length,
-      }, referralParams)
+      withMapSource(
+        mapSource,
+        {
+          method: opts.method,
+          denied: !!opts.denied,
+          ripe_count: f.filter((x) => x.inSeason).length,
+          edible_count: f.length,
+        },
+        referralParams,
+        speciesContext,
+      )
     );
     setDenied(!!opts.denied);
     setLoc(point);
@@ -325,13 +357,18 @@ export default function App() {
   function handleSelect(f: Find) {
     track(
       "find_opened",
-      withMapSource(mapSource, {
-        species: f.type,
-        ff_location_id: ffIdOf(f),
-        distance_m: Math.round(f.distM),
-        in_season: f.inSeason,
-        season_known: f.seasonKnown,
-      }, referralParams)
+      withMapSource(
+        mapSource,
+        {
+          species: f.type,
+          ff_location_id: ffIdOf(f),
+          distance_m: Math.round(f.distM),
+          in_season: f.inSeason,
+          season_known: f.seasonKnown,
+        },
+        referralParams,
+        speciesContext,
+      )
     );
     setSelected(f);
   }
@@ -365,13 +402,15 @@ export default function App() {
               withMapSource(
                 mapSource,
                 { kind: "new_tree", source: "wall" },
-                referralParams
+                referralParams,
+                speciesContext
               )
             );
             setSubmitTarget({
               kind: "new_tree",
               source: "wall",
               map_source: mapSource,
+              species_context: speciesContext,
               lat: loc.lat,
               lng: loc.lng,
             });
@@ -395,22 +434,29 @@ export default function App() {
         find={selected}
         mapSource={mapSource}
         referralParams={referralParams}
+        speciesContext={speciesContext}
         onClose={() => setSelected(null)}
         onWalk={(f) => {
           track(
             "submit_opened",
-            withMapSource(mapSource, {
-              kind: "observation",
-              source: "walk_here",
-              species: f.type,
-              ff_location_id: ffIdOf(f),
-            }, referralParams)
+            withMapSource(
+              mapSource,
+              {
+                kind: "observation",
+                source: "walk_here",
+                species: f.type,
+                ff_location_id: ffIdOf(f),
+              },
+              referralParams,
+              speciesContext,
+            )
           );
           setSelected(null);
           setSubmitTarget({
             kind: "observation",
             source: "walk_here",
             map_source: mapSource,
+            species_context: speciesContext,
             ff_location_id: ffIdOf(f),
             species: f.type,
             lat: f.lat,
@@ -812,7 +858,8 @@ function SubmitModal({
             species: target.species ?? null,
             ff_location_id: target.ff_location_id ?? null,
           },
-          referralParams
+          referralParams,
+          target.species_context ?? null
         ),
         readSignupTestRun()
       )
@@ -855,7 +902,7 @@ function SubmitModal({
       ff_location_id: t.ff_location_id ?? null,
       has_photo: !!photo,
       contribute_to_ff: isNewTree && contributeFF,
-    }, referralParams);
+    }, referralParams, t.species_context ?? null);
     track("submit_submitted", submissionContext);
     setBusy(true);
     setErr(null);
@@ -905,7 +952,7 @@ function SubmitModal({
       submission_kind: t.kind,
       species: t.species ?? null,
       ff_location_id: t.ff_location_id ?? null,
-    }, referralParams);
+    }, referralParams, t.species_context ?? null);
     const emailValue = email.trim();
 
     setEmailErr(null);
@@ -960,7 +1007,8 @@ function SubmitModal({
           species: t.species ?? null,
           ff_location_id: t.ff_location_id ?? null,
         },
-        referralParams
+        referralParams,
+        t.species_context ?? null
       )
     );
     setEmail("");
@@ -1232,12 +1280,14 @@ function Detail({
   find,
   mapSource,
   referralParams,
+  speciesContext,
   onClose,
   onWalk,
 }: {
   find: Find | null;
   mapSource: string | null;
   referralParams: ReferralParams;
+  speciesContext: string | null;
   onClose: () => void;
   onWalk: (f: Find) => void;
 }) {
@@ -1264,10 +1314,15 @@ function Detail({
   const open = () => {
     track(
       "walk_here_clicked",
-      withMapSource(mapSource, {
-        species: find.type,
-        ff_location_id: find.id.split("-")[0],
-      }, referralParams)
+      withMapSource(
+        mapSource,
+        {
+          species: find.type,
+          ff_location_id: find.id.split("-")[0],
+        },
+        referralParams,
+        speciesContext,
+      )
     );
     Linking.openURL(directionsUrl(find.lat, find.lng, find.type));
     onWalk(find); // after sending them walking, invite them to share how it goes

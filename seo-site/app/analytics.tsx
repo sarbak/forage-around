@@ -173,15 +173,30 @@ function hasReferralParams(params: ReferralParams) {
   return REFERRAL_PARAM_KEYS.some((key) => !!params[key]);
 }
 
+function readInheritedMapSource(from: ToAppSource): ToAppSource {
+  if (from !== "species" || typeof window === "undefined") return from;
+  const inherited = new URLSearchParams(window.location.search).get("map_source");
+  return inherited === "seasonal_guide" ? inherited : from;
+}
+
+function cleanSpeciesContext(value: string | null | undefined) {
+  if (!value) return null;
+  const cleaned = value.trim().replace(/\s+/g, " ").slice(0, 80);
+  return cleaned || null;
+}
+
 function hrefWithMapSource(
   href: string,
   from: ToAppSource,
   referralParams: ReferralParams = {},
+  speciesContext?: string | null,
 ) {
   const isAbsolute = /^https?:\/\//i.test(href);
   try {
     const url = new URL(href, "https://foragearound.com");
     url.searchParams.set("map_source", from);
+    const context = cleanSpeciesContext(speciesContext);
+    if (context) url.searchParams.set("species_context", context);
     REFERRAL_PARAM_KEYS.forEach((key) => {
       const value = referralParams[key];
       if (value) url.searchParams.set(key, value);
@@ -189,6 +204,8 @@ function hrefWithMapSource(
     return isAbsolute ? url.toString() : `${url.pathname}${url.search}${url.hash}`;
   } catch {
     const params = new URLSearchParams({ map_source: from });
+    const context = cleanSpeciesContext(speciesContext);
+    if (context) params.set("species_context", context);
     REFERRAL_PARAM_KEYS.forEach((key) => {
       const value = referralParams[key];
       if (value) params.set(key, value);
@@ -205,26 +222,38 @@ export function ToAppLink({
   className,
   children,
   rel,
+  speciesContext,
 }: {
   href: string;
   from: ToAppSource;
   className?: string;
   children: ReactNode;
   rel?: string;
+  speciesContext?: string;
 }) {
   const [referralParams, setReferralParams] = useState<ReferralParams>({});
+  const [effectiveFrom, setEffectiveFrom] = useState<ToAppSource>(from);
 
   useEffect(() => {
     const params = readReferralParams();
     if (hasReferralParams(params)) setReferralParams(params);
-  }, []);
+    setEffectiveFrom(readInheritedMapSource(from));
+  }, [from]);
+
+  const context = cleanSpeciesContext(speciesContext);
 
   return (
     <a
       className={className}
-      href={hrefWithMapSource(href, from, referralParams)}
+      href={hrefWithMapSource(href, effectiveFrom, referralParams, context)}
       rel={rel}
-      onClick={() => track("to_app_clicked", { from, ...referralParams })}
+      onClick={() =>
+        track("to_app_clicked", {
+          from: effectiveFrom,
+          ...(context ? { species_context: context } : {}),
+          ...referralParams,
+        })
+      }
     >
       {children}
     </a>
