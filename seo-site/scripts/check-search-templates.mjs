@@ -13,6 +13,7 @@ const representatives = [
     canonical: "https://foragearound.com/locations/seattle",
     mapSource: "locations",
     mapRef: "nearby_harvest_seattle",
+    mapLocation: "Seattle, WA",
     mapLabel: "Open the Seattle foraging map",
     confidenceCues: [
       "Map reports change and may be incomplete",
@@ -32,6 +33,7 @@ const representatives = [
     canonical: "https://foragearound.com/locations/berkeley",
     mapSource: "locations",
     mapRef: "nearby_harvest_berkeley",
+    mapLocation: "Berkeley, CA",
     mapLabel: "Open the map and search Berkeley",
     confidenceCues: [
       "Map reports change and may be incomplete",
@@ -147,7 +149,9 @@ for (const representative of representatives) {
     mapUrl.pathname !== "/" ||
     mapUrl.searchParams.get("map_source") !== representative.mapSource ||
     (representative.mapRef &&
-      mapUrl.searchParams.get("ref") !== representative.mapRef)
+      mapUrl.searchParams.get("ref") !== representative.mapRef) ||
+    (representative.mapLocation &&
+      mapUrl.searchParams.get("location") !== representative.mapLocation)
   ) {
     throw new Error(
       `${representative.name} map handoff lost its expected attribution: ${mapLink.href}`,
@@ -156,5 +160,5 @@ for (const representative of representatives) {
 }
 
 console.log(
-  "Search template check passed for Seattle, Berkeley, Apple, and Plum: metadata, H1s, canonical URLs, confidence boundaries, and map handoffs remain intact.",
+  "Search template check passed for Seattle, Berkeley, Apple, and Plum: metadata, H1s, canonical URLs, confidence boundaries, and named map handoffs remain intact.",
 );

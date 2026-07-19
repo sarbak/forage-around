@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -38,6 +38,7 @@ import {
 } from "./src/lib";
 import MapView from "./src/MapView";
 import { track } from "./src/analytics";
+import { readInitialLocationQuery } from "./src/webEntry";
 import {
   EMAIL_SIGNUP_CONSENT,
   emailSignupAnalyticsProperties,
@@ -202,6 +203,7 @@ export default function App() {
   const [wallKey, setWallKey] = useState(0);
   const [mapSource] = useState(() => readMapSource());
   const [referralParams] = useState(() => readReferralParams());
+  const initialLocationHandled = useRef(false);
 
   const teaser = useMemo(() => inSeasonNames(MONTH, 4), []);
   const ripeNow = useMemo(() => inSeasonWithImages(MONTH, 8), []);
@@ -252,6 +254,42 @@ export default function App() {
       setBusy(false);
     }
   }
+
+  useEffect(() => {
+    if (Platform.OS !== "web" || initialLocationHandled.current) return;
+    initialLocationHandled.current = true;
+    const query = readInitialLocationQuery();
+    if (!query) return;
+
+    let cancelled = false;
+    async function openNamedMap(locationQuery: string) {
+      setBusy(true);
+      setGeoError(null);
+      try {
+        const point = await geocode(locationQuery);
+        if (cancelled) return;
+        if (!point) {
+          setGeoError("Couldn't open that city. Search for a nearby address instead.");
+          track("address_not_found", { form_location: "city_guide" });
+          return;
+        }
+        await go(point, { method: "city_guide" });
+        if (!cancelled) setView("map");
+      } catch {
+        if (!cancelled) {
+          setGeoError("City lookup failed. Search for a nearby address instead.");
+          track("address_error", { form_location: "city_guide" });
+        }
+      } finally {
+        if (!cancelled) setBusy(false);
+      }
+    }
+
+    void openNamedMap(query);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function locateMe() {
     track("locate_clicked", { form_location: "hero" });

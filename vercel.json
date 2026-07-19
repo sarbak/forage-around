@@ -28,6 +28,10 @@
       "destination": "https://forage-around-seo.vercel.app/locations"
     },
     {
+      "source": "/locations/:path*",
+      "destination": "https://forage-around-seo.vercel.app/locations/:path*"
+    },
+    {
       "source": "/seasonal-guide",
       "destination": "https://forage-around-seo.vercel.app/seasonal-guide"
     },
