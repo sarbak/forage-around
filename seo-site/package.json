@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "npm run check:search-templates",
     "check:city-season-cues": "node scripts/check-city-season-cues.mjs",
     "check:seasonal-discoverability": "node scripts/check-seasonal-discoverability.mjs",
     "check:search-origin": "node scripts/check-search-origin.mjs",
+    "check:search-templates": "node scripts/check-search-templates.mjs",
     "check:sitemap": "node scripts/check-sitemap.mjs",
     "check:www-redirect": "node scripts/check-www-redirect.mjs",
     "start": "next start",
