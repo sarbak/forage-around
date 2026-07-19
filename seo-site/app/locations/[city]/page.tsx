@@ -99,7 +99,7 @@ export default async function CityHarvestPage({ params }: PageProps) {
           {mapActionLabel}
         </ToAppLink>{" "}
         <Link className="btn-outline" href="/seasonal-guide">
-          Check the seasonal guide
+          Open the seasonal foraging guide
         </Link>
       </p>
 

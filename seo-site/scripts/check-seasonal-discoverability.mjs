@@ -19,10 +19,20 @@ function metaContent(html, attribute, value) {
 
 function textContent(markup) {
   return markup
+    .replaceAll("<!-- -->", "")
     .replace(/<[^>]+>/g, "")
     .replaceAll("&amp;", "&")
     .replaceAll("&apos;", "'")
     .trim();
+}
+
+function anchorLinks(html) {
+  return [...html.matchAll(/<a[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)].map(
+    ([, href, content]) => ({
+      href: href.replaceAll("&amp;", "&"),
+      text: textContent(content),
+    }),
+  );
 }
 
 function headings(html) {
@@ -85,6 +95,26 @@ for (const speciesPath of ["/species/plum", "/species/apple"]) {
   if (!seasonalGuide.includes(`href="${attributedPath}"`)) {
     throw new Error(
       `${speciesPath} starting link lost seasonal-guide attribution.`,
+    );
+  }
+}
+
+const seasonalLinks = anchorLinks(seasonalGuide);
+for (const { href, label } of [
+  {
+    href: "/species/plum?map_source=seasonal_guide",
+    label: "Plum guide",
+  },
+  {
+    href: "/species/apple?map_source=seasonal_guide",
+    label: "Apple guide",
+  },
+  { href: "/locations/seattle", label: "Seattle guide" },
+  { href: "/locations/berkeley", label: "Berkeley guide" },
+]) {
+  if (!seasonalLinks.some((link) => link.href === href && link.text === label)) {
+    throw new Error(
+      `Seasonal guide must link directly to ${label} with descriptive text.`,
     );
   }
 }
