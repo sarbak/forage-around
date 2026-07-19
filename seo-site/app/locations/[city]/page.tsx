@@ -68,7 +68,11 @@ export default async function CityHarvestPage({ params }: PageProps) {
   const currentMonth = new Date().getUTCMonth() + 1;
   const currentMonthName = MONTHS[currentMonth - 1];
   const plants = plantsForCity(city, currentMonth);
-  const mapHref = `${APP_URL}?ref=nearby_harvest_${city.slug}`;
+  const mapParams = new URLSearchParams({
+    ref: `nearby_harvest_${city.slug}`,
+    location: city.searchLabel,
+  });
+  const mapHref = `${APP_URL}?${mapParams.toString()}`;
   const mapActionLabel =
     city.slug === "seattle"
       ? "Open the Seattle foraging map"
