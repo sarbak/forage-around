@@ -31,6 +31,14 @@ function headings(html) {
   );
 }
 
+function jsonLdObjects(html) {
+  return [
+    ...html.matchAll(
+      /<script type="application\/ld\+json">([\s\S]*?)<\/script>/g,
+    ),
+  ].map(([, content]) => JSON.parse(content));
+}
+
 const [homepage, seasonalGuide, appleGuide] = await Promise.all([
   readOutput("index.html"),
   readOutput("seasonal-guide.html"),
@@ -155,6 +163,64 @@ for (const expectedFreshnessCue of [
   }
 }
 
+const expectedFaqs = [
+  {
+    question: "Does an in-season label mean a nearby plant is ripe?",
+    answer:
+      "No. It means the month falls within a typical season window. Local weather and site conditions can shift timing, so check the plant itself before harvesting.",
+  },
+  {
+    question: "Does a map report mean I can enter or pick there?",
+    answer:
+      "No. A report is a lead, not proof of ownership, public access, or permission. Confirm land status, local rules, and permission before entering or picking.",
+  },
+  {
+    question: "How do I find reported plants near me?",
+    answer:
+      "Start with this month’s species guides, then open the map to check reported locations near you. You can also browse the Seattle and Berkeley location guides.",
+  },
+];
+
+for (const { question, answer } of expectedFaqs) {
+  if (!seasonalGuide.includes(question) || !seasonalGuide.includes(answer)) {
+    throw new Error(`Seasonal guide is missing FAQ content: ${question}`);
+  }
+}
+
+const faqSchema = jsonLdObjects(seasonalGuide).find(
+  (object) => object["@type"] === "FAQPage",
+);
+
+if (!faqSchema || faqSchema["@context"] !== "https://schema.org") {
+  throw new Error("Seasonal guide must render valid FAQPage JSON-LD.");
+}
+
+const renderedFaqs = faqSchema.mainEntity?.map((entity) => ({
+  question: entity.name,
+  answer: entity.acceptedAnswer?.text,
+  questionType: entity["@type"],
+  answerType: entity.acceptedAnswer?.["@type"],
+}));
+
+const expectedSchemaFaqs = expectedFaqs.map(({ question, answer }) => ({
+  question,
+  answer,
+  questionType: "Question",
+  answerType: "Answer",
+}));
+
+if (JSON.stringify(renderedFaqs) !== JSON.stringify(expectedSchemaFaqs)) {
+  throw new Error(
+    "Seasonal FAQPage JSON-LD must match all three visible questions and answers.",
+  );
+}
+
+for (const cityPath of ["/locations/seattle", "/locations/berkeley"]) {
+  if (countLinks(seasonalGuide, cityPath) !== 1) {
+    throw new Error(`Seasonal guide must link directly to ${cityPath}.`);
+  }
+}
+
 const canonical = seasonalGuide.match(
   /<link rel="canonical" href="([^"]+)"\/>/,
 )?.[1];
@@ -192,6 +258,10 @@ const currentMonth = new Intl.DateTimeFormat("en", {
 const expectedHeadings = [
   { level: 1, text: "What can I forage near me right now?" },
   { level: 2, text: `Likely in season in ${currentMonth}` },
+  { level: 2, text: "Questions before you forage" },
+  { level: 3, text: "Does an in-season label mean a nearby plant is ripe?" },
+  { level: 3, text: "Does a map report mean I can enter or pick there?" },
+  { level: 3, text: "How do I find reported plants near me?" },
   { level: 2, text: "Typical peak this month" },
   { level: 2, text: "Month-by-month guide" },
   ...[
@@ -290,5 +360,5 @@ for (const unsupportedClaim of ["Ripe:", "Eat the:", "Find Apple near you"]) {
 }
 
 console.log(
-  "Seasonal discoverability check passed: the title, description, and heading hierarchy match the near-me promise; confidence and permission cues precede the map handoff; and navigation and sharing metadata remain intact.",
+  "Seasonal discoverability check passed: the near-me promise, confidence cues, three visible FAQ answers, matching FAQPage schema, direct Seattle and Berkeley links, navigation, and sharing metadata remain intact.",
 );

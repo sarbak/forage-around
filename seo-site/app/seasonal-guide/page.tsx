@@ -18,6 +18,37 @@ const META_TITLE = "What can I forage near me right now? | Forage Around";
 const META_DESCRIPTION =
   "See which fruit, herbs, and greens may be in season nearby, then use the free Forage Around map to check reported plant locations near you.";
 
+const FAQS = [
+  {
+    question: "Does an in-season label mean a nearby plant is ripe?",
+    answer:
+      "No. It means the month falls within a typical season window. Local weather and site conditions can shift timing, so check the plant itself before harvesting.",
+  },
+  {
+    question: "Does a map report mean I can enter or pick there?",
+    answer:
+      "No. A report is a lead, not proof of ownership, public access, or permission. Confirm land status, local rules, and permission before entering or picking.",
+  },
+  {
+    question: "How do I find reported plants near me?",
+    answer:
+      "Start with this month’s species guides, then open the map to check reported locations near you. You can also browse the Seattle and Berkeley location guides.",
+  },
+] as const;
+
+const FAQ_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQS.map(({ question, answer }) => ({
+    "@type": "Question",
+    name: question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: answer,
+    },
+  })),
+};
+
 export const metadata: Metadata = {
   title: "What can I forage near me right now?",
   description: META_DESCRIPTION,
@@ -102,6 +133,10 @@ export default function SeasonalGuide() {
   return (
     <>
       <SeasonalGuidePageViewed />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_SCHEMA) }}
+      />
       <p className="kicker">
         Seasonal foraging guide · {currentMonthName}
       </p>
@@ -147,9 +182,25 @@ export default function SeasonalGuide() {
       <p className="muted">
         Looking for a place to start? Read the{" "}
         <Link href="/species/plum">Plum guide</Link> or the{" "}
-        <Link href="/species/apple">Apple guide</Link>, then browse all{" "}
-        <Link href="/locations">nearby location guides</Link>.
+        <Link href="/species/apple">Apple guide</Link>, then try the{" "}
+        <Link href="/locations/seattle">Seattle guide</Link> or the{" "}
+        <Link href="/locations/berkeley">Berkeley guide</Link>. You can also
+        browse all <Link href="/locations">nearby location guides</Link>.
       </p>
+
+      <section className="faq-block" aria-labelledby="seasonal-faq-heading">
+        <h2 className="section" id="seasonal-faq-heading">
+          Questions before you forage
+        </h2>
+        <div className="faq-list">
+          {FAQS.map(({ question, answer }) => (
+            <div key={question}>
+              <h3>{question}</h3>
+              <p>{answer}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {peakNow.length > 0 ? (
         <>
