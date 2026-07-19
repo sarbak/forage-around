@@ -15,6 +15,7 @@ const representatives = [
     mapRef: "nearby_harvest_seattle",
     mapLocation: "Seattle, WA",
     mapLabel: "Open the Seattle foraging map",
+    seasonalGuideLabel: "Open the seasonal foraging guide",
     confidenceCues: [
       "Map reports change and may be incomplete",
       "not a promise that fruit is present, accessible, or ripe today",
@@ -35,6 +36,7 @@ const representatives = [
     mapRef: "nearby_harvest_berkeley",
     mapLocation: "Berkeley, CA",
     mapLabel: "Open the map and search Berkeley",
+    seasonalGuideLabel: "Open the seasonal foraging guide",
     confidenceCues: [
       "Map reports change and may be incomplete",
       "not a promise that fruit is present, accessible, or ripe today",
@@ -54,6 +56,7 @@ const representatives = [
     mapSource: "species",
     speciesContext: "Apple",
     mapLabel: "Check reported Apple locations",
+    seasonalGuideLabel: "Check Apple in the seasonal guide",
     confidenceCues: [
       "Confirm before eating",
       "starting point, not proof of identity or edibility",
@@ -72,6 +75,7 @@ const representatives = [
     mapSource: "species",
     speciesContext: "Plum",
     mapLabel: "Check reported Plum locations",
+    seasonalGuideLabel: "Check Plum in the seasonal guide",
     confidenceCues: [
       "Confirm before eating",
       "starting point, not proof of identity or edibility",
@@ -145,6 +149,15 @@ for (const representative of representatives) {
     throw new Error(`${representative.name} map handoff is missing.`);
   }
 
+  const seasonalGuideLink = anchorHrefs(html).find(
+    ({ text }) => text === representative.seasonalGuideLabel,
+  );
+  if (!seasonalGuideLink || seasonalGuideLink.href !== "/seasonal-guide") {
+    throw new Error(
+      `${representative.name} must link back to the seasonal guide with descriptive text.`,
+    );
+  }
+
   const mapUrl = new URL(mapLink.href);
   if (
     mapUrl.origin !== "https://foragearound.com" ||
@@ -165,5 +178,5 @@ for (const representative of representatives) {
 }
 
 console.log(
-  "Search template check passed for Seattle, Berkeley, Apple, and Plum: metadata, H1s, canonical URLs, confidence boundaries, and named map handoffs remain intact.",
+  "Search template check passed for Seattle, Berkeley, Apple, and Plum: metadata, H1s, canonical URLs, confidence boundaries, named map handoffs, and reciprocal seasonal-guide links remain intact.",
 );

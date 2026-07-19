@@ -172,8 +172,8 @@ export default async function SpeciesPage({
           Check reported {name} locations →
         </ToAppLink>
         {" "}
-        <Link className="btn-outline" href="/locations">
-          Browse nearby harvest guides
+        <Link className="btn-outline" href="/seasonal-guide">
+          Check {name} in the seasonal guide
         </Link>
       </p>
 
