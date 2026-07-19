@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "check:city-season-cues": "node scripts/check-city-season-cues.mjs",
     "check:seasonal-discoverability": "node scripts/check-seasonal-discoverability.mjs",
     "check:search-origin": "node scripts/check-search-origin.mjs",
     "check:sitemap": "node scripts/check-sitemap.mjs",
