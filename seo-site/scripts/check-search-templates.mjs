@@ -52,6 +52,7 @@ const representatives = [
     h1: "Foraging Apple",
     canonical: "https://foragearound.com/species/apple",
     mapSource: "species",
+    speciesContext: "Apple",
     mapLabel: "Check reported Apple locations",
     confidenceCues: [
       "Confirm before eating",
@@ -69,6 +70,7 @@ const representatives = [
     h1: "Foraging Plum",
     canonical: "https://foragearound.com/species/plum",
     mapSource: "species",
+    speciesContext: "Plum",
     mapLabel: "Check reported Plum locations",
     confidenceCues: [
       "Confirm before eating",
@@ -148,6 +150,9 @@ for (const representative of representatives) {
     mapUrl.origin !== "https://foragearound.com" ||
     mapUrl.pathname !== "/" ||
     mapUrl.searchParams.get("map_source") !== representative.mapSource ||
+    (representative.speciesContext &&
+      mapUrl.searchParams.get("species_context") !==
+        representative.speciesContext) ||
     (representative.mapRef &&
       mapUrl.searchParams.get("ref") !== representative.mapRef) ||
     (representative.mapLocation &&

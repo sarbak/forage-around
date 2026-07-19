@@ -45,6 +45,50 @@ const [homepage, seasonalGuide, appleGuide] = await Promise.all([
   readOutput("species/apple.html"),
 ]);
 
+const currentSpeciesStart = seasonalGuide.indexOf(
+  '<h2 class="section">Likely in season in',
+);
+const currentSpeciesEnd = seasonalGuide.indexOf(
+  "Looking for a place to start?",
+  currentSpeciesStart,
+);
+const currentSpeciesSection =
+  currentSpeciesStart >= 0 && currentSpeciesEnd > currentSpeciesStart
+    ? seasonalGuide.slice(currentSpeciesStart, currentSpeciesEnd)
+    : null;
+
+if (!currentSpeciesSection) {
+  throw new Error("Seasonal guide must render the current-month species grid.");
+}
+
+const currentSpeciesHrefs = [
+  ...currentSpeciesSection.matchAll(/<a[^>]*href="([^"]+)"/g),
+].map(([, href]) => href.replaceAll("&amp;", "&"));
+
+if (
+  currentSpeciesHrefs.length === 0 ||
+  currentSpeciesHrefs.some((href) => {
+    const url = new URL(href, "https://foragearound.com");
+    return (
+      !url.pathname.startsWith("/species/") ||
+      url.searchParams.get("map_source") !== "seasonal_guide"
+    );
+  })
+) {
+  throw new Error(
+    "Every current-month species link must preserve seasonal-guide acquisition origin.",
+  );
+}
+
+for (const speciesPath of ["/species/plum", "/species/apple"]) {
+  const attributedPath = `${speciesPath}?map_source=seasonal_guide`;
+  if (!seasonalGuide.includes(`href="${attributedPath}"`)) {
+    throw new Error(
+      `${speciesPath} starting link lost seasonal-guide attribution.`,
+    );
+  }
+}
+
 if (countLinks(homepage, "/seasonal-guide") < 3) {
   throw new Error(
     "Homepage must link to the seasonal guide from the shared header, primary actions, and shared footer.",

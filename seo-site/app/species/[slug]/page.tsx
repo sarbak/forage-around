@@ -163,7 +163,12 @@ export default async function SpeciesPage({
       <SubmissionList items={subs} />
 
       <p style={{ margin: "28px 0" }}>
-        <ToAppLink className="btn" href={APP_URL} from="species">
+        <ToAppLink
+          className="btn"
+          href={APP_URL}
+          from="species"
+          speciesContext={name}
+        >
           Check reported {name} locations →
         </ToAppLink>
         {" "}

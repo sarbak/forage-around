@@ -91,6 +91,10 @@ function monthNumber() {
   return new Date().getUTCMonth() + 1;
 }
 
+function seasonalSpeciesHref(name: string) {
+  return `/species/${slugify(name)}?map_source=seasonal_guide`;
+}
+
 function SpeciesGrid({
   items,
   statusMonth,
@@ -101,7 +105,7 @@ function SpeciesGrid({
   return (
     <div className="species-grid">
       {items.map(({ name, details }) => (
-        <Link key={name} href={`/species/${slugify(name)}`}>
+        <Link key={name} href={seasonalSpeciesHref(name)}>
           <span aria-hidden="true">{details.emoji ?? "🌿"}</span>
           <span className="species-grid-label">
             <span>{name}</span>
@@ -181,8 +185,8 @@ export default function SeasonalGuide() {
 
       <p className="muted">
         Looking for a place to start? Read the{" "}
-        <Link href="/species/plum">Plum guide</Link> or the{" "}
-        <Link href="/species/apple">Apple guide</Link>, then try the{" "}
+        <Link href={seasonalSpeciesHref("Plum")}>Plum guide</Link> or the{" "}
+        <Link href={seasonalSpeciesHref("Apple")}>Apple guide</Link>, then try the{" "}
         <Link href="/locations/seattle">Seattle guide</Link> or the{" "}
         <Link href="/locations/berkeley">Berkeley guide</Link>. You can also
         browse all <Link href="/locations">nearby location guides</Link>.
