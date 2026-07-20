@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   cleanSpeciesContext,
+  controlledTestRunFromHref,
+  isControlledTestRun,
   speciesContextForEntry,
   speciesContextFromHref,
   withWebAttribution,
@@ -54,6 +56,7 @@ test("keeps acquisition origin and species page context separate from the select
       "Apple",
       { species: "Crabapple", ff_location_id: "123" },
       { ref: "seasonal_card" },
+      true,
     ),
     {
       species: "Crabapple",
@@ -61,6 +64,7 @@ test("keeps acquisition origin and species page context separate from the select
       map_source: "seasonal_guide",
       species_context: "Apple",
       ref: "seasonal_card",
+      test_run: true,
     },
   );
 });
@@ -68,5 +72,25 @@ test("keeps acquisition origin and species page context separate from the select
 test("leaves generic app attribution unchanged", () => {
   assert.deepEqual(withWebAttribution(null, null, { method: "geolocation" }), {
     method: "geolocation",
+    test_run: false,
   });
+});
+
+test("marks only an explicit controlled journey", () => {
+  assert.equal(isControlledTestRun("true"), true);
+  assert.equal(isControlledTestRun("TRUE"), false);
+  assert.equal(isControlledTestRun("1"), false);
+  assert.equal(isControlledTestRun(null), false);
+  assert.equal(
+    controlledTestRunFromHref(
+      "https://foragearound.com/?map_source=seasonal_guide&test_run=true",
+    ),
+    true,
+  );
+  assert.equal(
+    controlledTestRunFromHref(
+      "https://foragearound.com/?map_source=seasonal_guide",
+    ),
+    false,
+  );
 });

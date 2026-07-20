@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "npm run check:search-templates",
+    "postbuild": "npm run check:search-templates && npm run check:controlled-journey",
     "check:city-season-cues": "node scripts/check-city-season-cues.mjs",
+    "check:controlled-journey": "node scripts/check-controlled-journey.mjs",
     "check:seasonal-discoverability": "node scripts/check-seasonal-discoverability.mjs",
     "check:search-origin": "node scripts/check-search-origin.mjs",
     "check:search-templates": "node scripts/check-search-templates.mjs",

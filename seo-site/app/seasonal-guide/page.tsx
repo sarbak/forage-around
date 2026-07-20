@@ -9,7 +9,11 @@ import {
   species,
   type Species,
 } from "@/lib/data";
-import { SeasonalGuidePageViewed, ToAppLink } from "../analytics";
+import {
+  ControlledJourneyLink,
+  SeasonalGuidePageViewed,
+  ToAppLink,
+} from "../analytics";
 import { APP_URL, Credits } from "../components";
 
 export const revalidate = 86400;
@@ -105,7 +109,7 @@ function SpeciesGrid({
   return (
     <div className="species-grid">
       {items.map(({ name, details }) => (
-        <Link key={name} href={seasonalSpeciesHref(name)}>
+        <ControlledJourneyLink key={name} href={seasonalSpeciesHref(name)}>
           <span aria-hidden="true">{details.emoji ?? "🌿"}</span>
           <span className="species-grid-label">
             <span>{name}</span>
@@ -117,7 +121,7 @@ function SpeciesGrid({
               </small>
             ) : null}
           </span>
-        </Link>
+        </ControlledJourneyLink>
       ))}
     </div>
   );
@@ -185,8 +189,14 @@ export default function SeasonalGuide() {
 
       <p className="muted">
         Looking for a place to start? Read the{" "}
-        <Link href={seasonalSpeciesHref("Plum")}>Plum guide</Link> or the{" "}
-        <Link href={seasonalSpeciesHref("Apple")}>Apple guide</Link>, then try the{" "}
+        <ControlledJourneyLink href={seasonalSpeciesHref("Plum")}>
+          Plum guide
+        </ControlledJourneyLink>{" "}
+        or the{" "}
+        <ControlledJourneyLink href={seasonalSpeciesHref("Apple")}>
+          Apple guide
+        </ControlledJourneyLink>
+        {", then try the "}
         <Link href="/locations/seattle">Seattle guide</Link> or the{" "}
         <Link href="/locations/berkeley">Berkeley guide</Link>. You can also
         browse all <Link href="/locations">nearby location guides</Link>.
