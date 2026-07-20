@@ -296,6 +296,16 @@ for (const cityPath of ["/locations/seattle", "/locations/berkeley"]) {
   }
 }
 
+if (
+  !seasonalGuide.includes(
+    "Each city guide leads to a map centered on that city.",
+  )
+) {
+  throw new Error(
+    "Seasonal guide must explain that each city guide leads to its named map.",
+  );
+}
+
 const canonical = seasonalGuide.match(
   /<link rel="canonical" href="([^"]+)"\/>/,
 )?.[1];

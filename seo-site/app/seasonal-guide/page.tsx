@@ -216,8 +216,9 @@ export default function SeasonalGuide() {
         </ControlledJourneyLink>
         {", then try the "}
         <Link href="/locations/seattle">Seattle guide</Link> or the{" "}
-        <Link href="/locations/berkeley">Berkeley guide</Link>. You can also
-        browse all <Link href="/locations">nearby location guides</Link>.
+        <Link href="/locations/berkeley">Berkeley guide</Link>. Each city guide
+        leads to a map centered on that city. You can also browse all{" "}
+        <Link href="/locations">nearby location guides</Link>.
       </p>
 
       <section className="faq-block" aria-labelledby="seasonal-faq-heading">
