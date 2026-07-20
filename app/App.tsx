@@ -60,6 +60,10 @@ import {
   submitEmailSignup,
   Submission,
 } from "./src/community";
+import {
+  walkingDestinationAccessibilityLabel,
+  walkingDestinationLabel,
+} from "./src/walkingDestination";
 
 type SubmitTarget = {
   kind: "observation" | "new_tree";
@@ -1424,9 +1428,9 @@ function Detail({
             style={({ pressed }) => [styles.walkBtn, pressed && styles.ctaPressed]}
             onPress={open}
             accessibilityRole="button"
-            accessibilityLabel="Open walking directions"
+            accessibilityLabel={walkingDestinationAccessibilityLabel(find.type)}
           >
-            <Text style={styles.ctaText}>Walk here ›</Text>
+            <Text style={styles.ctaText}>{walkingDestinationLabel(find.type)} ›</Text>
           </Pressable>
 
           <Text style={styles.safety}>

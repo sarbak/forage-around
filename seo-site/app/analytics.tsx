@@ -101,7 +101,7 @@ export function SeasonalGuidePageViewed() {
 
 // ---- CTA / link click trackers ----
 
-// "Walk here" link on a tree page → Google Maps directions.
+// Named walking link on a tree page → Google Maps directions.
 export function WalkHereLink({
   href,
   species,
