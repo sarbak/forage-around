@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">July seasonal foraging guide from Forage Around</title>
+  <desc id="description">A paper-textured card with the question What can I forage near me right now, a simple map illustration, and careful context about typical July seasons and reported plant locations.</desc>
+
+  <rect width="1200" height="630" fill="#f6f1e7"/>
+  <rect x="26" y="26" width="1148" height="578" rx="32" fill="#fffdf8" stroke="#dfd6c2" stroke-width="2"/>
+
+  <g opacity="0.7" stroke="#dfd6c2" stroke-width="2" fill="none">
+    <path d="M767 78C819 137 801 213 865 251C927 288 991 251 1067 294C1117 323 1129 367 1124 425"/>
+    <path d="M710 494C766 452 833 473 882 427C933 379 922 314 977 267C1022 229 1070 232 1132 202"/>
+    <path d="M762 350C825 317 865 337 914 302C956 271 969 227 969 159"/>
+  </g>
+
+  <g fill="#2e5e3a">
+    <circle cx="791" cy="149" r="28"/>
+    <circle cx="1007" cy="356" r="28"/>
+    <circle cx="862" cy="455" r="28"/>
+  </g>
+  <g fill="#fffdf8">
+    <circle cx="791" cy="145" r="9"/>
+    <path d="M791 169l-9-16h18z"/>
+    <circle cx="1007" cy="352" r="9"/>
+    <path d="M1007 376l-9-16h18z"/>
+    <circle cx="862" cy="451" r="9"/>
+    <path d="M862 475l-9-16h18z"/>
+  </g>
+
+  <g transform="translate(946 104)">
+    <path d="M0 58C16 19 48 6 91 10C75 49 45 65 0 58Z" fill="#d9762b"/>
+    <path d="M9 53C41 42 62 29 82 15" fill="none" stroke="#fffdf8" stroke-width="4" stroke-linecap="round"/>
+    <path d="M43 39c-1-10 2-19 9-29M52 35c10-2 18-1 27 2" fill="none" stroke="#fffdf8" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <text x="78" y="101" fill="#5a6553" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" letter-spacing="4">JULY SEASONAL GUIDE</text>
+  <text x="78" y="185" fill="#1f2a20" font-family="Georgia, 'DejaVu Serif', serif" font-size="66" font-weight="700">
+    <tspan x="78" dy="0">What can I forage</tspan>
+    <tspan x="78" dy="78">near me right now?</tspan>
+  </text>
+
+  <text x="78" y="385" fill="#2e5e3a" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="600">
+    <tspan x="78" dy="0">Typical July seasons + reported</tspan>
+    <tspan x="78" dy="42">plant locations near you</tspan>
+  </text>
+
+  <line x1="78" y1="495" x2="650" y2="495" stroke="#dfd6c2" stroke-width="2"/>
+  <text x="78" y="540" fill="#5a6553" font-family="Arial, Helvetica, sans-serif" font-size="20">Check the plant and site before harvesting.</text>
+
+  <g transform="translate(795 521)">
+    <rect width="327" height="56" rx="28" fill="#2e5e3a"/>
+    <text x="28" y="37" fill="#fffdf8" font-family="Georgia, 'DejaVu Serif', serif" font-size="25" font-weight="700">Forage Around</text>
+    <circle cx="279" cy="28" r="7" fill="#d9762b"/>
+    <circle cx="302" cy="28" r="7" fill="#f6f1e7"/>
+  </g>
+</svg>
