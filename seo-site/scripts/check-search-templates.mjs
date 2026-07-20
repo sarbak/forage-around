@@ -1,12 +1,17 @@
 import { readFile } from "node:fs/promises";
 
 const appOutput = new URL("../.next/server/app/", import.meta.url);
+const currentMonthName = new Intl.DateTimeFormat("en-US", {
+  month: "long",
+  timeZone: "UTC",
+}).format(new Date());
 
 const representatives = [
   {
     output: "locations/seattle.html",
     name: "Seattle",
     title: "Find fruit and edible plants in Seattle · Forage Around",
+    shareTitle: `Typical ${currentMonthName} foraging in Seattle | Forage Around`,
     description:
       "Explore usual harvest seasons for edible plants represented around Seattle, then search the live Forage Around map near your address.",
     h1: "Find fruit and edible plants in Seattle",
@@ -28,6 +33,7 @@ const representatives = [
     output: "locations/berkeley.html",
     name: "Berkeley",
     title: "Find fruit and edible plants in Berkeley · Forage Around",
+    shareTitle: `Typical ${currentMonthName} foraging in Berkeley | Forage Around`,
     description:
       "Explore usual harvest seasons for edible plants represented around Berkeley, then search the live Forage Around map near your address.",
     h1: "Find fruit and edible plants in Berkeley",
@@ -96,9 +102,9 @@ function decodeHtml(value) {
     .trim();
 }
 
-function metaContent(html, name) {
+function metaContent(html, attribute, value) {
   return html.match(
-    new RegExp(`<meta name="${name}" content="([^"]+)"\\s*\\/>`),
+    new RegExp(`<meta ${attribute}="${value}" content="([^"]+)"\\s*\\/>`),
   )?.[1];
 }
 
@@ -125,10 +131,27 @@ for (const representative of representatives) {
 
   assertEqual(title, representative.title, `${representative.name} title changed.`);
   assertEqual(
-    metaContent(html, "description"),
+    metaContent(html, "name", "description"),
     representative.description,
     `${representative.name} meta description changed.`,
   );
+  if (representative.shareTitle) {
+    assertEqual(
+      metaContent(html, "property", "og:title"),
+      representative.shareTitle,
+      `${representative.name} Open Graph title changed.`,
+    );
+    assertEqual(
+      metaContent(html, "name", "twitter:title"),
+      representative.shareTitle,
+      `${representative.name} Twitter title changed.`,
+    );
+    if (representative.shareTitle.length > 60) {
+      throw new Error(
+        `${representative.name} share title is too long for a compact link preview.`,
+      );
+    }
+  }
   assertEqual(h1, representative.h1, `${representative.name} H1 changed.`);
   assertEqual(
     canonicalHref(html),

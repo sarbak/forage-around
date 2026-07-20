@@ -34,15 +34,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const title = `Find fruit and edible plants in ${city.name}`;
   const description = `Explore usual harvest seasons for edible plants represented around ${city.name}, then search the live Forage Around map near your address.`;
+  const currentMonthName = MONTHS[new Date().getUTCMonth()];
+  const shareTitle = `Typical ${currentMonthName} foraging in ${city.name} | Forage Around`;
 
   return {
     title,
     description,
     alternates: { canonical: `/locations/${city.slug}` },
     openGraph: {
-      title,
+      title: shareTitle,
       description,
       url: `/locations/${city.slug}`,
+    },
+    twitter: {
+      title: shareTitle,
+      description,
     },
   };
 }
