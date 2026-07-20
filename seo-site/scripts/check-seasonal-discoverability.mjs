@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 
 const appOutput = new URL("../.next/server/app/", import.meta.url);
+const publicAssets = new URL("../public/", import.meta.url);
 
 async function readOutput(path) {
   return readFile(new URL(path, appOutput), "utf8");
@@ -308,6 +309,10 @@ const expectedTitleTag =
   "What can I forage near me right now? · Forage Around";
 const expectedDescription =
   "See which fruit, herbs, and greens may be in season nearby, then use the free Forage Around map to check reported plant locations near you.";
+const expectedShareImage =
+  "https://forage-around-seo.vercel.app/seasonal-guide-share.png";
+const expectedShareImageAlt =
+  "July seasonal foraging guide with typical season context and reported plant locations near you";
 
 const titleTag = seasonalGuide.match(/<title>([^<]+)<\/title>/)?.[1];
 
@@ -385,6 +390,43 @@ if (
   expectedDescription
 ) {
   throw new Error("Seasonal guide Twitter description is missing or incorrect.");
+}
+
+if (
+  metaContent(seasonalGuide, "property", "og:image") !== expectedShareImage ||
+  metaContent(seasonalGuide, "property", "og:image:width") !== "1200" ||
+  metaContent(seasonalGuide, "property", "og:image:height") !== "630" ||
+  metaContent(seasonalGuide, "property", "og:image:alt") !==
+    expectedShareImageAlt
+) {
+  throw new Error(
+    "Seasonal guide Open Graph image metadata must keep the page-specific 1200-by-630 July preview.",
+  );
+}
+
+if (
+  metaContent(seasonalGuide, "name", "twitter:card") !==
+    "summary_large_image" ||
+  metaContent(seasonalGuide, "name", "twitter:image") !==
+    expectedShareImage ||
+  metaContent(seasonalGuide, "name", "twitter:image:alt") !==
+    expectedShareImageAlt
+) {
+  throw new Error(
+    "Seasonal guide Twitter metadata must keep the large July share preview and accurate alt text.",
+  );
+}
+
+const shareImage = await readFile(
+  new URL("seasonal-guide-share.png", publicAssets),
+);
+const pngWidth = shareImage.readUInt32BE(16);
+const pngHeight = shareImage.readUInt32BE(20);
+
+if (pngWidth !== 1200 || pngHeight !== 630) {
+  throw new Error(
+    `Seasonal guide share image must be 1200 by 630 pixels, received ${pngWidth} by ${pngHeight}.`,
+  );
 }
 
 for (const expectedCue of [

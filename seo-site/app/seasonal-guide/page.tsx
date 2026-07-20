@@ -21,6 +21,10 @@ export const revalidate = 86400;
 const META_TITLE = "What can I forage near me right now? | Forage Around";
 const META_DESCRIPTION =
   "See which fruit, herbs, and greens may be in season nearby, then use the free Forage Around map to check reported plant locations near you.";
+const SHARE_IMAGE_URL =
+  "https://forage-around-seo.vercel.app/seasonal-guide-share.png";
+const SHARE_IMAGE_ALT =
+  "July seasonal foraging guide with typical season context and reported plant locations near you";
 
 const FAQS = [
   {
@@ -64,11 +68,25 @@ export const metadata: Metadata = {
     title: META_TITLE,
     description: META_DESCRIPTION,
     url: "/seasonal-guide",
+    images: [
+      {
+        url: SHARE_IMAGE_URL,
+        width: 1200,
+        height: 630,
+        alt: SHARE_IMAGE_ALT,
+      },
+    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: META_TITLE,
     description: META_DESCRIPTION,
+    images: [
+      {
+        url: SHARE_IMAGE_URL,
+        alt: SHARE_IMAGE_ALT,
+      },
+    ],
   },
 };
 
