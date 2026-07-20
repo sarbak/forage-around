@@ -7,6 +7,25 @@
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { track } from "@/lib/track";
+import {
+  controlledTestRunFromSearch,
+  hrefWithControlledTestRun,
+} from "@/lib/controlled-journey.mjs";
+
+function readControlledTestRun() {
+  if (typeof window === "undefined") return false;
+  return controlledTestRunFromSearch(window.location.search);
+}
+
+function useControlledTestRun() {
+  const [testRun, setTestRun] = useState(false);
+
+  useEffect(() => {
+    setTestRun(readControlledTestRun());
+  }, []);
+
+  return testRun;
+}
 
 // ---- page_viewed beacons (fire once on mount) ----
 
@@ -27,7 +46,10 @@ export function TreePageViewed({
 
 export function SpeciesPageViewed({ species }: { species: string }) {
   useEffect(() => {
-    track("species_page_viewed", { species });
+    track("species_page_viewed", {
+      species,
+      test_run: readControlledTestRun(),
+    });
   }, [species]);
   return null;
 }
@@ -70,7 +92,9 @@ export function LocationsPageViewed({
 
 export function SeasonalGuidePageViewed() {
   useEffect(() => {
-    track("seasonal_guide_page_viewed");
+    track("seasonal_guide_page_viewed", {
+      test_run: readControlledTestRun(),
+    });
   }, []);
   return null;
 }
@@ -122,6 +146,27 @@ export function MoreAboutLink({
       className={className}
       href={href}
       onClick={() => track("more_about_clicked", { species })}
+    >
+      {children}
+    </Link>
+  );
+}
+
+export function ControlledJourneyLink({
+  href,
+  className,
+  children,
+}: {
+  href: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  const testRun = useControlledTestRun();
+
+  return (
+    <Link
+      className={className}
+      href={hrefWithControlledTestRun(href, testRun)}
     >
       {children}
     </Link>
@@ -190,6 +235,7 @@ function hrefWithMapSource(
   from: ToAppSource,
   referralParams: ReferralParams = {},
   speciesContext?: string | null,
+  testRun = false,
 ) {
   const isAbsolute = /^https?:\/\//i.test(href);
   try {
@@ -201,7 +247,10 @@ function hrefWithMapSource(
       const value = referralParams[key];
       if (value) url.searchParams.set(key, value);
     });
-    return isAbsolute ? url.toString() : `${url.pathname}${url.search}${url.hash}`;
+    return hrefWithControlledTestRun(
+      isAbsolute ? url.toString() : `${url.pathname}${url.search}${url.hash}`,
+      testRun,
+    );
   } catch {
     const params = new URLSearchParams({ map_source: from });
     const context = cleanSpeciesContext(speciesContext);
@@ -211,7 +260,10 @@ function hrefWithMapSource(
       if (value) params.set(key, value);
     });
     const join = href.includes("?") ? "&" : "?";
-    return `${href}${join}${params.toString()}`;
+    return hrefWithControlledTestRun(
+      `${href}${join}${params.toString()}`,
+      testRun,
+    );
   }
 }
 
@@ -233,6 +285,7 @@ export function ToAppLink({
 }) {
   const [referralParams, setReferralParams] = useState<ReferralParams>({});
   const [effectiveFrom, setEffectiveFrom] = useState<ToAppSource>(from);
+  const testRun = useControlledTestRun();
 
   useEffect(() => {
     const params = readReferralParams();
@@ -245,13 +298,20 @@ export function ToAppLink({
   return (
     <a
       className={className}
-      href={hrefWithMapSource(href, effectiveFrom, referralParams, context)}
+      href={hrefWithMapSource(
+        href,
+        effectiveFrom,
+        referralParams,
+        context,
+        testRun,
+      )}
       rel={rel}
       onClick={() =>
         track("to_app_clicked", {
           from: effectiveFrom,
           ...(context ? { species_context: context } : {}),
           ...referralParams,
+          test_run: testRun,
         })
       }
     >

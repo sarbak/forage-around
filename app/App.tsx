@@ -40,6 +40,7 @@ import MapView from "./src/MapView";
 import { track } from "./src/analytics";
 import { readInitialLocationQuery } from "./src/webEntry";
 import {
+  controlledTestRunFromHref,
   speciesContextForEntry,
   speciesContextFromHref,
   withWebAttribution,
@@ -47,7 +48,6 @@ import {
 import {
   EMAIL_SIGNUP_CONSENT,
   emailSignupAnalyticsProperties,
-  isControlledSignupTestRun,
   shouldShowEmailSignup,
   validEmail,
 } from "./src/emailSignup";
@@ -181,11 +181,11 @@ function readSpeciesContext(): string | null {
   }
 }
 
-function readSignupTestRun(): boolean {
+function readControlledTestRun(): boolean {
   if (Platform.OS !== "web" || typeof window === "undefined") return false;
   try {
     const url = new URL(window.location.href);
-    return isControlledSignupTestRun(url.searchParams.get("test_run"));
+    return controlledTestRunFromHref(url.toString());
   } catch {
     return false;
   }
@@ -197,7 +197,13 @@ function withMapSource(
   referralParams: ReferralParams = {},
   speciesContext: string | null = null,
 ) {
-  return withWebAttribution(source, speciesContext, props, referralParams);
+  return withWebAttribution(
+    source,
+    speciesContext,
+    props,
+    referralParams,
+    readControlledTestRun(),
+  );
 }
 
 // Live Oak Park — generic fallback when location is unavailable.
@@ -861,7 +867,7 @@ function SubmitModal({
           referralParams,
           target.species_context ?? null
         ),
-        readSignupTestRun()
+        readControlledTestRun()
       )
     );
   }, [target, referralParams]);
@@ -984,7 +990,7 @@ function SubmitModal({
       }
       track(
         "email_signup_success",
-        emailSignupAnalyticsProperties(signupContext, readSignupTestRun())
+        emailSignupAnalyticsProperties(signupContext, readControlledTestRun())
       );
       setEmail("");
       setEmailDone(true);

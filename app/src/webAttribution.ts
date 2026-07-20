@@ -1,4 +1,5 @@
 const SPECIES_CONTEXT_PARAM = "species_context";
+const CONTROLLED_TEST_PARAM = "test_run";
 const MAX_SPECIES_CONTEXT_LENGTH = 80;
 
 export function cleanSpeciesContext(value: string | null): string | null {
@@ -35,16 +36,33 @@ export function speciesContextForEntry(
   }
 }
 
+export function isControlledTestRun(
+  value: string | null | undefined,
+): boolean {
+  return value === "true";
+}
+
+export function controlledTestRunFromHref(href: string): boolean {
+  try {
+    const url = new URL(href);
+    return isControlledTestRun(url.searchParams.get(CONTROLLED_TEST_PARAM));
+  } catch {
+    return false;
+  }
+}
+
 export function withWebAttribution(
   source: string | null,
   speciesContext: string | null,
   properties: Record<string, unknown>,
   referralParams: Record<string, string> = {},
+  testRun = false,
 ) {
   return {
     ...properties,
     ...(source ? { map_source: source } : {}),
     ...(speciesContext ? { species_context: speciesContext } : {}),
     ...referralParams,
+    test_run: testRun,
   };
 }
