@@ -19,6 +19,7 @@ import {
 } from "@/lib/data";
 import { getWikipedia } from "@/lib/wikipedia";
 import { submissionsForTree } from "@/lib/submissions";
+import { walkingDestinationLabel } from "@/lib/walking-destination.mjs";
 import { Credits, APP_URL } from "../../components";
 import { SubmissionList } from "../../Submissions";
 import { TreeMap } from "../../TreeMap";
@@ -170,7 +171,7 @@ export default async function TreePage({
           species={speciesName}
           id={id}
         >
-          Walk here →
+          {walkingDestinationLabel(speciesName)} →
         </WalkHereLink>
         {speciesName && allSpecies[speciesName] ? (
           <>
