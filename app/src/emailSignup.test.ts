@@ -5,6 +5,7 @@ import {
   EMAIL_SIGNUP_OFFER,
   emailSignupAnalyticsProperties,
   isControlledSignupTestRun,
+  returnToMap,
   shouldShowEmailSignup,
   validEmail,
 } from "./emailSignup";
@@ -61,4 +62,15 @@ test("keeps signup attribution while distinguishing real and controlled analytic
     signup_offer: "seasonal_harvest_reminders",
     test_run: true,
   });
+});
+
+test("returns a successful signup to the unchanged map in one action", () => {
+  const calls: string[] = [];
+
+  returnToMap(
+    () => calls.push("reset"),
+    () => calls.push("close")
+  );
+
+  assert.deepEqual(calls, ["reset", "close"]);
 });

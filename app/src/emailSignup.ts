@@ -48,6 +48,11 @@ export function validEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
 
+export function returnToMap(reset: () => void, close: () => void): void {
+  reset();
+  close();
+}
+
 export async function saveEmailSignup(
   payload: NewEmailSignup,
   insert: (row: EmailSignupRow) => Promise<boolean>,
