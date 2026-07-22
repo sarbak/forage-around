@@ -32,6 +32,20 @@ test("names the signup benefit on the primary prompt action", () => {
   assert.doesNotMatch(appSource, /Keep me posted/);
 });
 
+test("offers the managed support address beside the signup consent", () => {
+  const appSource = readFileSync(new URL("../App.tsx", import.meta.url), "utf8");
+
+  assert.match(appSource, /const SUPPORT_EMAIL = "foragearound@mail\.tin\.computer"/);
+  assert.match(
+    appSource,
+    /<Link label="Email Forage Around" url=\{`mailto:\$\{SUPPORT_EMAIL\}`\} \/>/
+  );
+  assert.match(
+    appSource,
+    /function Link[\s\S]*accessibilityRole="link"[\s\S]*function About/
+  );
+});
+
 test("shows the prompt only after walking directions", () => {
   assert.equal(shouldShowEmailSignup("walk_here"), true);
   assert.equal(shouldShowEmailSignup("wall"), false);
