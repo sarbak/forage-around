@@ -1130,7 +1130,7 @@ function SubmitModal({
                           {emailBusy ? (
                             <ActivityIndicator color={C.white} />
                           ) : (
-                            <Text style={styles.signupBtnText}>Keep me posted</Text>
+                            <Text style={styles.signupBtnText}>Get harvest reminders</Text>
                           )}
                         </Pressable>
                         <Pressable

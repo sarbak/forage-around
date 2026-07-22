@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   EMAIL_SIGNUP_CONSENT,
@@ -19,6 +20,16 @@ test("uses the approved consent text verbatim", () => {
 
 test("uses one stable analytics label for the signup offer", () => {
   assert.equal(EMAIL_SIGNUP_OFFER, "seasonal_harvest_reminders");
+});
+
+test("names the signup benefit on the primary prompt action", () => {
+  const appSource = readFileSync(new URL("../App.tsx", import.meta.url), "utf8");
+
+  assert.match(
+    appSource,
+    /<Text style=\{styles\.signupBtnText\}>Get harvest reminders<\/Text>/
+  );
+  assert.doesNotMatch(appSource, /Keep me posted/);
 });
 
 test("shows the prompt only after walking directions", () => {
