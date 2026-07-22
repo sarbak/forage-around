@@ -48,6 +48,7 @@ import {
 import {
   EMAIL_SIGNUP_CONSENT,
   emailSignupAnalyticsProperties,
+  returnToMap,
   shouldShowEmailSignup,
   validEmail,
 } from "./src/emailSignup";
@@ -1027,8 +1028,7 @@ function SubmitModal({
   }
 
   function closeAfterDone() {
-    reset();
-    onClose();
+    returnToMap(reset, onClose);
   }
 
   return (
@@ -1084,6 +1084,20 @@ function SubmitModal({
                       <Text style={styles.emailSignupCopy}>
                         We'll use that address only for Forage Around updates and seasonal harvest reminders.
                       </Text>
+                      <Text style={styles.emailSignupNext}>
+                        Keep exploring what may be ripe nearby.
+                      </Text>
+                      <Pressable
+                        style={({ pressed }) => [
+                          styles.emailSignupReturn,
+                          pressed && styles.ctaPressed,
+                        ]}
+                        onPress={closeAfterDone}
+                        accessibilityRole="button"
+                        accessibilityLabel="Back to the map"
+                      >
+                        <Text style={styles.signupBtnText}>Back to the map</Text>
+                      </Pressable>
                     </>
                   ) : (
                     <>
@@ -1708,6 +1722,15 @@ const styles = StyleSheet.create({
   },
   emailSignupTitle: { fontFamily: F.display, fontSize: 18, color: C.forest, marginBottom: 5 },
   emailSignupCopy: { fontSize: 13, lineHeight: 19, color: C.inkSoft, marginBottom: 12 },
+  emailSignupNext: { fontSize: 15, lineHeight: 22, color: C.ink, marginBottom: 12 },
+  emailSignupReturn: {
+    minHeight: 48,
+    backgroundColor: C.forest,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 14,
+  },
   emailField: { marginBottom: 0 },
   signupActions: { flexDirection: "row", alignItems: "center", gap: 12, marginTop: 12 },
   signupBtn: {
