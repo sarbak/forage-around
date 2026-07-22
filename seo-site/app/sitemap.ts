@@ -6,6 +6,7 @@ import { SITE_ORIGIN } from "@/lib/site-origin";
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
     { url: `${SITE_ORIGIN}/`, priority: 1 },
+    { url: `${SITE_ORIGIN}/foraging-map`, priority: 0.9 },
     { url: `${SITE_ORIGIN}/locations`, priority: 0.9 },
     {
       url: `${SITE_ORIGIN}/locations/strawberry-tree`,
