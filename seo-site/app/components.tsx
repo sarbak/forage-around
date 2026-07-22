@@ -32,6 +32,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="wrap">
         Forage Around — a quiet map of the urban harvest.{" "}
+        <Link href="/foraging-map">Foraging map</Link> ·{" "}
         <Link href="/seasonal-guide">What&apos;s in season</Link> ·{" "}
         <Link href="/locations">Find nearby harvests</Link> ·{" "}
         <ToAppLink href={APP_URL} from="nav_footer">
