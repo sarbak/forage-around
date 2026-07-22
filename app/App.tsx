@@ -1102,7 +1102,10 @@ function SubmitModal({
                   ) : (
                     <>
                       <Text style={styles.emailSignupTitle}>Get harvest reminders</Text>
-                      <Text style={styles.emailSignupCopy}>{EMAIL_SIGNUP_CONSENT}</Text>
+                      <Text style={styles.emailSignupCopy}>
+                        {EMAIL_SIGNUP_CONSENT}{" "}
+                        <Link label="Email Forage Around" url={`mailto:${SUPPORT_EMAIL}`} />.
+                      </Text>
                       <TextInput
                         style={[styles.field, styles.emailField]}
                         placeholder="Email"
