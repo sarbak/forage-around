@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   EMAIL_SIGNUP_CONSENT,
+  EMAIL_SIGNUP_OFFER,
   emailSignupAnalyticsProperties,
   isControlledSignupTestRun,
   shouldShowEmailSignup,
@@ -13,6 +14,10 @@ test("uses the approved consent text verbatim", () => {
     EMAIL_SIGNUP_CONSENT,
     "Your email is optional; we'll only send Forage Around updates and seasonal harvest reminders."
   );
+});
+
+test("uses one stable analytics label for the signup offer", () => {
+  assert.equal(EMAIL_SIGNUP_OFFER, "seasonal_harvest_reminders");
 });
 
 test("shows the prompt only after walking directions", () => {
@@ -48,10 +53,12 @@ test("keeps signup attribution while distinguishing real and controlled analytic
 
   assert.deepEqual(emailSignupAnalyticsProperties(attribution, false), {
     ...attribution,
+    signup_offer: "seasonal_harvest_reminders",
     test_run: false,
   });
   assert.deepEqual(emailSignupAnalyticsProperties(attribution, true), {
     ...attribution,
+    signup_offer: "seasonal_harvest_reminders",
     test_run: true,
   });
 });

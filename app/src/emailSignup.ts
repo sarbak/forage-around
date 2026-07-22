@@ -3,6 +3,8 @@ export const EMAIL_SIGNUP_CONSENT =
 
 export const EMAIL_SIGNUP_TRIGGER = "walk_here" as const;
 
+export const EMAIL_SIGNUP_OFFER = "seasonal_harvest_reminders" as const;
+
 export type NewEmailSignup = {
   email: string;
   consent_text: string;
@@ -27,9 +29,13 @@ export function isControlledSignupTestRun(value: string | null | undefined): boo
 export function emailSignupAnalyticsProperties(
   context: Record<string, unknown>,
   testRun: boolean
-): Record<string, unknown> & { test_run: boolean } {
+): Record<string, unknown> & {
+  signup_offer: typeof EMAIL_SIGNUP_OFFER;
+  test_run: boolean;
+} {
   return {
     ...context,
+    signup_offer: EMAIL_SIGNUP_OFFER,
     test_run: testRun,
   };
 }
