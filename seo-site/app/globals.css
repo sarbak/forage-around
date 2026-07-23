@@ -283,6 +283,25 @@ ul.clean li {
   font-size: 15px;
   line-height: 1.5;
 }
+.seasonal-orientation p + p {
+  margin-top: 10px;
+}
+
+.city-season-grid {
+  display: grid;
+  gap: 12px;
+}
+.city-season-grid .card {
+  margin: 0;
+}
+.city-season-grid h3 {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 19px;
+  margin: 0 0 6px;
+}
+.city-season-grid p:last-child {
+  margin-bottom: 0;
+}
 
 .photo {
   width: 100%;
