@@ -65,6 +65,10 @@ import {
   walkingDestinationAccessibilityLabel,
   walkingDestinationLabel,
 } from "./src/walkingDestination";
+import {
+  LOCATION_ACCESS_RECOVERY_MESSAGE,
+  locationFailureRecovery,
+} from "./src/locationRecovery";
 
 type SubmitTarget = {
   kind: "observation" | "new_tree";
@@ -338,11 +342,21 @@ export default function App() {
     track("locate_clicked", { form_location: "hero" });
     setBusy(true);
     setGeoError(null);
+
+    async function recoverFromLocationFailure() {
+      const recovery = locationFailureRecovery(Platform.OS);
+      if (!recovery.useFallback) {
+        setGeoError(recovery.message);
+        return;
+      }
+      await go(FALLBACK, { method: "fallback", denied: true });
+    }
+
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         track("geolocation_denied");
-        await go(FALLBACK, { method: "fallback", denied: true });
+        await recoverFromLocationFailure();
         return;
       }
       const pos = await Location.getCurrentPositionAsync({
@@ -353,7 +367,7 @@ export default function App() {
         { method: "geolocation" }
       );
     } catch {
-      await go(FALLBACK, { method: "fallback", denied: true });
+      await recoverFromLocationFailure();
     } finally {
       setBusy(false);
     }
@@ -506,6 +520,13 @@ function Landing({
   onAbout: () => void;
 }) {
   const [addr, setAddr] = useState("");
+  const addrInputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    if (geoError !== LOCATION_ACCESS_RECOVERY_MESSAGE) return;
+    addrInputRef.current?.focus();
+  }, [geoError]);
+
   return (
     <ScrollView contentContainerStyle={styles.landing} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
       <View style={styles.hero}>
@@ -533,6 +554,7 @@ function Landing({
 
         <View style={styles.addrRow}>
           <TextInput
+            ref={addrInputRef}
             style={styles.addrInput}
             placeholder="Enter an address or place"
             placeholderTextColor={C.inkSoft}
