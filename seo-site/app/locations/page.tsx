@@ -120,9 +120,15 @@ export default function LocationsPage() {
           <Link key={city.slug} href={`/locations/${city.slug}`}>
             <span aria-hidden="true">📍</span>
             <span>
-              {city.name} harvest guide
+              {city.slug === "seattle"
+                ? "Foraging in Seattle"
+                : `${city.name} harvest guide`}
               <br />
-              <small className="muted">Fruit and edible plants in {city.region}</small>
+              <small className="muted">
+                {city.slug === "seattle"
+                  ? "Fruit, nuts, usual seasons, and the local map"
+                  : `Fruit and edible plants in ${city.region}`}
+              </small>
             </span>
           </Link>
         ))}
