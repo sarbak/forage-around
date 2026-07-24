@@ -46,7 +46,10 @@ import {
   withWebAttribution,
 } from "./src/webAttribution";
 import {
+  captureEmailSignupDismissal,
+  createEmailSignupOutcomeGuard,
   EMAIL_SIGNUP_CONSENT,
+  EmailSignupDismissalMethod,
   emailSignupAnalyticsProperties,
   returnToMap,
   shouldShowEmailSignup,
@@ -872,6 +875,13 @@ function SubmitModal({
   const [emailErr, setEmailErr] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const emailSignupOutcome = useRef(createEmailSignupOutcomeGuard());
+  const emailSignupTarget = useRef<SubmitTarget>(null);
+
+  if (target && emailSignupTarget.current !== target) {
+    emailSignupTarget.current = target;
+    emailSignupOutcome.current = createEmailSignupOutcomeGuard();
+  }
 
   useEffect(() => {
     if (!target || !shouldShowEmailSignup(target.source)) return;
@@ -975,6 +985,7 @@ function SubmitModal({
 
   async function sendEmailSignup() {
     if (!shouldShowEmailSignup(t.source) || t.kind !== "observation") return;
+    const promptOutcome = emailSignupOutcome.current;
     const signupContext = withMapSource(t.map_source ?? null, {
       source_action: t.source,
       submission_kind: t.kind,
@@ -1010,10 +1021,12 @@ function SubmitModal({
         setEmailErr("That didn't save. Check the address and try again.");
         return;
       }
-      track(
-        "email_signup_success",
-        emailSignupAnalyticsProperties(signupContext, readControlledTestRun())
-      );
+      if (promptOutcome.claim("success")) {
+        track(
+          "email_signup_success",
+          emailSignupAnalyticsProperties(signupContext, readControlledTestRun())
+        );
+      }
       setEmail("");
       setEmailDone(true);
     } catch {
@@ -1025,8 +1038,33 @@ function SubmitModal({
   }
 
   function skipEmailSignup() {
-    track(
-      "email_signup_skipped",
+    if (emailSignupOutcome.current.claim("skipped")) {
+      track(
+        "email_signup_skipped",
+        withMapSource(
+          t.map_source ?? null,
+          {
+            source_action: t.source,
+            submission_kind: t.kind,
+            species: t.species ?? null,
+            ff_location_id: t.ff_location_id ?? null,
+          },
+          referralParams,
+          t.species_context ?? null
+        )
+      );
+    }
+    setEmail("");
+    setEmailErr(null);
+    setEmailSkipped(true);
+  }
+
+  function dismissEmailSignup(method: EmailSignupDismissalMethod) {
+    if (!shouldShowEmailSignup(t.source) || t.kind !== "observation") return;
+
+    captureEmailSignupDismissal(
+      emailSignupOutcome.current,
+      method,
       withMapSource(
         t.map_source ?? null,
         {
@@ -1037,11 +1075,21 @@ function SubmitModal({
         },
         referralParams,
         t.species_context ?? null
-      )
+      ),
+      readControlledTestRun(),
+      track,
     );
-    setEmail("");
-    setEmailErr(null);
-    setEmailSkipped(true);
+  }
+
+  function closeFromButton() {
+    dismissEmailSignup("close_button");
+    reset();
+    onClose();
+  }
+
+  function closeFromRequest() {
+    dismissEmailSignup("request_close");
+    onClose();
   }
 
   function closeAfterDone() {
@@ -1049,15 +1097,17 @@ function SubmitModal({
   }
 
   return (
-    <Modal visible={!!target} animationType="slide" transparent={false} onRequestClose={onClose}>
+    <Modal
+      visible={!!target}
+      animationType="slide"
+      transparent={false}
+      onRequestClose={closeFromRequest}
+    >
       <View style={styles.app}>
         <ScrollView contentContainerStyle={styles.detailPad} keyboardShouldPersistTaps="handled">
           <View style={styles.detailTop}>
             <Pressable
-              onPress={() => {
-                reset();
-                onClose();
-              }}
+              onPress={closeFromButton}
               hitSlop={12}
               accessibilityRole="button"
               accessibilityLabel="Close"
