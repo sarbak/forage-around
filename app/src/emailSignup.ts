@@ -5,6 +5,15 @@ export const EMAIL_SIGNUP_TRIGGER = "walk_here" as const;
 
 export const EMAIL_SIGNUP_OFFER = "seasonal_harvest_reminders" as const;
 
+export type EmailSignupDismissalMethod = "close_button" | "request_close";
+
+export type EmailSignupTerminalOutcome = "dismissed" | "skipped" | "success";
+
+export type EmailSignupOutcomeGuard = {
+  claim: (outcome: EmailSignupTerminalOutcome) => boolean;
+  current: () => EmailSignupTerminalOutcome | null;
+};
+
 export type NewEmailSignup = {
   email: string;
   consent_text: string;
@@ -38,6 +47,37 @@ export function emailSignupAnalyticsProperties(
     signup_offer: EMAIL_SIGNUP_OFFER,
     test_run: testRun,
   };
+}
+
+export function createEmailSignupOutcomeGuard(): EmailSignupOutcomeGuard {
+  let outcome: EmailSignupTerminalOutcome | null = null;
+
+  return {
+    claim(nextOutcome) {
+      if (outcome) return false;
+      outcome = nextOutcome;
+      return true;
+    },
+    current() {
+      return outcome;
+    },
+  };
+}
+
+export function captureEmailSignupDismissal(
+  guard: EmailSignupOutcomeGuard,
+  dismissalMethod: EmailSignupDismissalMethod,
+  context: Record<string, unknown>,
+  testRun: boolean,
+  capture: (event: string, properties: Record<string, unknown>) => void,
+): boolean {
+  if (!guard.claim("dismissed")) return false;
+
+  capture("email_signup_dismissed", {
+    ...emailSignupAnalyticsProperties(context, testRun),
+    dismissal_method: dismissalMethod,
+  });
+  return true;
 }
 
 export function shouldShowEmailSignup(sourceAction: string): boolean {

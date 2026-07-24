@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
+  captureEmailSignupDismissal,
+  createEmailSignupOutcomeGuard,
   EMAIL_SIGNUP_CONSENT,
   EMAIL_SIGNUP_OFFER,
   emailSignupAnalyticsProperties,
@@ -87,6 +89,107 @@ test("keeps signup attribution while distinguishing real and controlled analytic
     signup_offer: "seasonal_harvest_reminders",
     test_run: true,
   });
+});
+
+test("classifies X and request-close dismissals with the required prompt properties", () => {
+  const attribution = {
+    source_action: "walk_here",
+    submission_kind: "observation",
+    map_source: "seasonal_guide",
+    species: "Apple",
+    ff_location_id: "123",
+    utm_source: "local_partner",
+  };
+
+  for (const dismissalMethod of ["close_button", "request_close"] as const) {
+    const events: Array<{ event: string; properties: Record<string, unknown> }> = [];
+    const captured = captureEmailSignupDismissal(
+      createEmailSignupOutcomeGuard(),
+      dismissalMethod,
+      attribution,
+      true,
+      (event, properties) => events.push({ event, properties }),
+    );
+
+    assert.equal(captured, true);
+    assert.deepEqual(events, [
+      {
+        event: "email_signup_dismissed",
+        properties: {
+          ...attribution,
+          signup_offer: "seasonal_harvest_reminders",
+          test_run: true,
+          dismissal_method: dismissalMethod,
+        },
+      },
+    ]);
+  }
+});
+
+test("captures at most one dismissal per prompt", () => {
+  const guard = createEmailSignupOutcomeGuard();
+  const events: string[] = [];
+  const capture = (event: string) => events.push(event);
+
+  assert.equal(
+    captureEmailSignupDismissal(guard, "close_button", {}, false, capture),
+    true,
+  );
+  assert.equal(
+    captureEmailSignupDismissal(guard, "request_close", {}, false, capture),
+    false,
+  );
+  assert.deepEqual(events, ["email_signup_dismissed"]);
+  assert.equal(guard.current(), "dismissed");
+});
+
+test("keeps dismissal mutually exclusive with success and explicit skip", () => {
+  for (const outcome of ["success", "skipped"] as const) {
+    const guard = createEmailSignupOutcomeGuard();
+    const events: string[] = [];
+
+    assert.equal(guard.claim(outcome), true);
+    assert.equal(
+      captureEmailSignupDismissal(
+        guard,
+        "close_button",
+        {},
+        false,
+        (event) => events.push(event),
+      ),
+      false,
+    );
+    assert.deepEqual(events, []);
+    assert.equal(guard.current(), outcome);
+  }
+});
+
+test("keeps a late success exclusive after the prompt was dismissed", () => {
+  const guard = createEmailSignupOutcomeGuard();
+  const events: string[] = [];
+
+  assert.equal(
+    captureEmailSignupDismissal(
+      guard,
+      "request_close",
+      {},
+      false,
+      (event) => events.push(event),
+    ),
+    true,
+  );
+  assert.equal(guard.claim("success"), false);
+  assert.deepEqual(events, ["email_signup_dismissed"]);
+  assert.equal(guard.current(), "dismissed");
+});
+
+test("wires both modal close paths through the dismissal classifier", () => {
+  const appSource = readFileSync(new URL("../App.tsx", import.meta.url), "utf8");
+
+  assert.match(appSource, /dismissEmailSignup\("close_button"\)/);
+  assert.match(appSource, /dismissEmailSignup\("request_close"\)/);
+  assert.match(appSource, /onRequestClose=\{closeFromRequest\}/);
+  assert.match(appSource, /onPress=\{closeFromButton\}/);
 });
 
 test("returns a successful signup to the unchanged map in one action", () => {
