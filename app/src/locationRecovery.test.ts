@@ -6,26 +6,16 @@ import {
   locationFailureRecovery,
 } from "./locationRecovery";
 
-test("keeps browser location failures on the address-search screen", () => {
-  assert.deepEqual(locationFailureRecovery("web"), {
-    message: "Location access is off. Enter an address or place instead.",
+test("keeps every location failure on the address-search screen", () => {
+  assert.deepEqual(locationFailureRecovery(), {
+    message:
+      "Location access is off or unavailable. Enter an address or place instead.",
     useFallback: false,
   });
   assert.equal(
-    locationFailureRecovery("web").message,
+    locationFailureRecovery().message,
     LOCATION_ACCESS_RECOVERY_MESSAGE,
   );
-});
-
-test("preserves the existing fallback outside the browser recovery path", () => {
-  assert.deepEqual(locationFailureRecovery("ios"), {
-    message: null,
-    useFallback: true,
-  });
-  assert.deepEqual(locationFailureRecovery("android"), {
-    message: null,
-    useFallback: true,
-  });
 });
 
 test("preserves denial analytics and focuses the address field", () => {
@@ -37,12 +27,13 @@ test("preserves denial analytics and focuses the address field", () => {
 
   assert.match(
     locateSource,
-    /track\("geolocation_denied"\);\s+await recoverFromLocationFailure\(\);/,
+    /track\("geolocation_denied"\);\s+recoverFromLocationFailure\(\);/,
   );
   assert.equal(
-    locateSource.match(/await recoverFromLocationFailure\(\);/g)?.length,
+    locateSource.match(/recoverFromLocationFailure\(\);/g)?.length,
     2,
   );
+  assert.doesNotMatch(locateSource, /FALLBACK|method: "fallback"/);
   assert.match(
     appSource,
     /if \(geoError !== LOCATION_ACCESS_RECOVERY_MESSAGE\) return;\s+addrInputRef\.current\?\.focus\(\);/,
