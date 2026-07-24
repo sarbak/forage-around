@@ -215,8 +215,6 @@ function withMapSource(
   );
 }
 
-// Live Oak Park — generic fallback when location is unavailable.
-const FALLBACK = { lat: 37.8814, lng: -122.2686, label: "Live Oak Park" };
 const TEN_MIN_M = 810; // ~10 minutes at 1.35 m/s
 const SUPPORT_EMAIL = "foragearound@mail.tin.computer";
 
@@ -234,7 +232,6 @@ export default function App() {
   const [loc, setLoc] = useState<Loc | null>(null);
   const [finds, setFinds] = useState<Find[] | null>(null);
   const [busy, setBusy] = useState(false);
-  const [denied, setDenied] = useState(false);
   const [geoError, setGeoError] = useState<string | null>(null);
   const [onlyInSeason, setOnlyInSeason] = useState(true);
   const [view, setView] = useState<"list" | "map">("list");
@@ -276,7 +273,6 @@ export default function App() {
         speciesContext,
       )
     );
-    setDenied(!!opts.denied);
     setLoc(point);
     setFinds(f);
   }
@@ -343,20 +339,15 @@ export default function App() {
     setBusy(true);
     setGeoError(null);
 
-    async function recoverFromLocationFailure() {
-      const recovery = locationFailureRecovery(Platform.OS);
-      if (!recovery.useFallback) {
-        setGeoError(recovery.message);
-        return;
-      }
-      await go(FALLBACK, { method: "fallback", denied: true });
+    function recoverFromLocationFailure() {
+      setGeoError(locationFailureRecovery().message);
     }
 
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         track("geolocation_denied");
-        await recoverFromLocationFailure();
+        recoverFromLocationFailure();
         return;
       }
       const pos = await Location.getCurrentPositionAsync({
@@ -367,7 +358,7 @@ export default function App() {
         { method: "geolocation" }
       );
     } catch {
-      await recoverFromLocationFailure();
+      recoverFromLocationFailure();
     } finally {
       setBusy(false);
     }
@@ -413,7 +404,6 @@ export default function App() {
         <Results
           loc={loc}
           finds={finds}
-          denied={denied}
           onlyInSeason={onlyInSeason}
           setOnlyInSeason={setOnlyInSeason}
           view={view}
@@ -552,6 +542,15 @@ function Landing({
           <View style={styles.orLine} />
         </View>
 
+        {!!geoError && (
+          <Text
+            style={styles.geoError}
+            accessibilityRole="alert"
+            accessibilityLiveRegion="polite"
+          >
+            {geoError}
+          </Text>
+        )}
         <View style={styles.addrRow}>
           <TextInput
             ref={addrInputRef}
@@ -578,7 +577,6 @@ function Landing({
           </Pressable>
         </View>
         <Text style={styles.noLogin}>No account needed</Text>
-        {!!geoError && <Text style={styles.geoError}>{geoError}</Text>}
       </View>
 
       <View style={styles.seasonCard}>
@@ -645,7 +643,6 @@ function Landing({
 function Results({
   loc,
   finds,
-  denied,
   onlyInSeason,
   setOnlyInSeason,
   view,
@@ -657,7 +654,6 @@ function Results({
 }: {
   loc: Loc;
   finds: Find[];
-  denied: boolean;
   onlyInSeason: boolean;
   setOnlyInSeason: (v: boolean) => void;
   view: "list" | "map";
@@ -709,7 +705,6 @@ function Results({
       </View>
 
       <Text style={styles.locLabel}>{loc.label}</Text>
-      {denied && <Text style={styles.deniedNote}>Location off — showing Live Oak Park. Tap back to retry.</Text>}
 
       <Text style={styles.resultsH}>
         {view === "map"
@@ -1607,7 +1602,7 @@ const styles = StyleSheet.create({
   addrGo: { backgroundColor: C.ripe, borderRadius: 14, paddingHorizontal: 22, alignItems: "center", justifyContent: "center" },
   addrGoPressed: { backgroundColor: "#8D3F10" },
   addrGoText: { color: C.white, fontSize: 16, fontWeight: "700", fontFamily: F.display },
-  geoError: { color: C.berry, fontSize: 13, marginTop: 10, lineHeight: 19 },
+  geoError: { color: C.berry, fontSize: 13, marginBottom: 10, lineHeight: 19 },
 
   seasonCard: { backgroundColor: C.white, borderRadius: 20, padding: 22, borderWidth: 1, borderColor: C.line },
   seasonLabel: { fontSize: 12, letterSpacing: 1.5, color: C.ripe, fontWeight: "700", marginBottom: 8 },
@@ -1638,7 +1633,6 @@ const styles = StyleSheet.create({
   segText: { fontSize: 14, fontWeight: "600", color: C.inkSoft },
   segTextOn: { color: C.forest },
   locLabel: { fontSize: 13, color: C.inkSoft, marginBottom: 8 },
-  deniedNote: { fontSize: 13, color: C.berry, marginBottom: 12, lineHeight: 19 },
   resultsH: { fontFamily: F.display, fontSize: 30, lineHeight: 36, color: C.ink, marginBottom: 16 },
   toggleRow: { flexDirection: "row", gap: 10, marginBottom: 18 },
   chip: { paddingVertical: 9, paddingHorizontal: 15, borderRadius: 999, borderWidth: 1 },
