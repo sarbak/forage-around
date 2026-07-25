@@ -92,6 +92,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     shareTitle = "Portland foraging: berries, fruit and a map | Forage Around";
   }
 
+  if (city.slug === "los-angeles") {
+    title = "Los Angeles foraging: fruit and a map";
+    description =
+      "Plan a Los Angeles foraging walk with usual seasons for loquats, figs, pomegranates, citrus, and more, then check reported plants on the map.";
+    shareTitle = "Los Angeles foraging: fruit and a map | Forage Around";
+  }
+
+  if (city.slug === "chicago") {
+    title = "Chicago foraging: fruit, berries and a map";
+    description =
+      "Plan a Chicago foraging walk with usual seasons for mulberries, elderberries, apples, nuts, and more, then check reported edible plants on the map.";
+    shareTitle = "Chicago foraging: fruit, berries and a map | Forage Around";
+  }
+
+  if (city.slug === "new-york") {
+    title = "New York foraging: fruit, nuts and a map";
+    description =
+      "Plan a New York foraging walk with usual seasons for mulberries, plums, apples, haws, nuts, and more, then check reported plants on the map.";
+    shareTitle = "New York foraging: fruit, nuts and a map | Forage Around";
+  }
+
   return {
     title,
     description,
@@ -248,6 +269,181 @@ function PortlandSeasonGuide() {
             <Link href="/species/walnut">Walnuts</Link> usually span September
             through November in this guide. Confirm the tree, inspect the nut,
             and use gloves around fresh hulls, which can stain skin and clothing.
+          </p>
+        </section>
+      </div>
+    </>
+  );
+}
+
+function LosAngelesSeasonGuide() {
+  return (
+    <>
+      <h2 className="section">What to forage in Los Angeles by season</h2>
+      <p>
+        Los Angeles does not follow one citywide harvest calendar. Coastal air,
+        basin heat, foothill elevation, irrigation, and variety can put the same
+        fruit weeks apart in different neighborhoods. Use these broad windows to
+        choose what to look for, then check the plant and fruit on site.
+      </p>
+      <div className="city-season-grid">
+        <section className="card">
+          <p className="kicker">Winter into spring</p>
+          <h3>Citrus carries the cool season</h3>
+          <p>
+            <Link href="/species/lemon">Lemons</Link> can appear throughout the
+            year in this guide, while <Link href="/species/orange">oranges</Link>{" "}
+            usually run from winter into spring. A colored fruit is not proof
+            that the tree is accessible, untreated, or ready to pick.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Spring into early summer</p>
+          <h3>Loquats, then apricots</h3>
+          <p>
+            <Link href="/species/loquat">Loquats</Link> usually span April
+            through June, with May as their typical peak.{" "}
+            <Link href="/species/apricot">Apricots</Link> usually follow from May
+            through July. Confirm the whole plant rather than relying on fruit
+            color alone.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Summer</p>
+          <h3>Peaches and figs</h3>
+          <p>
+            <Link href="/species/peach">Peaches</Link> usually span June through
+            August. <Link href="/species/common-fig">Figs</Link> usually begin in
+            June and continue into fall, often with an early and a later crop.
+            Heat, shade, and irrigation can move both windows.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Late summer into fall</p>
+          <h3>Pomegranates extend the season</h3>
+          <p>
+            <Link href="/species/pomegranate">Pomegranates</Link> usually span
+            September through November, with October as their typical peak.{" "}
+            <Link href="/species/avocado">Avocados</Link> can have a much broader
+            cultivar-dependent window, so a nearby report needs an on-site
+            timing check.
+          </p>
+        </section>
+      </div>
+    </>
+  );
+}
+
+function ChicagoSeasonGuide() {
+  return (
+    <>
+      <h2 className="section">What to forage in Chicago by season</h2>
+      <p>
+        Chicago&apos;s useful fruit-and-nut window is shorter than in the West
+        Coast guides, and hard winters or a late spring can move it sharply.
+        Live reports also cluster unevenly across the city. Treat this as a
+        calendar for reported edible plants, not a promise of broad neighborhood
+        coverage.
+      </p>
+      <div className="city-season-grid">
+        <section className="card">
+          <p className="kicker">Late spring into early summer</p>
+          <h3>Cherries and mulberries begin</h3>
+          <p>
+            <Link href="/species/cherry">Cherries</Link> and{" "}
+            <Link href="/species/mulberry">mulberries</Link> usually begin in May
+            and run into July in this guide. Mulberries can stain pavement and
+            clothing, but fallen fruit alone does not confirm a safe or
+            accessible picking site.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Midsummer</p>
+          <h3>Plums take the July window</h3>
+          <p>
+            <Link href="/species/plum">Plums</Link> usually span June through
+            August, with July as their typical peak. Year-to-year heat and rain
+            can compress that window, so check several nearby reports before
+            making a trip.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Late summer into early fall</p>
+          <h3>Elderberries, apples, and pears</h3>
+          <p>
+            <Link href="/species/elderberry">Elderberries</Link> usually span
+            August and September and must be cooked before use.{" "}
+            <Link href="/species/apple">Apples</Link> and{" "}
+            <Link href="/species/pear">pears</Link> usually follow from August
+            through October.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Fall</p>
+          <h3>Crabapples and walnuts close the season</h3>
+          <p>
+            <Link href="/species/crabapple">Crabapples</Link> usually span
+            September and October. <Link href="/species/walnut">Walnuts</Link>{" "}
+            can continue through November. Verify the tree and edible part, and
+            check site rules before collecting.
+          </p>
+        </section>
+      </div>
+    </>
+  );
+}
+
+function NewYorkSeasonGuide() {
+  return (
+    <>
+      <h2 className="section">What to forage in New York by season</h2>
+      <p>
+        New York&apos;s boroughs, waterfront exposure, shade, and site management
+        can move timing from one block to the next. Street-tree density is not
+        the same as harvest availability, so use these broad windows to plan a
+        walk and verify every report when you arrive.
+      </p>
+      <div className="city-season-grid">
+        <section className="card">
+          <p className="kicker">Late spring into early summer</p>
+          <h3>Cherries and mulberries begin</h3>
+          <p>
+            <Link href="/species/cherry">Cherries</Link> and{" "}
+            <Link href="/species/mulberry">mulberries</Link> usually span May
+            through July in this guide. Heat, shade, and pruning can shift a
+            street tree or park planting away from the broad city window.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Summer</p>
+          <h3>Plums, then peaches</h3>
+          <p>
+            <Link href="/species/plum">Plums</Link> usually span June through
+            August, with July as their typical peak.{" "}
+            <Link href="/species/peach">Peaches</Link> share that broad summer
+            window. Check the fruit, the site, and the map report rather than
+            assuming a borough-wide date.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Late summer into fall</p>
+          <h3>Apples and haws follow</h3>
+          <p>
+            <Link href="/species/apple">Apples</Link> usually span August through
+            October. <Link href="/species/hawthorn">Hawthorn haws</Link> usually
+            begin in September and continue into November. Do not eat hawthorn
+            seeds, and confirm the species before using the fruit.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Fall</p>
+          <h3>Walnuts and acorns extend the walk</h3>
+          <p>
+            <Link href="/species/walnut">Walnuts</Link> and{" "}
+            <Link href="/species/oak">oak acorns</Link> usually span September
+            through November. Acorns must be correctly identified and leached of
+            tannins before eating; neither a street-tree record nor a park marker
+            grants permission to collect.
           </p>
         </section>
       </div>
@@ -413,6 +609,195 @@ function PortlandPlanningGuide({ mapHref }: { mapHref: string }) {
   );
 }
 
+function LosAngelesPlanningGuide({ mapHref }: { mapHref: string }) {
+  return (
+    <>
+      <h2 className="section">How to plan a Los Angeles foraging walk</h2>
+      <ol className="clean">
+        <li>
+          Search the neighborhood or address where you will actually walk. A
+          city-center search hides the distance between Los Angeles
+          microclimates.
+        </li>
+        <li>
+          Compare a few nearby reports and their plant guides before choosing a
+          route.
+        </li>
+        <li>
+          Check ownership, site rules, and permission before opening walking
+          directions.
+        </li>
+        <li>
+          Confirm the plant, edible part, current fruit, and site conditions when
+          you arrive.
+        </li>
+      </ol>
+
+      <h2 className="section">Before you harvest in Los Angeles</h2>
+      <div className="seasonal-orientation">
+        <p>
+          <strong>Identity:</strong> a fruit photo or common name is only a
+          starting point. Match the whole plant and edible part with a trusted
+          local source. If you are unsure, leave it.
+        </p>
+        <p>
+          <strong>Access:</strong> a public-tree or community-map record does not
+          establish current ownership, public access, or permission to pick.
+          Check the boundary and current site rules, and ask before entering or
+          harvesting on private property.
+        </p>
+        <p>
+          <strong>Site conditions:</strong> irrigation, roadside exposure,
+          spraying, pet waste, and heat damage can affect one tree even when the
+          species is usually in season. Inspect the site and wash what you
+          collect.
+        </p>
+      </div>
+      <p>
+        Want a broader calendar before choosing a plant? Use the{" "}
+        <Link href="/seasonal-guide">seasonal foraging guide</Link>. You can also
+        browse the <Link href="/locations">nearby harvest guides</Link> or read{" "}
+        <Link href="/about">how Forage Around sources its reports</Link>.
+      </p>
+
+      <div className="locations-actions">
+        <ToAppLink className="btn" href={mapHref} from="locations">
+          Open the Los Angeles foraging map
+        </ToAppLink>
+        <small className="locations-availability-note muted">
+          Reports are leads, not live availability or permission
+        </small>
+      </div>
+    </>
+  );
+}
+
+function ChicagoPlanningGuide({ mapHref }: { mapHref: string }) {
+  return (
+    <>
+      <h2 className="section">How to plan a Chicago foraging walk</h2>
+      <ol className="clean">
+        <li>
+          Search a north, west, or south-side neighborhood or address instead of
+          assuming the reports cover Chicago evenly.
+        </li>
+        <li>
+          Compare a few reported edible plants nearby and read each plant guide
+          before choosing a walk.
+        </li>
+        <li>
+          Check whether the marker sits on a street, park, preserve, community
+          site, or private property, then find the current rules.
+        </li>
+        <li>
+          Confirm the plant, edible part, current ripeness, and permission when
+          you arrive.
+        </li>
+      </ol>
+
+      <h2 className="section">Before you harvest in Chicago</h2>
+      <div className="seasonal-orientation">
+        <p>
+          <strong>Identity:</strong> map labels can be broad or outdated. Match
+          the whole plant and edible part with a trusted local source. If you are
+          unsure, leave it.
+        </p>
+        <p>
+          <strong>Access:</strong> a park, preserve, street-tree, or
+          community-map marker does not establish permission to enter or pick.
+          Check current property boundaries, posted rules, and land-manager
+          guidance before collecting.
+        </p>
+        <p>
+          <strong>Coverage:</strong> the live reports are clustered, so an empty
+          result near one address does not describe the whole city, and a dense
+          result elsewhere does not guarantee an accessible plant. Search close
+          to your route and keep alternatives.
+        </p>
+      </div>
+      <p>
+        Want a broader calendar before choosing a plant? Use the{" "}
+        <Link href="/seasonal-guide">seasonal foraging guide</Link>. You can also
+        browse the <Link href="/locations">nearby harvest guides</Link> or read{" "}
+        <Link href="/about">how Forage Around sources its reports</Link>.
+      </p>
+
+      <div className="locations-actions">
+        <ToAppLink className="btn" href={mapHref} from="locations">
+          Open the Chicago foraging map
+        </ToAppLink>
+        <small className="locations-availability-note muted">
+          Reports are leads, not live availability or permission
+        </small>
+      </div>
+    </>
+  );
+}
+
+function NewYorkPlanningGuide({ mapHref }: { mapHref: string }) {
+  return (
+    <>
+      <h2 className="section">How to plan a New York foraging walk</h2>
+      <ol className="clean">
+        <li>
+          Search the borough, neighborhood, or address where you will walk
+          rather than scanning all five boroughs at once.
+        </li>
+        <li>
+          Compare a few reports and distinguish street trees, parks, community
+          gardens, and designated edible landscapes.
+        </li>
+        <li>
+          Check the current site rules and permission before opening walking
+          directions.
+        </li>
+        <li>
+          Confirm the plant, edible part, current ripeness, and site conditions
+          when you arrive.
+        </li>
+      </ol>
+
+      <h2 className="section">Before you harvest in New York</h2>
+      <div className="seasonal-orientation">
+        <p>
+          <strong>Identity:</strong> an inventory label or map photo is not proof
+          of identity or edibility. Match the whole plant and edible part with a
+          trusted local source. If you are unsure, leave it.
+        </p>
+        <p>
+          <strong>Access:</strong> inventory density is not harvest permission.
+          A tree can be ornamental, inaccessible, treated, removed, or covered
+          by site-specific rules. Ask before collecting on private or managed
+          property.
+        </p>
+        <p>
+          <strong>Place:</strong> a designated edible landscape such as the{" "}
+          <a href="https://bronxriver.org/post/greenway/foodway" rel="noopener">
+            Bronx River Foodway
+          </a>{" "}
+          has its own purpose and guidance. Do not apply one site&apos;s rules to
+          street trees, parks, gardens, or another borough.
+        </p>
+      </div>
+      <p>
+        Want a broader calendar before choosing a plant? Use the{" "}
+        <Link href="/seasonal-guide">seasonal foraging guide</Link>. You can also
+        browse the <Link href="/locations">nearby harvest guides</Link> or read{" "}
+        <Link href="/about">how Forage Around sources its reports</Link>.
+      </p>
+
+      <div className="locations-actions">
+        <ToAppLink className="btn" href={mapHref} from="locations">
+          Open the New York foraging map
+        </ToAppLink>
+        <small className="locations-availability-note muted">
+          Reports are leads, not live availability or permission
+        </small>
+      </div>
+    </>
+  );
+}
+
 export default async function CityHarvestPage({ params }: PageProps) {
   const { city: slug } = await params;
   const city = cityHarvestFromSlug(slug);
@@ -426,14 +811,47 @@ export default async function CityHarvestPage({ params }: PageProps) {
     location: city.searchLabel,
   });
   const mapHref = `${APP_URL}?${mapParams.toString()}`;
-  const mapActionLabel =
-    city.slug === "seattle"
-      ? "Open the Seattle foraging map"
-      : city.slug === "portland"
-        ? "Open the Portland foraging map"
-      : `Open the map and search ${city.name} →`;
   const isSeattle = city.slug === "seattle";
   const isPortland = city.slug === "portland";
+  const isLosAngeles = city.slug === "los-angeles";
+  const isChicago = city.slug === "chicago";
+  const isNewYork = city.slug === "new-york";
+  let kicker = `${city.name} harvest guide`;
+  let heading = `Find fruit and edible plants in ${city.name}`;
+  let lead = `Learn the usual ripening windows for plants represented around ${city.name}, then use the live map to check crowd-sourced reports near your address.`;
+  let mapActionLabel = `Open the map and search ${city.name} →`;
+
+  if (isSeattle) {
+    kicker = "Seattle foraging guide";
+    heading = "Foraging in Seattle: fruit, nuts, and a neighborhood map";
+    lead =
+      "Plan a self-guided Seattle foraging walk with usual seasons for cherries, plums, apples, crabapples, nuts, and late fruit, then search crowd-sourced reports near your address.";
+    mapActionLabel = "Open the Seattle foraging map";
+  } else if (isPortland) {
+    kicker = "Portland foraging guide";
+    heading = "Foraging in Portland: berries, fruit, and a city map";
+    lead =
+      "Plan a Portland foraging walk around typical berry and fruit seasons, then search crowd-sourced reports near your address.";
+    mapActionLabel = "Open the Portland foraging map";
+  } else if (isLosAngeles) {
+    kicker = "Los Angeles foraging guide";
+    heading = "Foraging in Los Angeles: fruit across city microclimates";
+    lead =
+      "Plan a Los Angeles foraging walk around typical citrus, loquat, fig, stone-fruit, and pomegranate seasons, then check reports near the neighborhood you can actually visit.";
+    mapActionLabel = "Open the Los Angeles foraging map";
+  } else if (isChicago) {
+    kicker = "Chicago foraging guide";
+    heading = "Foraging in Chicago: reported fruit, berries, and nuts";
+    lead =
+      "Use Chicago's shorter seasonal calendar to choose what to look for, then search the live map for reported edible plants near a specific neighborhood or address.";
+    mapActionLabel = "Open the Chicago foraging map";
+  } else if (isNewYork) {
+    kicker = "New York foraging guide";
+    heading = "Foraging in New York: fruit, nuts, and a city map";
+    lead =
+      "Plan a New York foraging walk around typical fruit and nut seasons, then search crowd-sourced reports near a specific borough, neighborhood, or address.";
+    mapActionLabel = "Open the New York foraging map";
+  }
 
   return (
     <>
@@ -448,27 +866,9 @@ export default async function CityHarvestPage({ params }: PageProps) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(SEATTLE_FAQ_SCHEMA) }}
         />
       ) : null}
-      <p className="kicker">
-        {isSeattle
-          ? "Seattle foraging guide"
-          : isPortland
-            ? "Portland foraging guide"
-            : `${city.name} harvest guide`}
-      </p>
-      <h1 className="title">
-        {isSeattle
-          ? "Foraging in Seattle: fruit, nuts, and a neighborhood map"
-          : isPortland
-            ? "Foraging in Portland: berries, fruit, and a city map"
-          : `Find fruit and edible plants in ${city.name}`}
-      </h1>
-      <p className="lead">
-        {isSeattle
-          ? "Plan a self-guided Seattle foraging walk with usual seasons for cherries, plums, apples, crabapples, nuts, and late fruit, then search crowd-sourced reports near your address."
-          : isPortland
-            ? "Plan a Portland foraging walk around typical berry and fruit seasons, then search crowd-sourced reports near your address."
-          : `Learn the usual ripening windows for plants represented around ${city.name}, then use the live map to check crowd-sourced reports near your address.`}
-      </p>
+      <p className="kicker">{kicker}</p>
+      <h1 className="title">{heading}</h1>
+      <p className="lead">{lead}</p>
 
       <div className="locations-actions">
         <ToAppLink className="btn" href={mapHref} from="locations">
@@ -494,6 +894,9 @@ export default async function CityHarvestPage({ params }: PageProps) {
 
       {isSeattle ? <SeattleSeasonGuide /> : null}
       {isPortland ? <PortlandSeasonGuide /> : null}
+      {isLosAngeles ? <LosAngelesSeasonGuide /> : null}
+      {isChicago ? <ChicagoSeasonGuide /> : null}
+      {isNewYork ? <NewYorkSeasonGuide /> : null}
 
       <h2 className="section">Plant guides for {city.name}</h2>
       <p className="muted">
@@ -540,6 +943,12 @@ export default async function CityHarvestPage({ params }: PageProps) {
         <SeattlePlanningGuide mapHref={mapHref} />
       ) : isPortland ? (
         <PortlandPlanningGuide mapHref={mapHref} />
+      ) : isLosAngeles ? (
+        <LosAngelesPlanningGuide mapHref={mapHref} />
+      ) : isChicago ? (
+        <ChicagoPlanningGuide mapHref={mapHref} />
+      ) : isNewYork ? (
+        <NewYorkPlanningGuide mapHref={mapHref} />
       ) : (
         <>
           <h2 className="section">How to look nearby</h2>

@@ -49,6 +49,45 @@ const cities = [
       "Cherry",
     ],
   },
+  {
+    slug: "los-angeles",
+    plantNames: [
+      "Lemon",
+      "Loquat",
+      "Orange",
+      "Avocado",
+      "Common fig",
+      "Peach",
+      "Pomegranate",
+      "Apricot",
+    ],
+  },
+  {
+    slug: "chicago",
+    plantNames: [
+      "Mulberry",
+      "Apple",
+      "Crabapple",
+      "Cherry",
+      "Pear",
+      "Elderberry",
+      "Plum",
+      "Walnut",
+    ],
+  },
+  {
+    slug: "new-york",
+    plantNames: [
+      "Apple",
+      "Plum",
+      "Mulberry",
+      "Hawthorn",
+      "Peach",
+      "Cherry",
+      "Walnut",
+      "Oak",
+    ],
+  },
 ];
 
 const species = JSON.parse(await readFile(speciesUrl, "utf8"));
