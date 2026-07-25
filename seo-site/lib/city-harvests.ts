@@ -65,6 +65,60 @@ export const cityHarvests: CityHarvest[] = [
       "Cherry",
     ],
   },
+  {
+    slug: "los-angeles",
+    name: "Los Angeles",
+    region: "California",
+    searchLabel: "Los Angeles, CA",
+    localContext:
+      "Los Angeles is a patchwork of coastal, basin, foothill, and irrigated neighborhood microclimates. Search a street or neighborhood because the same plant can be ready weeks apart across the city.",
+    plantNames: [
+      "Lemon",
+      "Loquat",
+      "Orange",
+      "Avocado",
+      "Common fig",
+      "Peach",
+      "Pomegranate",
+      "Apricot",
+    ],
+  },
+  {
+    slug: "chicago",
+    name: "Chicago",
+    region: "Illinois",
+    searchLabel: "Chicago, IL",
+    localContext:
+      "Chicago has a shorter harvest season than the West Coast guides, and the live reports are uneven across neighborhoods. Search a north, west, or south-side address to check the reported edible plants close to your actual walk.",
+    plantNames: [
+      "Mulberry",
+      "Apple",
+      "Crabapple",
+      "Cherry",
+      "Pear",
+      "Elderberry",
+      "Plum",
+      "Walnut",
+    ],
+  },
+  {
+    slug: "new-york",
+    name: "New York",
+    region: "New York",
+    searchLabel: "New York, NY",
+    localContext:
+      "New York's boroughs, waterfronts, shade, and managed landscapes can shift timing from one site to the next. Search a specific neighborhood or address and distinguish street trees, parks, gardens, and designated edible landscapes before planning a walk.",
+    plantNames: [
+      "Apple",
+      "Plum",
+      "Mulberry",
+      "Hawthorn",
+      "Peach",
+      "Cherry",
+      "Walnut",
+      "Oak",
+    ],
+  },
 ];
 
 export function cityHarvestFromSlug(slug: string): CityHarvest | null {
