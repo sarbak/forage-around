@@ -882,6 +882,11 @@ export default async function CityHarvestPage({ params }: PageProps) {
             Open the seasonal foraging guide
           </Link>
         ) : null}
+        {isPortland ? (
+          <Link className="btn-outline" href="/locations/portland/summer">
+            What to forage in Portland this summer
+          </Link>
+        ) : null}
       </div>
 
       <div className="card">
