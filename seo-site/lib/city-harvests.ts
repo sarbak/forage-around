@@ -47,6 +47,24 @@ export const cityHarvests: CityHarvest[] = [
       "Common fig",
     ],
   },
+  {
+    slug: "portland",
+    name: "Portland",
+    region: "Oregon",
+    searchLabel: "Portland, OR",
+    localContext:
+      "Portland's wet winters and dry summers create broad seasonal shifts across neighborhood fruit trees and cane berries. Search a street or neighborhood to keep the map close to the walk you can actually take.",
+    plantNames: [
+      "Pear",
+      "Apple",
+      "Blackberry",
+      "Hawthorn",
+      "Walnut",
+      "Plum",
+      "Raspberry",
+      "Cherry",
+    ],
+  },
 ];
 
 export function cityHarvestFromSlug(slug: string): CityHarvest | null {

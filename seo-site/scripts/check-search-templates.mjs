@@ -53,6 +53,31 @@ const representatives = [
     ],
   },
   {
+    output: "locations/portland.html",
+    name: "Portland",
+    title: "Portland foraging: berries, fruit and a map · Forage Around",
+    shareTitle: "Portland foraging: berries, fruit and a map | Forage Around",
+    description:
+      "Plan a Portland foraging walk with usual seasons for cane berries, cherries, apples, pears, and more, then check crowd-sourced reports on the map.",
+    h1: "Foraging in Portland: berries, fruit, and a city map",
+    canonical: "https://foragearound.com/locations/portland",
+    mapSource: "locations",
+    mapRef: "nearby_harvest_portland",
+    mapLocation: "Portland, OR",
+    mapLabel: "Open the Portland foraging map",
+    seasonalGuideLabel: "Open the seasonal foraging guide",
+    confidenceCues: [
+      "Map reports change and may be incomplete",
+      "not a promise that fruit is present, accessible, or ripe today",
+      "Local weather and neighborhood conditions can shift timing earlier or later",
+      "no label confirms that a reported plant is ripe or available",
+      "a report does not establish ownership, public access, or permission to pick",
+      "Portland Parks rules",
+      "prohibit removing plants and flowers from parks",
+      "Reports are leads, not live availability or permission",
+    ],
+  },
+  {
     output: "species/apple.html",
     name: "Apple",
     title: "Foraging Apple: typical season and guide notes · Forage Around",
@@ -202,5 +227,5 @@ for (const representative of representatives) {
 }
 
 console.log(
-  "Search template check passed for Seattle, Berkeley, Apple, and Plum: metadata, H1s, canonical URLs, confidence boundaries, named map handoffs, and reciprocal seasonal-guide links remain intact.",
+  "Search template check passed for Seattle, Berkeley, Portland, Apple, and Plum: metadata, H1s, canonical URLs, confidence boundaries, named map handoffs, and reciprocal seasonal-guide links remain intact.",
 );

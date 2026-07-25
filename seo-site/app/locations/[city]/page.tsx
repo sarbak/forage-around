@@ -73,19 +73,24 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const city = cityHarvestFromSlug(slug);
   if (!city) return {};
 
-  const title =
-    city.slug === "seattle"
-      ? "Seattle foraging: fruit, nuts and a map"
-      : `Find fruit and edible plants in ${city.name}`;
-  const description =
-    city.slug === "seattle"
-      ? "Plan a Seattle foraging walk with usual seasons for plums, cherries, apples, nuts, and more, then search crowd-sourced reports near your address."
-      : `Explore usual harvest seasons for edible plants represented around ${city.name}, then search the live Forage Around map near your address.`;
   const currentMonthName = MONTHS[new Date().getUTCMonth()];
-  const shareTitle =
-    city.slug === "seattle"
-      ? "Seattle foraging: fruit, nuts and a map | Forage Around"
-      : `Typical ${currentMonthName} foraging in ${city.name} | Forage Around`;
+  let title = `Find fruit and edible plants in ${city.name}`;
+  let description = `Explore usual harvest seasons for edible plants represented around ${city.name}, then search the live Forage Around map near your address.`;
+  let shareTitle = `Typical ${currentMonthName} foraging in ${city.name} | Forage Around`;
+
+  if (city.slug === "seattle") {
+    title = "Seattle foraging: fruit, nuts and a map";
+    description =
+      "Plan a Seattle foraging walk with usual seasons for plums, cherries, apples, nuts, and more, then search crowd-sourced reports near your address.";
+    shareTitle = "Seattle foraging: fruit, nuts and a map | Forage Around";
+  }
+
+  if (city.slug === "portland") {
+    title = "Portland foraging: berries, fruit and a map";
+    description =
+      "Plan a Portland foraging walk with usual seasons for cane berries, cherries, apples, pears, and more, then check crowd-sourced reports on the map.";
+    shareTitle = "Portland foraging: berries, fruit and a map | Forage Around";
+  }
 
   return {
     title,
@@ -193,6 +198,63 @@ function SeattleSeasonGuide() {
   );
 }
 
+function PortlandSeasonGuide() {
+  return (
+    <>
+      <h2 className="section">What to forage in Portland by season</h2>
+      <p>
+        Portland&apos;s wet winters and dry summers support a long sequence of
+        neighborhood fruit and berry seasons. These broad windows help with
+        planning, but they do not confirm what is ripe on one block. Weather,
+        shade, irrigation, variety, and the condition of an individual plant can
+        move the timing.
+      </p>
+      <div className="city-season-grid">
+        <section className="card">
+          <p className="kicker">Late spring into midsummer</p>
+          <h3>Cherries, then raspberries</h3>
+          <p>
+            <Link href="/species/cherry">Cherries</Link> usually run from May
+            through July in this guide.{" "}
+            <Link href="/species/raspberry">Raspberries</Link> usually follow
+            from June into September, with July as their typical peak. Treat
+            color as a clue, not proof of identity or ripeness.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Midsummer into early fall</p>
+          <h3>Plums and blackberries</h3>
+          <p>
+            <Link href="/species/plum">Plums</Link> usually span June through
+            August. <Link href="/species/blackberry">Blackberries</Link> usually
+            span July through September. Check the whole plant and the site
+            before relying on fruit alone.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Late summer into fall</p>
+          <h3>Apples and pears</h3>
+          <p>
+            <Link href="/species/apple">Apples</Link> and{" "}
+            <Link href="/species/pear">pears</Link> usually run from August
+            through October, with September as the typical peak. Fallen fruit
+            can signal timing, but it can also be damaged or contaminated.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Fall</p>
+          <h3>Walnuts extend the season</h3>
+          <p>
+            <Link href="/species/walnut">Walnuts</Link> usually span September
+            through November in this guide. Confirm the tree, inspect the nut,
+            and use gloves around fresh hulls, which can stain skin and clothing.
+          </p>
+        </section>
+      </div>
+    </>
+  );
+}
+
 function SeattlePlanningGuide({
   mapHref,
 }: {
@@ -287,6 +349,70 @@ function SeattlePlanningGuide({
   );
 }
 
+function PortlandPlanningGuide({ mapHref }: { mapHref: string }) {
+  return (
+    <>
+      <h2 className="section">How to plan a Portland foraging walk</h2>
+      <ol className="clean">
+        <li>
+          Search a Portland neighborhood, street, or address instead of scanning
+          the whole city.
+        </li>
+        <li>
+          Compare a few nearby reports, then read each plant guide before
+          choosing a walk.
+        </li>
+        <li>
+          Check property boundaries and site rules before opening walking
+          directions.
+        </li>
+        <li>
+          Confirm the plant, edible part, current ripeness, and permission when
+          you arrive.
+        </li>
+      </ol>
+
+      <h2 className="section">Before you harvest in Portland</h2>
+      <div className="seasonal-orientation">
+        <p>
+          <strong>Identity:</strong> a common name, photo, or map marker is only
+          a starting point. Match the plant and edible part with a trusted local
+          source. If you are unsure, leave it.
+        </p>
+        <p>
+          <strong>Access:</strong> a report does not establish ownership, public
+          access, or permission to pick.{" "}
+          <a href="https://www.portland.gov/parks/rules" rel="noopener">
+            Portland Parks rules
+          </a>{" "}
+          prohibit removing plants and flowers from parks. Other public,
+          community, and private sites can have their own rules.
+        </p>
+        <p>
+          <strong>Site conditions:</strong> skip plants exposed to obvious
+          spraying, heavy roadside pollution, pet waste, or other contamination.
+          Wash what you collect and take only what you can use.
+        </p>
+      </div>
+      <p>
+        Want a broader calendar before choosing a plant? Use the{" "}
+        <Link href="/seasonal-guide">seasonal foraging guide</Link>. You can also
+        browse the <Link href="/locations">nearby harvest guides</Link> or read{" "}
+        <Link href="/about">how Forage Around sources its reports</Link>.
+      </p>
+
+      <div className="locations-actions">
+        <ToAppLink className="btn" href={mapHref} from="locations">
+          Open the Portland foraging map
+        </ToAppLink>
+        <small className="locations-availability-note muted">
+          Reports are leads, not live availability or permission
+        </small>
+      </div>
+    </>
+  );
+}
+
 export default async function CityHarvestPage({ params }: PageProps) {
   const { city: slug } = await params;
   const city = cityHarvestFromSlug(slug);
@@ -303,8 +429,11 @@ export default async function CityHarvestPage({ params }: PageProps) {
   const mapActionLabel =
     city.slug === "seattle"
       ? "Open the Seattle foraging map"
+      : city.slug === "portland"
+        ? "Open the Portland foraging map"
       : `Open the map and search ${city.name} →`;
   const isSeattle = city.slug === "seattle";
+  const isPortland = city.slug === "portland";
 
   return (
     <>
@@ -320,16 +449,24 @@ export default async function CityHarvestPage({ params }: PageProps) {
         />
       ) : null}
       <p className="kicker">
-        {isSeattle ? "Seattle foraging guide" : `${city.name} harvest guide`}
+        {isSeattle
+          ? "Seattle foraging guide"
+          : isPortland
+            ? "Portland foraging guide"
+            : `${city.name} harvest guide`}
       </p>
       <h1 className="title">
         {isSeattle
           ? "Foraging in Seattle: fruit, nuts, and a neighborhood map"
+          : isPortland
+            ? "Foraging in Portland: berries, fruit, and a city map"
           : `Find fruit and edible plants in ${city.name}`}
       </h1>
       <p className="lead">
         {isSeattle
           ? "Plan a self-guided Seattle foraging walk with usual seasons for cherries, plums, apples, crabapples, nuts, and late fruit, then search crowd-sourced reports near your address."
+          : isPortland
+            ? "Plan a Portland foraging walk around typical berry and fruit seasons, then search crowd-sourced reports near your address."
           : `Learn the usual ripening windows for plants represented around ${city.name}, then use the live map to check crowd-sourced reports near your address.`}
       </p>
 
@@ -356,6 +493,7 @@ export default async function CityHarvestPage({ params }: PageProps) {
       </div>
 
       {isSeattle ? <SeattleSeasonGuide /> : null}
+      {isPortland ? <PortlandSeasonGuide /> : null}
 
       <h2 className="section">Plant guides for {city.name}</h2>
       <p className="muted">
@@ -400,6 +538,8 @@ export default async function CityHarvestPage({ params }: PageProps) {
 
       {isSeattle ? (
         <SeattlePlanningGuide mapHref={mapHref} />
+      ) : isPortland ? (
+        <PortlandPlanningGuide mapHref={mapHref} />
       ) : (
         <>
           <h2 className="section">How to look nearby</h2>
