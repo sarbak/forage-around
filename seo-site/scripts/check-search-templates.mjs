@@ -76,6 +76,34 @@ const representatives = [
       "prohibit removing plants and flowers from parks",
       "Reports are leads, not live availability or permission",
     ],
+    reciprocalLinkLabel: "What to forage in Portland this summer",
+    reciprocalLinkHref: "/locations/portland/summer",
+  },
+  {
+    output: "locations/portland/summer.html",
+    name: "Portland summer",
+    title: "What to forage in Portland in summer · Forage Around",
+    shareTitle: "Portland summer foraging guide | Forage Around",
+    description:
+      "See what to forage in Portland in summer, from cherries and cane berries to plums, apples, and pears, then check reported plants on the city map.",
+    h1: "What to forage in Portland in summer",
+    canonical: "https://foragearound.com/locations/portland/summer",
+    mapSource: "portland_summer_guide",
+    mapRef: "portland_summer_foraging",
+    mapLocation: "Portland, OR",
+    mapLabel: "Check summer reports on the Portland map",
+    seasonalGuideLabel: "year-round seasonal foraging guide",
+    confidenceCues: [
+      "Season is only a planning clue",
+      "Crowd-sourced reports do not confirm plant identity, ripeness, ownership, public access, or permission to pick",
+      "A report does not show who owns the land or whether picking is allowed",
+      "Portland Parks rules",
+      "prohibit removing plants and flowers from parks",
+      "A report is a starting point, not a live inventory",
+    ],
+    confidenceBeforeMap: "Season is only a planning clue",
+    reciprocalLinkLabel: "Open the full Portland foraging guide",
+    reciprocalLinkHref: "/locations/portland",
   },
   {
     output: "locations/los-angeles.html",
@@ -262,6 +290,16 @@ for (const representative of representatives) {
     }
   }
 
+  if (
+    representative.confidenceBeforeMap &&
+    decodeHtml(html).indexOf(representative.confidenceBeforeMap) >
+      decodeHtml(html).indexOf(representative.mapLabel)
+  ) {
+    throw new Error(
+      `${representative.name} confidence boundary must appear before its map handoff.`,
+    );
+  }
+
   const mapLink = anchorHrefs(html).find(({ text }) =>
     text.includes(representative.mapLabel),
   );
@@ -276,6 +314,20 @@ for (const representative of representatives) {
     throw new Error(
       `${representative.name} must link back to the seasonal guide with descriptive text.`,
     );
+  }
+
+  if (representative.reciprocalLinkLabel) {
+    const reciprocalLink = anchorHrefs(html).find(
+      ({ text }) => text === representative.reciprocalLinkLabel,
+    );
+    if (
+      !reciprocalLink ||
+      reciprocalLink.href !== representative.reciprocalLinkHref
+    ) {
+      throw new Error(
+        `${representative.name} reciprocal guide link changed.`,
+      );
+    }
   }
 
   const mapUrl = new URL(mapLink.href);
@@ -298,5 +350,5 @@ for (const representative of representatives) {
 }
 
 console.log(
-  "Search template check passed for Seattle, Berkeley, Portland, Los Angeles, Chicago, New York, Apple, and Plum: metadata, H1s, canonical URLs, confidence boundaries, named map handoffs, and reciprocal seasonal-guide links remain intact.",
+  "Search template check passed for Seattle, Berkeley, Portland, Portland summer, Los Angeles, Chicago, New York, Apple, and Plum: metadata, H1s, canonical URLs, confidence boundaries, named map handoffs, and reciprocal guide links remain intact.",
 );

@@ -69,6 +69,24 @@ test("keeps acquisition origin and species page context separate from the select
   );
 });
 
+test("keeps Portland summer acquisition origin on downstream events", () => {
+  assert.deepEqual(
+    withWebAttribution(
+      "portland_summer_guide",
+      null,
+      { species: "Blackberry", ff_location_id: "456" },
+      { ref: "portland_summer_foraging" },
+    ),
+    {
+      species: "Blackberry",
+      ff_location_id: "456",
+      map_source: "portland_summer_guide",
+      ref: "portland_summer_foraging",
+      test_run: false,
+    },
+  );
+});
+
 test("leaves generic app attribution unchanged", () => {
   assert.deepEqual(withWebAttribution(null, null, { method: "geolocation" }), {
     method: "geolocation",

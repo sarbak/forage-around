@@ -188,6 +188,7 @@ type ToAppSource =
   | "locations"
   | "foraging_map"
   | "seasonal_guide"
+  | "portland_summer_guide"
   | "nav_header"
   | "nav_footer";
 
