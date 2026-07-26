@@ -4,9 +4,25 @@ const appOutput = new URL("../.next/server/app/", import.meta.url);
 const expectedOrigin = new URL(
   process.env.EXPECTED_SITE_ORIGIN || "https://foragearound.com",
 ).origin;
+const PRIORITY_ACQUISITION_ROUTES = [
+  "/locations",
+  "/seasonal-guide",
+  "/foraging-map",
+  "/locations/seattle",
+  "/locations/berkeley",
+  "/locations/portland",
+  "/locations/los-angeles",
+  "/locations/chicago",
+  "/locations/new-york",
+  "/locations/portland/summer",
+];
 
 async function readOutput(path) {
   return readFile(new URL(path, appOutput), "utf8");
+}
+
+function outputPathForRoute(route) {
+  return `${route.slice(1)}.html`;
 }
 
 function canonicalFrom(html, pageName) {
@@ -21,22 +37,70 @@ function canonicalFrom(html, pageName) {
   return new URL(canonical).href;
 }
 
-const [homepage, locationsPage, robots, sitemap] = await Promise.all([
+function wildcardRulesFrom(robots) {
+  const rules = [];
+  let userAgents = [];
+  let groupHasRules = false;
+
+  for (const rawLine of robots.split(/\r?\n/)) {
+    const line = rawLine.replace(/#.*$/, "").trim();
+    if (!line) continue;
+
+    const separator = line.indexOf(":");
+    if (separator === -1) continue;
+
+    const directive = line.slice(0, separator).trim().toLowerCase();
+    const value = line.slice(separator + 1).trim();
+
+    if (directive === "user-agent") {
+      if (groupHasRules) {
+        userAgents = [];
+        groupHasRules = false;
+      }
+      userAgents.push(value.toLowerCase());
+      continue;
+    }
+
+    if (directive !== "allow" && directive !== "disallow") continue;
+    groupHasRules = true;
+
+    if (value && userAgents.includes("*")) {
+      rules.push({ directive, path: value });
+    }
+  }
+
+  return rules;
+}
+
+function isPermittedByRobots(path, rules) {
+  const matchingRules = rules
+    .filter((rule) => path.startsWith(rule.path))
+    .sort(
+      (first, second) =>
+        second.path.length - first.path.length ||
+        Number(second.directive === "allow") -
+          Number(first.directive === "allow"),
+    );
+
+  return matchingRules.length === 0 || matchingRules[0].directive === "allow";
+}
+
+const [homepage, robots, sitemap, priorityPages] = await Promise.all([
   readOutput("index.html"),
-  readOutput("locations.html"),
   readOutput("robots.txt.body"),
   readOutput("sitemap.xml.body"),
+  Promise.all(
+    PRIORITY_ACQUISITION_ROUTES.map(async (route) => ({
+      route,
+      html: await readOutput(outputPathForRoute(route)),
+    })),
+  ),
 ]);
 
 const expectedHomepage = new URL("/", expectedOrigin).href;
-const expectedLocations = new URL("/locations", expectedOrigin).href;
 
 if (canonicalFrom(homepage, "Homepage") !== expectedHomepage) {
   throw new Error(`Homepage canonical must be ${expectedHomepage}.`);
-}
-
-if (canonicalFrom(locationsPage, "Locations page") !== expectedLocations) {
-  throw new Error(`Locations canonical must be ${expectedLocations}.`);
 }
 
 const expectedSitemap = new URL("/sitemap.xml", expectedOrigin).href;
@@ -59,6 +123,26 @@ if (wrongOrigins.length > 0) {
   );
 }
 
+const sitemapUrlSet = new Set(sitemapUrls.map(({ href }) => href));
+const robotsRules = wildcardRulesFrom(robots);
+
+for (const { route, html } of priorityPages) {
+  const expectedUrl = new URL(route, expectedOrigin).href;
+  const renderedCanonical = canonicalFrom(html, route);
+
+  if (renderedCanonical !== expectedUrl) {
+    throw new Error(`${route} canonical must be ${expectedUrl}.`);
+  }
+
+  if (!sitemapUrlSet.has(expectedUrl)) {
+    throw new Error(`${route} must appear in the rendered sitemap.`);
+  }
+
+  if (!isPermittedByRobots(route, robotsRules)) {
+    throw new Error(`${route} must be permitted by the rendered robots policy.`);
+  }
+}
+
 console.log(
-  `Search origin check passed: homepage, locations, robots, and all ${sitemapUrls.length} sitemap URLs use ${expectedOrigin}.`,
+  `Search origin check passed: homepage and ${PRIORITY_ACQUISITION_ROUTES.length} priority acquisition routes use exact ${expectedOrigin} canonicals, appear in the sitemap, and are permitted by robots; all ${sitemapUrls.length} sitemap URLs use the expected origin.`,
 );
