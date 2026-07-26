@@ -1,10 +1,6 @@
 import { readFile } from "node:fs/promises";
 
 const appOutput = new URL("../.next/server/app/", import.meta.url);
-const currentMonthName = new Intl.DateTimeFormat("en-US", {
-  month: "long",
-  timeZone: "UTC",
-}).format(new Date());
 
 const representatives = [
   {
@@ -33,10 +29,10 @@ const representatives = [
   {
     output: "locations/berkeley.html",
     name: "Berkeley",
-    title: "Find fruit and edible plants in Berkeley · Forage Around",
-    shareTitle: `Typical ${currentMonthName} foraging in Berkeley | Forage Around`,
+    title: "Berkeley foraging: fruit and a map · Forage Around",
+    shareTitle: "Berkeley foraging: fruit and a map | Forage Around",
     description:
-      "Explore usual harvest seasons for edible plants represented around Berkeley, then search the live Forage Around map near your address.",
+      "Plan a Berkeley foraging walk with usual seasons for plums, apples, loquats, figs, and more, then search crowd-sourced reports near your address.",
     h1: "Find fruit and edible plants in Berkeley",
     canonical: "https://foragearound.com/locations/berkeley",
     mapSource: "locations",
@@ -249,17 +245,62 @@ function assertEqual(actual, expected, message) {
   }
 }
 
+const auditedGuides = representatives.slice(0, 7);
+const auditedTitles = new Map();
+const auditedDescriptions = new Map();
+
 for (const representative of representatives) {
   const html = await readFile(new URL(representative.output, appOutput), "utf8");
   const title = html.match(/<title>([\s\S]*?)<\/title>/)?.[1];
+  const description = metaContent(html, "name", "description");
   const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)?.[1];
 
   assertEqual(title, representative.title, `${representative.name} title changed.`);
   assertEqual(
-    metaContent(html, "name", "description"),
+    description,
     representative.description,
     `${representative.name} meta description changed.`,
   );
+  if (auditedGuides.includes(representative)) {
+    const decodedTitle = decodeHtml(title ?? "");
+    const decodedDescription = decodeHtml(description ?? "");
+    const cityName =
+      representative.name === "Portland summer"
+        ? "Portland"
+        : representative.name;
+
+    if (
+      !decodedTitle.includes(cityName) ||
+      !decodedDescription.includes(cityName)
+    ) {
+      throw new Error(
+        `${representative.name} title and description must both name ${cityName}.`,
+      );
+    }
+    if (
+      representative.name === "Portland summer"
+        ? !decodedTitle.toLowerCase().includes("summer") ||
+          !decodedDescription.toLowerCase().includes("summer")
+        : !decodedTitle.toLowerCase().includes("foraging") ||
+          !decodedDescription.toLowerCase().includes("season")
+    ) {
+      throw new Error(
+        `${representative.name} metadata is missing its relevant season signal.`,
+      );
+    }
+    if (auditedTitles.has(decodedTitle)) {
+      throw new Error(
+        `${representative.name} duplicates the title for ${auditedTitles.get(decodedTitle)}.`,
+      );
+    }
+    if (auditedDescriptions.has(decodedDescription)) {
+      throw new Error(
+        `${representative.name} duplicates the description for ${auditedDescriptions.get(decodedDescription)}.`,
+      );
+    }
+    auditedTitles.set(decodedTitle, representative.name);
+    auditedDescriptions.set(decodedDescription, representative.name);
+  }
   if (representative.shareTitle) {
     assertEqual(
       metaContent(html, "property", "og:title"),
