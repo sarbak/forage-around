@@ -60,6 +60,13 @@ npm install
 npm run web      # or: npm run ios / npm run android
 ```
 
+## SEO deployment environment
+
+The SEO site reads `GOOGLE_SITE_VERIFICATION` during its production build. In
+Vercel, set it to the token value Google Search Console provides, without the
+surrounding meta tag. Leave it unset until a token is available; an empty or
+missing value does not render a verification tag.
+
 ## Data, photos & credits
 - **Tree & plant locations:** from [Falling Fruit](https://fallingfruit.org), a
   nonprofit, volunteer-run map of the urban harvest. Their data is licensed

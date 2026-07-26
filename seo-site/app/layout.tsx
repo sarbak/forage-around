@@ -17,6 +17,8 @@ const fraunces = Fraunces({
 // reference them on the seo origin directly. (OG/canonical URLs intentionally
 // stay on SITE_ORIGIN via metadataBase below.)
 const SEO_ORIGIN = "https://forage-around-seo.vercel.app";
+const GOOGLE_SITE_VERIFICATION =
+  process.env.GOOGLE_SITE_VERIFICATION?.trim();
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
@@ -30,6 +32,9 @@ export const metadata: Metadata = {
     icon: `${SEO_ORIGIN}/favicon.png`,
     apple: `${SEO_ORIGIN}/apple-touch-icon.png`,
   },
+  verification: GOOGLE_SITE_VERIFICATION
+    ? { google: GOOGLE_SITE_VERIFICATION }
+    : undefined,
   openGraph: {
     type: "website",
     siteName: "Forage Around",
