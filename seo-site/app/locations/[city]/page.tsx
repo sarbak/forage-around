@@ -85,6 +85,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     shareTitle = "Seattle foraging: fruit, nuts and a map | Forage Around";
   }
 
+  if (city.slug === "berkeley") {
+    title = "Berkeley foraging: fruit and a map";
+    description =
+      "Plan a Berkeley foraging walk with usual seasons for plums, apples, loquats, figs, and more, then search crowd-sourced reports near your address.";
+    shareTitle = "Berkeley foraging: fruit and a map | Forage Around";
+  }
+
   if (city.slug === "portland") {
     title = "Portland foraging: berries, fruit and a map";
     description =
