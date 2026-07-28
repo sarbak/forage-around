@@ -34,6 +34,15 @@ test("names the signup benefit on the primary prompt action", () => {
   assert.doesNotMatch(appSource, /Keep me posted/);
 });
 
+test("allows browsers to autofill a saved email address", () => {
+  const appSource = readFileSync(new URL("../App.tsx", import.meta.url), "utf8");
+
+  assert.match(
+    appSource,
+    /<TextInput[\s\S]*keyboardType="email-address"[\s\S]*autoComplete="email"[\s\S]*textContentType="emailAddress"/
+  );
+});
+
 test("offers the managed support address beside the signup consent", () => {
   const appSource = readFileSync(new URL("../App.tsx", import.meta.url), "utf8");
 
