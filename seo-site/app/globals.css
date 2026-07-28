@@ -244,12 +244,19 @@ ul.clean li {
   font-size: 15px;
 }
 
+.home-accountless-note {
+  color: var(--forest);
+  font-size: 15px;
+  font-weight: 600;
+  margin: 20px 0 8px;
+}
+
 .home-primary-actions {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
-  margin: 22px 0 10px;
+  margin: 0 0 10px;
 }
 
 .home-secondary-actions {

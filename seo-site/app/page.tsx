@@ -31,6 +31,7 @@ export default function Home() {
         permission before picking.
       </p>
 
+      <p className="home-accountless-note">Free, no account needed</p>
       <div className="home-primary-actions">
         <ToAppLink className="btn" href={APP_URL} from="home">
           Open the map near me →
