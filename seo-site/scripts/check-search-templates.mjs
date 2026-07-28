@@ -9,7 +9,7 @@ const representatives = [
     title: "Seattle foraging: fruit, nuts and a map · Forage Around",
     shareTitle: "Seattle foraging: fruit, nuts and a map | Forage Around",
     description:
-      "Plan a Seattle foraging walk with usual seasons for plums, cherries, apples, nuts, and more, then search crowd-sourced reports near your address.",
+      "Plan a Seattle foraging walk with usual seasons for plums, cherries, apples, nuts, and more, then check crowd-sourced reports on the free map.",
     h1: "Foraging in Seattle: fruit, nuts, and a neighborhood map",
     canonical: "https://foragearound.com/locations/seattle",
     mapSource: "locations",
