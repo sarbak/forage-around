@@ -1,9 +1,11 @@
 import { readFile } from "node:fs/promises";
 
 const appOutput = new URL("../.next/server/app/", import.meta.url);
+const vercelConfigPath = new URL("../../vercel.json", import.meta.url);
 const expectedOrigin = new URL(
   process.env.EXPECTED_SITE_ORIGIN || "https://foragearound.com",
 ).origin;
+const SEO_DEPLOYMENT_ORIGIN = "https://forage-around-seo.vercel.app";
 const PRIORITY_ACQUISITION_ROUTES = [
   "/locations",
   "/seasonal-guide",
@@ -16,6 +18,12 @@ const PRIORITY_ACQUISITION_ROUTES = [
   "/locations/new-york",
   "/locations/portland/summer",
 ];
+const REQUIRED_SEO_REWRITES = new Map([
+  ["/locations", `${SEO_DEPLOYMENT_ORIGIN}/locations`],
+  ["/locations/:path*", `${SEO_DEPLOYMENT_ORIGIN}/locations/:path*`],
+  ["/seasonal-guide", `${SEO_DEPLOYMENT_ORIGIN}/seasonal-guide`],
+  ["/foraging-map", `${SEO_DEPLOYMENT_ORIGIN}/foraging-map`],
+]);
 
 async function readOutput(path) {
   return readFile(new URL(path, appOutput), "utf8");
@@ -85,17 +93,35 @@ function isPermittedByRobots(path, rules) {
   return matchingRules.length === 0 || matchingRules[0].directive === "allow";
 }
 
-const [homepage, robots, sitemap, priorityPages] = await Promise.all([
-  readOutput("index.html"),
-  readOutput("robots.txt.body"),
-  readOutput("sitemap.xml.body"),
-  Promise.all(
-    PRIORITY_ACQUISITION_ROUTES.map(async (route) => ({
-      route,
-      html: await readOutput(outputPathForRoute(route)),
-    })),
-  ),
-]);
+const [homepage, robots, sitemap, priorityPages, vercelConfigSource] =
+  await Promise.all([
+    readOutput("index.html"),
+    readOutput("robots.txt.body"),
+    readOutput("sitemap.xml.body"),
+    Promise.all(
+      PRIORITY_ACQUISITION_ROUTES.map(async (route) => ({
+        route,
+        html: await readOutput(outputPathForRoute(route)),
+      })),
+    ),
+    readFile(vercelConfigPath, "utf8"),
+  ]);
+
+const vercelConfig = JSON.parse(vercelConfigSource);
+const configuredRewrites = new Map(
+  (vercelConfig.rewrites || []).map(({ source, destination }) => [
+    source,
+    destination,
+  ]),
+);
+
+for (const [source, destination] of REQUIRED_SEO_REWRITES) {
+  if (configuredRewrites.get(source) !== destination) {
+    throw new Error(
+      `Vercel rewrite ${source} must forward to ${destination}.`,
+    );
+  }
+}
 
 const expectedHomepage = new URL("/", expectedOrigin).href;
 
@@ -144,5 +170,5 @@ for (const { route, html } of priorityPages) {
 }
 
 console.log(
-  `Search origin check passed: homepage and ${PRIORITY_ACQUISITION_ROUTES.length} priority acquisition routes use exact ${expectedOrigin} canonicals, appear in the sitemap, and are permitted by robots; all ${sitemapUrls.length} sitemap URLs use the expected origin.`,
+  `Search origin check passed: homepage and ${PRIORITY_ACQUISITION_ROUTES.length} priority acquisition routes use exact ${expectedOrigin} canonicals, appear in the sitemap, are permitted by robots, and have the required Vercel SEO rewrites; all ${sitemapUrls.length} sitemap URLs use the expected origin.`,
 );

@@ -36,6 +36,10 @@
       "destination": "https://forage-around-seo.vercel.app/seasonal-guide"
     },
     {
+      "source": "/foraging-map",
+      "destination": "https://forage-around-seo.vercel.app/foraging-map"
+    },
+    {
       "source": "/species/:path*",
       "destination": "https://forage-around-seo.vercel.app/species/:path*"
     },
