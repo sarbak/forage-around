@@ -303,7 +303,45 @@ export function inSeasonNames(month: number, limit = 4): string[] {
   return arr.slice(0, limit).map((n) => n.toLowerCase());
 }
 
-export type GeoPoint = { lat: number; lng: number; label: string };
+export type GeoPoint = {
+  lat: number;
+  lng: number;
+  label: string;
+  broadLocality?: string | null;
+};
+
+type NominatimAddress = {
+  city?: string;
+  town?: string;
+  village?: string;
+  municipality?: string;
+  borough?: string;
+  county?: string;
+  state?: string;
+};
+
+function cleanLocalityPart(value: string | undefined): string | null {
+  const clean = value?.trim().replace(/\s+/g, " ");
+  if (!clean || clean.length > 80) return null;
+  return clean;
+}
+
+export function broadLocalityFromAddress(address: NominatimAddress | undefined): string | null {
+  if (!address) return null;
+
+  const place = cleanLocalityPart(
+    address.city ||
+      address.town ||
+      address.village ||
+      address.municipality ||
+      address.borough ||
+      address.county
+  );
+  const region = cleanLocalityPart(address.state);
+  if (!place) return region;
+  if (!region || place.toLocaleLowerCase() === region.toLocaleLowerCase()) return place;
+  return `${place}, ${region}`;
+}
 
 // Geocode a typed address via OpenStreetMap Nominatim (free, no API key, works
 // on web + native). Biased toward the data region via the viewbox below.
@@ -316,20 +354,31 @@ export async function geocode(query: string): Promise<GeoPoint | null> {
     "format=json",
     "limit=1",
     "countrycodes=us",
+    "addressdetails=1",
     "viewbox=-122.33,37.91,-122.23,37.83",
   ].join("&");
   const res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, {
     headers: { Accept: "application/json" },
   });
   if (!res.ok) return null;
-  const data = (await res.json()) as Array<{ lat: string; lon: string; display_name?: string }>;
+  const data = (await res.json()) as Array<{
+    lat: string;
+    lon: string;
+    display_name?: string;
+    address?: NominatimAddress;
+  }>;
   if (!Array.isArray(data) || !data.length) return null;
   const top = data[0];
   const lat = parseFloat(top.lat);
   const lng = parseFloat(top.lon);
   if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
   const label = (top.display_name || enriched).split(",").slice(0, 2).join(",").trim();
-  return { lat, lng, label };
+  return {
+    lat,
+    lng,
+    label,
+    broadLocality: broadLocalityFromAddress(top.address),
+  };
 }
 
 // Fetch a photo + short description for any species from Wikipedia at runtime.

@@ -51,6 +51,7 @@ import {
   EMAIL_SIGNUP_CONSENT,
   EmailSignupDismissalMethod,
   emailSignupAnalyticsProperties,
+  emailSignupPromptTitle,
   returnToMap,
   shouldShowEmailSignup,
   validEmail,
@@ -79,6 +80,7 @@ type SubmitTarget = {
   map_source?: string | null;
   ff_location_id?: string | null;
   species?: string | null;
+  broad_locality?: string | null;
   species_context?: string | null;
   lat?: number | null;
   lng?: number | null;
@@ -221,7 +223,7 @@ function withMapSource(
 const TEN_MIN_M = 810; // ~10 minutes at 1.35 m/s
 const SUPPORT_EMAIL = "foragearound@mail.tin.computer";
 
-type Loc = { lat: number; lng: number; label: string };
+type Loc = GeoPoint;
 
 const MONTH = new Date().getMonth() + 1; // 1-12
 
@@ -477,6 +479,7 @@ export default function App() {
             species_context: speciesContext,
             ff_location_id: ffIdOf(f),
             species: f.type,
+            broad_locality: loc?.broadLocality ?? null,
             lat: f.lat,
             lng: f.lng,
           });
@@ -1168,7 +1171,9 @@ function SubmitModal({
                     </>
                   ) : (
                     <>
-                      <Text style={styles.emailSignupTitle}>Get harvest reminders</Text>
+                      <Text style={styles.emailSignupTitle}>
+                        {emailSignupPromptTitle(t.species, t.broad_locality)}
+                      </Text>
                       <Text style={styles.emailSignupCopy}>
                         {EMAIL_SIGNUP_CONSENT}{" "}
                         <Link label="Email Forage Around" url={`mailto:${SUPPORT_EMAIL}`} />.

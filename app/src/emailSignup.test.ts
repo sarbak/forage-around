@@ -7,6 +7,7 @@ import {
   EMAIL_SIGNUP_CONSENT,
   EMAIL_SIGNUP_OFFER,
   emailSignupAnalyticsProperties,
+  emailSignupPromptTitle,
   isControlledSignupTestRun,
   returnToMap,
   shouldShowEmailSignup,
@@ -32,6 +33,29 @@ test("names the signup benefit on the primary prompt action", () => {
     /<Text style=\{styles\.signupBtnText\}>Get harvest reminders<\/Text>/
   );
   assert.doesNotMatch(appSource, /Keep me posted/);
+});
+
+test("personalizes the prompt with privacy-safe outing context", () => {
+  assert.equal(
+    emailSignupPromptTitle("Fennel", "Portland, Oregon"),
+    "Get Fennel harvest reminders for Portland, Oregon"
+  );
+  assert.equal(
+    emailSignupPromptTitle("Fennel", null),
+    "Get Fennel harvest reminders"
+  );
+  assert.equal(
+    emailSignupPromptTitle(null, "Portland, Oregon"),
+    "Get harvest reminders"
+  );
+  assert.equal(
+    emailSignupPromptTitle(" ", "Portland, Oregon"),
+    "Get harvest reminders"
+  );
+  assert.equal(
+    emailSignupPromptTitle("Fennel", "a".repeat(81)),
+    "Get Fennel harvest reminders"
+  );
 });
 
 test("allows browsers to autofill a saved email address", () => {
