@@ -1180,6 +1180,7 @@ function SubmitModal({
                         value={email}
                         onChangeText={setEmail}
                         keyboardType="email-address"
+                        autoComplete="email"
                         autoCapitalize="none"
                         autoCorrect={false}
                         textContentType="emailAddress"
