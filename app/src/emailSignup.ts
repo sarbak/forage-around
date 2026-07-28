@@ -31,6 +31,25 @@ export type EmailSignupRow = NewEmailSignup & {
   created_at: string;
 };
 
+function cleanPromptContext(value: string | null | undefined): string | null {
+  const clean = value?.trim().replace(/\s+/g, " ");
+  if (!clean || clean.length > 80) return null;
+  return clean;
+}
+
+export function emailSignupPromptTitle(
+  species: string | null | undefined,
+  broadLocality: string | null | undefined
+): string {
+  const plant = cleanPromptContext(species);
+  if (!plant) return "Get harvest reminders";
+
+  const place = cleanPromptContext(broadLocality);
+  return place
+    ? `Get ${plant} harvest reminders for ${place}`
+    : `Get ${plant} harvest reminders`;
+}
+
 export function isControlledSignupTestRun(value: string | null | undefined): boolean {
   return value === "true";
 }
