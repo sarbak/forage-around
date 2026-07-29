@@ -347,6 +347,29 @@ ul.clean li {
   font-size: 13px;
   color: var(--ink-soft);
 }
+.site-footer-intro {
+  margin: 0 0 8px;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 15px;
+  color: var(--ink);
+}
+.site-footer-nav,
+.site-footer-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+.site-footer-nav a,
+.site-footer-meta a {
+  color: var(--forest);
+}
+.site-footer-meta {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
 .tin-credit {
   display: inline-flex;
   align-items: center;

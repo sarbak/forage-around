@@ -3,6 +3,8 @@ import { SupportEmailLink, ToAppLink } from "./analytics";
 
 export const APP_URL = "https://foragearound.com";
 export const SUPPORT_EMAIL = "foragearound@mail.tin.computer";
+export const GITHUB_URL = "https://github.com/sarbak/forage-around";
+export const LICENSE_URL = `${GITHUB_URL}/blob/main/LICENSE`;
 
 export function SiteHeader() {
   return (
@@ -31,26 +33,40 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="wrap">
-        Forage Around — a quiet map of the urban harvest.{" "}
-        <Link href="/foraging-map">Foraging map</Link> ·{" "}
-        <Link href="/seasonal-guide">What&apos;s in season</Link> ·{" "}
-        <Link href="/locations">Find nearby harvests</Link> ·{" "}
-        <ToAppLink href={APP_URL} from="nav_footer">
-          Open the live map
-        </ToAppLink>{" "}
-        ·{" "}
-        <Link href="/about">Where the data comes from</Link> ·{" "}
-        <SupportEmailLink
-          href={`mailto:${SUPPORT_EMAIL}`}
-          surface="site_footer"
-        >
-          Email Forage Around
-        </SupportEmailLink>{" "}
-        ·{" "}
-        <a className="tin-credit" href="https://tin.computer" rel="noopener">
-          <span className="tin-mark" aria-hidden="true" />
-          Growth by Tin
-        </a>
+        <p className="site-footer-intro">
+          Forage Around, a quiet map of the urban harvest.
+        </p>
+        <nav className="site-footer-nav" aria-label="Footer">
+          <Link href="/foraging-map">Foraging map</Link>
+          <Link href="/seasonal-guide">What&apos;s in season</Link>
+          <Link href="/locations">Find nearby harvests</Link>
+          <ToAppLink href={APP_URL} from="nav_footer">
+            Open the live map
+          </ToAppLink>
+          <Link href="/faq">FAQ</Link>
+          <Link href="/about">About</Link>
+          <a href={GITHUB_URL} rel="external noopener">
+            GitHub
+          </a>
+          <SupportEmailLink
+            href={`mailto:${SUPPORT_EMAIL}`}
+            surface="site_footer"
+          >
+            Email Forage Around
+          </SupportEmailLink>
+        </nav>
+        <div className="site-footer-meta">
+          <span>© 2026 Emre Sarbak</span>
+          <span aria-hidden="true">·</span>
+          <a href={LICENSE_URL} rel="license noopener">
+            MIT license
+          </a>
+          <span aria-hidden="true">·</span>
+          <a className="tin-credit" href="https://tin.computer" rel="noopener">
+            <span className="tin-mark" aria-hidden="true" />
+            Growth by Tin
+          </a>
+        </div>
       </div>
     </footer>
   );
