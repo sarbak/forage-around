@@ -7,6 +7,7 @@ const expectedOrigin = new URL(
 ).origin;
 const SEO_DEPLOYMENT_ORIGIN = "https://forage-around-seo.vercel.app";
 const PRIORITY_ACQUISITION_ROUTES = [
+  "/faq",
   "/locations",
   "/seasonal-guide",
   "/foraging-map",
@@ -19,6 +20,7 @@ const PRIORITY_ACQUISITION_ROUTES = [
   "/locations/portland/summer",
 ];
 const REQUIRED_SEO_REWRITES = new Map([
+  ["/faq", `${SEO_DEPLOYMENT_ORIGIN}/faq`],
   ["/locations", `${SEO_DEPLOYMENT_ORIGIN}/locations`],
   ["/locations/:path*", `${SEO_DEPLOYMENT_ORIGIN}/locations/:path*`],
   ["/seasonal-guide", `${SEO_DEPLOYMENT_ORIGIN}/seasonal-guide`],

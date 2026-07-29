@@ -231,10 +231,14 @@ type Loc = GeoPoint;
 const MONTH = new Date().getMonth() + 1; // 1-12
 
 export default function App() {
-  const [fontsLoaded, fontError] = useFonts({
-    Fraunces_400Regular,
-    Fraunces_600SemiBold,
-  });
+  const [fontsLoaded, fontError] = useFonts(
+    Platform.OS === "web"
+      ? {}
+      : {
+          Fraunces_400Regular,
+          Fraunces_600SemiBold,
+        }
+  );
   const ready = Platform.OS === "web" || fontsLoaded || !!fontError;
 
   const [loc, setLoc] = useState<Loc | null>(null);
@@ -520,6 +524,10 @@ function Landing({
 }) {
   const [addr, setAddr] = useState("");
   const addrInputRef = useRef<TextInput>(null);
+  const landingThumbnail = (url: string) =>
+    Platform.OS === "web"
+      ? `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=168&h=168&fit=cover&output=webp`
+      : url;
 
   useEffect(() => {
     if (geoError !== LOCATION_ACCESS_RECOVERY_MESSAGE) return;
@@ -601,7 +609,7 @@ function Landing({
               <View key={r.name} style={styles.ripeTile}>
                 {r.image ? (
                   <Image
-                    source={{ uri: r.image }}
+                    source={{ uri: landingThumbnail(r.image) }}
                     style={styles.ripeImg}
                     resizeMode="cover"
                     accessibilityLabel={r.name}
