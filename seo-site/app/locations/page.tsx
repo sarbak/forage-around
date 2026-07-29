@@ -140,6 +140,16 @@ export default function LocationsPage() {
             <small className="muted">Season timing and starter reports</small>
           </span>
         </Link>
+        <Link href="/locations/public-fruit-trees">
+          <span aria-hidden="true">🌳</span>
+          <span>
+            Public fruit trees near you
+            <br />
+            <small className="muted">
+              Map reports, ownership checks, and picking guidance
+            </small>
+          </span>
+        </Link>
       </div>
 
       <h2 className="section">What may be ripe in {currentMonthName}</h2>

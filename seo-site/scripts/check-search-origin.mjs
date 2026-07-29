@@ -11,6 +11,7 @@ const PRIORITY_ACQUISITION_ROUTES = [
   "/locations",
   "/seasonal-guide",
   "/foraging-map",
+  "/locations/public-fruit-trees",
   "/locations/seattle",
   "/locations/berkeley",
   "/locations/portland",
