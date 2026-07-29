@@ -41,7 +41,7 @@ export default function Home() {
         </Link>
       </div>
       <p className="home-secondary-actions muted">
-        <Link href="/foraging-map">How the foraging map works</Link> ·{" "}
+        <Link href="/foraging-map">Explore the urban foraging map guide</Link> ·{" "}
         <Link href="/locations">Find nearby harvests</Link> ·{" "}
         <Link href="/about">Where the data comes from</Link>
       </p>
