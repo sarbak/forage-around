@@ -224,7 +224,7 @@ function withMapSource(
 }
 
 const TEN_MIN_M = 810; // ~10 minutes at 1.35 m/s
-const SUPPORT_EMAIL = "foragearound@mail.tin.computer";
+const SUPPORT_EMAIL = "foragearound-com@mail.tin.computer";
 const SITE_URL = "https://foragearound.com";
 const GITHUB_URL = "https://github.com/sarbak/forage-around";
 const LICENSE_URL = `${GITHUB_URL}/blob/main/LICENSE`;
@@ -684,6 +684,8 @@ function AppFooter() {
         <FooterLink label="FAQ" url={`${SITE_URL}/faq`} />
         <Text style={styles.footerDivider}>·</Text>
         <FooterLink label="About" url={`${SITE_URL}/about`} />
+        <Text style={styles.footerDivider}>·</Text>
+        <FooterLink label="Email Forage Around" url={`mailto:${SUPPORT_EMAIL}`} />
         <Text style={styles.footerDivider}>·</Text>
         <FooterLink label="GitHub" url={GITHUB_URL} />
       </View>
