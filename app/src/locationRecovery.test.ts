@@ -3,7 +3,9 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   LOCATION_ACCESS_RECOVERY_MESSAGE,
+  LocationLookupTimeoutError,
   locationFailureRecovery,
+  withLocationTimeout,
 } from "./locationRecovery";
 
 test("keeps every location failure on the address-search screen", () => {
@@ -18,6 +20,24 @@ test("keeps every location failure on the address-search screen", () => {
   );
 });
 
+test("returns a successful location before the timeout", async () => {
+  const point = { latitude: 37.87, longitude: -122.27 };
+
+  assert.equal(
+    await withLocationTimeout(async () => point, 20),
+    point,
+  );
+});
+
+test("rejects a stalled location request after the timeout", async () => {
+  const stalledLookup = () => new Promise<never>(() => {});
+
+  await assert.rejects(
+    withLocationTimeout(stalledLookup, 5),
+    LocationLookupTimeoutError,
+  );
+});
+
 test("preserves denial analytics and focuses the address field", () => {
   const appSource = readFileSync(new URL("../App.tsx", import.meta.url), "utf8");
   const locateSource = appSource.slice(
@@ -27,11 +47,19 @@ test("preserves denial analytics and focuses the address field", () => {
 
   assert.match(
     locateSource,
-    /track\("geolocation_denied"\);\s+recoverFromLocationFailure\(\);/,
+    /if \(outcome\.kind === "denied"\) \{\s+track\("geolocation_denied"\);\s+recoverFromLocationFailure\(\);/,
   );
   assert.equal(
     locateSource.match(/recoverFromLocationFailure\(\);/g)?.length,
     2,
+  );
+  assert.match(
+    locateSource,
+    /error instanceof LocationLookupTimeoutError\s+\? "geolocation_timeout"\s+: "geolocation_error"/,
+  );
+  assert.match(
+    locateSource,
+    /const outcome = await withLocationTimeout\(async \(\) => \{/,
   );
   assert.doesNotMatch(locateSource, /FALLBACK|method: "fallback"/);
   assert.match(
