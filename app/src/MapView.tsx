@@ -8,6 +8,10 @@ type Props = {
   center: { lat: number; lng: number };
   finds: Find[];
   onSelect: (f: Find) => void;
+  zoom?: number;
+  maxFinds?: number;
+  interactive?: boolean;
+  minHeight?: number;
 };
 
 export default function MapView(_props: Props) {

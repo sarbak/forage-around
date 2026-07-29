@@ -31,6 +31,7 @@ import {
   monthName,
   inSeasonNames,
   inSeasonWithImages,
+  homepagePreviewFinds,
   directionsUrl,
   geocode,
   fetchWikiInfo,
@@ -232,6 +233,10 @@ const LICENSE_URL = `${GITHUB_URL}/blob/main/LICENSE`;
 type Loc = GeoPoint;
 
 const MONTH = new Date().getMonth() + 1; // 1-12
+const HOMEPAGE_PREVIEW_CENTER = {
+  lat: 37.8615,
+  lng: -122.2605,
+};
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts(
@@ -544,6 +549,17 @@ function Landing({
     Platform.OS === "web"
       ? `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=168&h=168&fit=cover&output=webp`
       : url;
+  const { width } = useWindowDimensions();
+  const isWide = width >= 920;
+  const previewFinds = useMemo(
+    () =>
+      homepagePreviewFinds(
+        HOMEPAGE_PREVIEW_CENTER.lat,
+        HOMEPAGE_PREVIEW_CENTER.lng,
+        MONTH
+      ),
+    []
+  );
 
   useEffect(() => {
     if (geoError !== LOCATION_ACCESS_RECOVERY_MESSAGE) return;
@@ -552,64 +568,103 @@ function Landing({
 
   return (
     <ScrollView contentContainerStyle={styles.landing} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-      <View style={styles.hero}>
-        <Text style={styles.kicker}>FIELD GUIDE TO THE FREE HARVEST</Text>
-        <Text style={styles.wordmark}>Forage{"\n"}Around</Text>
-        <Text style={styles.tagline}>
-          Reported fruit, herbs and greens near you, with season and source notes to check before you pick.
-        </Text>
-
-        <Pressable
-          style={({ pressed }) => [styles.cta, pressed && styles.ctaPressed]}
-          onPress={onLocate}
-          disabled={busy}
-          accessibilityRole="button"
-          accessibilityLabel="Find fruit near me using your location"
-        >
-          {busy ? <ActivityIndicator color={C.white} /> : <Text style={styles.ctaText}>Find fruit near me</Text>}
-        </Pressable>
-
-        <View style={styles.orRow}>
-          <View style={styles.orLine} />
-          <Text style={styles.orText}>or type an address</Text>
-          <View style={styles.orLine} />
-        </View>
-
-        {!!geoError && (
-          <Text
-            style={styles.geoError}
-            accessibilityRole="alert"
-            accessibilityLiveRegion="polite"
-          >
-            {geoError}
+      <View style={[styles.hero, isWide && styles.heroWide]}>
+        <View style={[styles.heroCopy, isWide && styles.heroCopyWide]}>
+          <Text style={styles.wordmark}>Forage Around</Text>
+          <Text style={styles.kicker}>FIELD GUIDE TO FRUIT, HERBS AND GREENS</Text>
+          <Text style={[styles.heroHeadline, isWide && styles.heroHeadlineWide]} accessibilityRole="header">
+            The free harvest map for urban foragers.
           </Text>
-        )}
-        <View style={styles.addrRow}>
-          <TextInput
-            ref={addrInputRef}
-            style={styles.addrInput}
-            placeholder="Enter an address or place"
-            placeholderTextColor={C.inkSoft}
-            value={addr}
-            onChangeText={setAddr}
-            onFocus={() => track("address_input_focused", { form_location: "hero" })}
-            onSubmitEditing={() => onAddress(addr)}
-            returnKeyType="search"
-            autoCapitalize="words"
-            autoCorrect={false}
-            accessibilityLabel="Address or place"
-          />
+          <Text style={styles.tagline}>
+            Edible plants are easy to walk past. See reported spots nearby, with season and source notes to check before you pick.
+          </Text>
+
           <Pressable
-            style={({ pressed }) => [styles.addrGo, pressed && styles.addrGoPressed]}
-            onPress={() => onAddress(addr)}
+            style={({ pressed }) => [styles.cta, pressed && styles.ctaPressed]}
+            onPress={onLocate}
             disabled={busy}
             accessibilityRole="button"
-            accessibilityLabel="Search this address"
+            accessibilityLabel="Explore the foraging map using your location"
           >
-            <Text style={styles.addrGoText}>Go</Text>
+            {busy ? <ActivityIndicator color={C.white} /> : <Text style={styles.ctaText}>Explore the map near me</Text>}
           </Pressable>
+
+          <View style={styles.orRow}>
+            <View style={styles.orLine} />
+            <Text style={styles.orText}>or start with an address</Text>
+            <View style={styles.orLine} />
+          </View>
+
+          {!!geoError && (
+            <Text
+              style={styles.geoError}
+              accessibilityRole="alert"
+              accessibilityLiveRegion="polite"
+            >
+              {geoError}
+            </Text>
+          )}
+          <View style={styles.addrRow}>
+            <TextInput
+              ref={addrInputRef}
+              style={styles.addrInput}
+              placeholder="Enter an address or place"
+              placeholderTextColor={C.inkSoft}
+              value={addr}
+              onChangeText={setAddr}
+              onFocus={() => track("address_input_focused", { form_location: "hero" })}
+              onSubmitEditing={() => onAddress(addr)}
+              returnKeyType="search"
+              autoCapitalize="words"
+              autoCorrect={false}
+              accessibilityLabel="Address or place"
+            />
+            <Pressable
+              style={({ pressed }) => [styles.addrGo, pressed && styles.addrGoPressed]}
+              onPress={() => onAddress(addr)}
+              disabled={busy}
+              accessibilityRole="button"
+              accessibilityLabel="Search this address"
+            >
+              <Text style={styles.addrGoText}>Search</Text>
+            </Pressable>
+          </View>
+          <Text style={styles.noLogin}>No account needed. You choose when to share a location.</Text>
         </View>
-        <Text style={styles.noLogin}>No account needed</Text>
+
+        <View style={[styles.mapPreviewCard, isWide && styles.mapPreviewCardWide]}>
+          <View style={styles.mapPreviewHeader}>
+            <View>
+              <Text style={styles.mapPreviewLabel}>LIVE MAP PREVIEW</Text>
+              <Text style={styles.mapPreviewPlace}>Berkeley, California</Text>
+            </View>
+            <View style={styles.mapPreviewCount}>
+              <Text style={styles.mapPreviewCountText}>{previewFinds.length} nearby</Text>
+            </View>
+          </View>
+          <View
+            style={[styles.mapPreviewWrap, { pointerEvents: "none" }]}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+          >
+            <MapView
+              center={HOMEPAGE_PREVIEW_CENTER}
+              finds={previewFinds}
+              onSelect={() => {}}
+              zoom={15}
+              maxFinds={16}
+              interactive={false}
+              minHeight={320}
+            />
+          </View>
+          <View style={styles.mapPreviewFooter}>
+            <View style={styles.mapPreviewLegend}>
+              <View style={styles.mapPreviewDot} />
+              <Text style={styles.mapPreviewMeta}>Reported edible spots</Text>
+            </View>
+            <Text style={styles.mapPreviewMeta}>Season notes included</Text>
+          </View>
+        </View>
       </View>
 
       <View style={styles.seasonCard}>
@@ -1684,11 +1739,16 @@ const styles = StyleSheet.create({
   center: { alignItems: "center", justifyContent: "center" },
 
   /* Landing */
-  landing: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 72, paddingBottom: 40, maxWidth: 560, alignSelf: "center", width: "100%" },
-  hero: { marginBottom: 36 },
-  kicker: { fontSize: 11, letterSpacing: 2, color: C.ripe, fontWeight: "700", marginBottom: 14 },
-  wordmark: { fontFamily: F.display, fontSize: 72, lineHeight: 76, color: C.forest, letterSpacing: -1 },
-  tagline: { fontSize: 18, lineHeight: 27, color: C.inkSoft, marginTop: 14, marginBottom: 30, maxWidth: 440 },
+  landing: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 48, paddingBottom: 40, maxWidth: 1160, alignSelf: "center", width: "100%" },
+  hero: { marginBottom: 44, gap: 32 },
+  heroWide: { flexDirection: "row", alignItems: "center", gap: 64 },
+  heroCopy: { flex: 1 },
+  heroCopyWide: { maxWidth: 500 },
+  wordmark: { fontFamily: F.display, fontSize: 26, lineHeight: 32, color: C.forest, marginBottom: 38 },
+  kicker: { fontSize: 11, letterSpacing: 1.8, color: C.ripe, fontWeight: "700", marginBottom: 12 },
+  heroHeadline: { fontFamily: F.display, fontSize: 48, lineHeight: 52, color: C.ink, letterSpacing: -0.5 },
+  heroHeadlineWide: { fontSize: 58, lineHeight: 62 },
+  tagline: { fontSize: 18, lineHeight: 28, color: C.inkSoft, marginTop: 18, marginBottom: 28, maxWidth: 500 },
   cta: {
     backgroundColor: C.forest,
     paddingVertical: 17,
@@ -1718,10 +1778,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: C.ink,
   },
-  addrGo: { backgroundColor: C.ripe, borderRadius: 14, paddingHorizontal: 22, alignItems: "center", justifyContent: "center" },
+  addrGo: { backgroundColor: C.ripe, borderRadius: 14, paddingHorizontal: 18, alignItems: "center", justifyContent: "center" },
   addrGoPressed: { backgroundColor: "#8D3F10" },
   addrGoText: { color: C.white, fontSize: 16, fontWeight: "700", fontFamily: F.display },
   geoError: { color: C.berry, fontSize: 13, marginBottom: 10, lineHeight: 19 },
+
+  mapPreviewCard: { flex: 1, backgroundColor: C.white, borderRadius: 24, padding: 14, borderWidth: 1, borderColor: C.line, shadowColor: C.shadow, shadowOpacity: 1, shadowRadius: 18, shadowOffset: { width: 0, height: 10 } },
+  mapPreviewCardWide: { minWidth: 460 },
+  mapPreviewHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 8, paddingTop: 6, paddingBottom: 12 },
+  mapPreviewLabel: { fontSize: 10, letterSpacing: 1.5, color: C.ripe, fontWeight: "800", marginBottom: 3 },
+  mapPreviewPlace: { fontFamily: F.display, fontSize: 20, color: C.ink },
+  mapPreviewCount: { backgroundColor: C.forestSoft, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 6 },
+  mapPreviewCountText: { color: C.forest, fontSize: 12, fontWeight: "700" },
+  mapPreviewWrap: { height: 320, borderRadius: 16, overflow: "hidden", backgroundColor: C.paperDeep },
+  mapPreviewFooter: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 8, paddingTop: 12, paddingBottom: 3, gap: 12 },
+  mapPreviewLegend: { flexDirection: "row", alignItems: "center", gap: 6 },
+  mapPreviewDot: { width: 9, height: 9, borderRadius: 5, backgroundColor: C.ripe },
+  mapPreviewMeta: { fontSize: 12, color: C.inkSoft },
 
   seasonCard: { backgroundColor: C.white, borderRadius: 20, padding: 22, borderWidth: 1, borderColor: C.line },
   seasonLabel: { fontSize: 12, letterSpacing: 1.5, color: C.ripe, fontWeight: "700", marginBottom: 8 },

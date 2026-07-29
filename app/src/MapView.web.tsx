@@ -32,9 +32,21 @@ type Props = {
   center: { lat: number; lng: number };
   finds: Find[];
   onSelect: (f: Find) => void;
+  zoom?: number;
+  maxFinds?: number;
+  interactive?: boolean;
+  minHeight?: number;
 };
 
-export default function MapView({ center, finds, onSelect }: Props) {
+export default function MapView({
+  center,
+  finds,
+  onSelect,
+  zoom = 16,
+  maxFinds = 150,
+  interactive = true,
+  minHeight = 420,
+}: Props) {
   const elRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<any>(null);
   const markersRef = useRef<any>(null);
@@ -45,7 +57,15 @@ export default function MapView({ center, finds, onSelect }: Props) {
       if (cancelled || !elRef.current) return;
       const L = window.L;
       if (!mapRef.current) {
-        mapRef.current = L.map(elRef.current, { zoomControl: true, attributionControl: true });
+        mapRef.current = L.map(elRef.current, {
+          zoomControl: interactive,
+          attributionControl: true,
+          dragging: interactive,
+          scrollWheelZoom: interactive,
+          doubleClickZoom: interactive,
+          touchZoom: interactive,
+          keyboard: interactive,
+        });
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
           maxZoom: 19,
           attribution: "&copy; OpenStreetMap",
@@ -53,7 +73,7 @@ export default function MapView({ center, finds, onSelect }: Props) {
         markersRef.current = L.layerGroup().addTo(mapRef.current);
       }
       const map = mapRef.current;
-      map.setView([center.lat, center.lng], 16);
+      map.setView([center.lat, center.lng], zoom);
       // give the container a beat to size, then fix tile layout
       setTimeout(() => map.invalidateSize(), 60);
 
@@ -69,7 +89,7 @@ export default function MapView({ center, finds, onSelect }: Props) {
         .addTo(markersRef.current)
         .bindTooltip("You", { direction: "top" });
 
-      finds.slice(0, 150).forEach((f) => {
+      finds.slice(0, maxFinds).forEach((f) => {
         const ripe = f.inSeason;
         const icon = L.divIcon({
           className: "",
@@ -84,19 +104,26 @@ export default function MapView({ center, finds, onSelect }: Props) {
         });
         const m = L.marker([f.lat, f.lng], { icon }).addTo(markersRef.current);
         m.bindTooltip(`${f.type}${ripe ? " · ripe" : ""}`, { direction: "top" });
-        m.on("click", () => onSelect(f));
+        if (interactive) m.on("click", () => onSelect(f));
       });
     });
     return () => {
       cancelled = true;
     };
-  }, [center.lat, center.lng, finds, onSelect]);
+  }, [center.lat, center.lng, finds, interactive, maxFinds, onSelect, zoom]);
 
   // A plain DOM div is fine here — this file only loads on web.
   return (
     <div
       ref={elRef}
-      style={{ width: "100%", height: "100%", minHeight: 420, borderRadius: 16, overflow: "hidden" }}
+      aria-hidden={!interactive}
+      style={{
+        width: "100%",
+        height: "100%",
+        minHeight,
+        borderRadius: 16,
+        overflow: "hidden",
+      }}
     />
   );
 }

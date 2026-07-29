@@ -257,6 +257,21 @@ function fallbackNearby(lat: number, lng: number, month: number): Find[] {
   return finds;
 }
 
+// A small, real-data sample for the homepage product preview. Keeping this
+// bundled avoids asking for location or making a network request before the
+// visitor chooses to open the map.
+export function homepagePreviewFinds(
+  lat: number,
+  lng: number,
+  month: number,
+  limit = 16
+): Find[] {
+  const nearby = fallbackNearby(lat, lng, month).filter((f) => f.distM <= 1200);
+  const inSeason = nearby.filter((f) => f.inSeason);
+  const sample = inSeason.length >= 6 ? inSeason : nearby;
+  return sample.slice(0, limit);
+}
+
 // Apply the in-season toggle and rank: ripe (peak first) -> unknown-season ->
 // out of season, nearest within each. Cap for a light list.
 export function applyView(finds: Find[], onlyInSeason: boolean, cap = 1000): Find[] {
