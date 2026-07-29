@@ -159,6 +159,11 @@ export function fmtDist(m: number): string {
   return `${(m / 1000).toFixed(1)} km`;
 }
 
+export function coverageRadius(finds: Find[]): string | null {
+  if (!finds.length) return null;
+  return fmtDist(Math.max(...finds.map((find) => find.distM)));
+}
+
 // Average walking pace ~1.35 m/s.
 export function walkMins(m: number): number {
   return Math.max(1, Math.round(m / 1.35 / 60));
