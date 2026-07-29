@@ -24,6 +24,10 @@
       "destination": "https://forage-around-seo.vercel.app/about"
     },
     {
+      "source": "/faq",
+      "destination": "https://forage-around-seo.vercel.app/faq"
+    },
+    {
       "source": "/locations",
       "destination": "https://forage-around-seo.vercel.app/locations"
     },

@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.85,
     },
     { url: `${SITE_ORIGIN}/about`, priority: 0.8 },
+    { url: `${SITE_ORIGIN}/faq`, priority: 0.85 },
     { url: `${SITE_ORIGIN}/seasonal-guide`, priority: 0.85 },
     {
       url: `${SITE_ORIGIN}/locations/portland/summer`,

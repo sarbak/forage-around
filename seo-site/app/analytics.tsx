@@ -106,6 +106,13 @@ export function ForagingMapPageViewed() {
   return null;
 }
 
+export function FaqPageViewed() {
+  useEffect(() => {
+    track("faq_page_viewed");
+  }, []);
+  return null;
+}
+
 // ---- CTA / link click trackers ----
 
 // Named walking link on a tree page → Google Maps directions.
@@ -187,6 +194,7 @@ type ToAppSource =
   | "home"
   | "locations"
   | "foraging_map"
+  | "faq"
   | "seasonal_guide"
   | "portland_summer_guide"
   | "nav_header"

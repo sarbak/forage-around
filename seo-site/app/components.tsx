@@ -40,6 +40,7 @@ export function SiteFooter() {
         </ToAppLink>{" "}
         ·{" "}
         <Link href="/about">Where the data comes from</Link> ·{" "}
+        <Link href="/faq">FAQ</Link> ·{" "}
         <SupportEmailLink
           href={`mailto:${SUPPORT_EMAIL}`}
           surface="site_footer"
