@@ -67,6 +67,8 @@ export default async function SpeciesPage({
   ]);
 
   const photo = curated[0] || wiki?.image || null;
+  const photoAlt =
+    name === "Plum" ? "Whole, halved, and sliced red plums" : name;
   const when = seasonLabel(s);
   const peak = peakLabel(s);
 
@@ -107,7 +109,7 @@ export default async function SpeciesPage({
       {photo ? (
         <div style={{ margin: "20px 0" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="photo" src={photo} alt={name} loading="lazy" />
+          <img className="photo" src={photo} alt={photoAlt} loading="lazy" />
         </div>
       ) : null}
 

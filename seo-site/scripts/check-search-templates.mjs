@@ -194,6 +194,7 @@ const representatives = [
   {
     output: "species/plum.html",
     name: "Plum",
+    imageAlt: "Whole, halved, and sliced red plums",
     title: "Foraging Plum: typical season and guide notes · Forage Around",
     description:
       "See Plum's typical season around June–August, reported locations, and identification reminders before harvesting.",
@@ -324,6 +325,16 @@ for (const representative of representatives) {
     representative.canonical,
     `${representative.name} canonical URL changed.`,
   );
+  if (representative.imageAlt) {
+    const imageAlt = html.match(
+      /<img class="photo"[^>]* alt="([^"]+)"[^>]*>/,
+    )?.[1];
+    assertEqual(
+      imageAlt,
+      representative.imageAlt,
+      `${representative.name} image description changed.`,
+    );
+  }
 
   for (const cue of representative.confidenceCues) {
     if (!decodeHtml(html).includes(cue)) {
@@ -391,5 +402,5 @@ for (const representative of representatives) {
 }
 
 console.log(
-  "Search template check passed for Seattle, Berkeley, Portland, Portland summer, Los Angeles, Chicago, New York, Apple, and Plum: metadata, H1s, canonical URLs, confidence boundaries, named map handoffs, and reciprocal guide links remain intact.",
+  "Search template check passed for Seattle, Berkeley, Portland, Portland summer, Los Angeles, Chicago, New York, Apple, and Plum: metadata, H1s, canonical URLs, confidence boundaries, named map handoffs, reciprocal guide links, and the Plum image description remain intact.",
 );
