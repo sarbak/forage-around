@@ -25,6 +25,7 @@ import { C, F } from "./src/theme";
 import {
   fetchNearby,
   applyView,
+  coverageRadius,
   fmtDist,
   walkMins,
   monthName,
@@ -729,6 +730,7 @@ function Results({
   onSubmitOwn: () => void;
 }) {
   const shown = useMemo(() => applyView(finds, onlyInSeason), [finds, onlyInSeason]);
+  const listRadius = useMemo(() => coverageRadius(shown), [shown]);
   const mapFinds = useMemo(() => {
     const base = onlyInSeason ? finds.filter((f) => f.inSeason || !f.seasonKnown) : finds;
     return base.filter((f) => f.distM <= TEN_MIN_M).slice(0, 150);
@@ -773,10 +775,10 @@ function Results({
 
       <Text style={styles.resultsH}>
         {view === "map"
-          ? `${mapFinds.length} within a 10-min walk`
+          ? `${mapFinds.length} within a 10-minute walk`
           : onlyInSeason
-          ? `${inSeasonCount} likely in season near you`
-          : `${edibleCount} edible nearby · ${inSeasonCount} likely in season`}
+          ? `${inSeasonCount} likely in season${listRadius ? ` within ${listRadius}` : ""}`
+          : `${edibleCount} edible${listRadius ? ` within ${listRadius}` : ""} · ${inSeasonCount} likely in season`}
       </Text>
 
       <View style={styles.toggleRow}>
