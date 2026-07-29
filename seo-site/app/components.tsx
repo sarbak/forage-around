@@ -2,7 +2,7 @@ import Link from "next/link";
 import { SupportEmailLink, ToAppLink } from "./analytics";
 
 export const APP_URL = "https://foragearound.com";
-export const SUPPORT_EMAIL = "foragearound@mail.tin.computer";
+export const SUPPORT_EMAIL = "foragearound-com@mail.tin.computer";
 export const GITHUB_URL = "https://github.com/sarbak/forage-around";
 export const LICENSE_URL = `${GITHUB_URL}/blob/main/LICENSE`;
 
