@@ -71,7 +71,9 @@ import {
 } from "./src/walkingDestination";
 import {
   LOCATION_ACCESS_RECOVERY_MESSAGE,
+  LocationLookupTimeoutError,
   locationFailureRecovery,
+  withLocationTimeout,
 } from "./src/locationRecovery";
 
 type SubmitTarget = {
@@ -356,20 +358,33 @@ export default function App() {
     }
 
     try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
+      const outcome = await withLocationTimeout(async () => {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") return { kind: "denied" } as const;
+
+        const pos = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+        });
+        return { kind: "position", pos } as const;
+      });
+
+      if (outcome.kind === "denied") {
         track("geolocation_denied");
         recoverFromLocationFailure();
         return;
       }
-      const pos = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Balanced,
-      });
+
+      const { pos } = outcome;
       await go(
         { lat: pos.coords.latitude, lng: pos.coords.longitude, label: "Your location" },
         { method: "geolocation" }
       );
-    } catch {
+    } catch (error) {
+      track(
+        error instanceof LocationLookupTimeoutError
+          ? "geolocation_timeout"
+          : "geolocation_error",
+      );
       recoverFromLocationFailure();
     } finally {
       setBusy(false);
