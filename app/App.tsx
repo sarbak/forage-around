@@ -222,6 +222,9 @@ function withMapSource(
 
 const TEN_MIN_M = 810; // ~10 minutes at 1.35 m/s
 const SUPPORT_EMAIL = "foragearound@mail.tin.computer";
+const SITE_URL = "https://foragearound.com";
+const GITHUB_URL = "https://github.com/sarbak/forage-around";
+const LICENSE_URL = `${GITHUB_URL}/blob/main/LICENSE`;
 
 type Loc = GeoPoint;
 
@@ -639,16 +642,49 @@ function Landing({
         <Text style={styles.footCredit}>
           Tree locations from Falling Fruit, used under CC BY-NC-SA.
         </Text>
-        <Pressable
-          onPress={() => Linking.openURL("https://tin.computer")}
-          accessibilityRole="link"
-          style={styles.tinCredit}
-        >
-          <View style={styles.tinMark} />
-          <Text style={styles.footCredit}>Growth by Tin</Text>
-        </Pressable>
       </View>
+      <AppFooter />
     </ScrollView>
+  );
+}
+
+function FooterLink({ label, url }: { label: string; url: string }) {
+  return (
+    <Pressable
+      onPress={() => Linking.openURL(url)}
+      accessibilityRole="link"
+      accessibilityLabel={label}
+      hitSlop={8}
+    >
+      <Text style={styles.footerLink}>{label}</Text>
+    </Pressable>
+  );
+}
+
+function AppFooter() {
+  return (
+    <View style={styles.siteFooter}>
+      <View style={styles.footerNav} accessibilityLabel="Footer navigation">
+        <FooterLink label="FAQ" url={`${SITE_URL}/faq`} />
+        <Text style={styles.footerDivider}>·</Text>
+        <FooterLink label="About" url={`${SITE_URL}/about`} />
+        <Text style={styles.footerDivider}>·</Text>
+        <FooterLink label="GitHub" url={GITHUB_URL} />
+      </View>
+      <View style={styles.footerMeta}>
+        <Text style={styles.footerLegal}>© 2026 Emre Sarbak · </Text>
+        <FooterLink label="MIT license" url={LICENSE_URL} />
+      </View>
+      <Pressable
+        onPress={() => Linking.openURL("https://tin.computer")}
+        accessibilityRole="link"
+        accessibilityLabel="Growth by Tin"
+        style={styles.tinCredit}
+      >
+        <View style={styles.tinMark} />
+        <Text style={styles.footerLegal}>Growth by Tin</Text>
+      </Pressable>
+    </View>
   );
 }
 
@@ -1681,6 +1717,19 @@ const styles = StyleSheet.create({
   footnote: { fontSize: 13, color: C.forest, textAlign: "center", fontWeight: "600" },
   footCredits: { alignItems: "center", gap: 7, marginTop: 8 },
   footCredit: { fontSize: 11.5, color: C.inkSoft, textAlign: "center" },
+  siteFooter: {
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderTopColor: C.line,
+    marginTop: 28,
+    paddingTop: 22,
+    gap: 8,
+  },
+  footerNav: { flexDirection: "row", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "center" },
+  footerDivider: { color: C.line, fontSize: 13 },
+  footerMeta: { flexDirection: "row", alignItems: "center", justifyContent: "center" },
+  footerLink: { fontSize: 12, color: C.forest, fontWeight: "600", textDecorationLine: "underline" },
+  footerLegal: { fontSize: 11.5, color: C.inkSoft, textAlign: "center" },
   tinCredit: { flexDirection: "row", alignItems: "center", gap: 4 },
   tinMark: { width: 11, height: 11, backgroundColor: "#66DC9D" },
   aboutByline: { fontSize: 14, color: C.inkSoft, marginTop: 4, fontStyle: "italic" },
