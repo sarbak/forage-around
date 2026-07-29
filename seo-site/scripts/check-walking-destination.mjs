@@ -44,10 +44,10 @@ assert.match(
 );
 assert.match(
   decoded,
-  /Verify the plant and access before harvesting/,
-  "The permission and identification reminder must stay beside the action.",
+  /Conditions can change\. Verify the plant, access, and current conditions before harvesting\./,
+  "The freshness, permission, and identification reminder must stay beside the action.",
 );
 
 console.log(
-  "Walking destination check passed: the rendered tree action names its reported destination and preserves coordinates plus safety guidance.",
+  "Walking destination check passed: the rendered tree action names its reported destination and preserves coordinates plus freshness and safety guidance.",
 );

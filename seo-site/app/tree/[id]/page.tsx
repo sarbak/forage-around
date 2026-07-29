@@ -189,7 +189,8 @@ export default async function TreePage({
           className="muted"
           style={{ display: "block", marginTop: 8, fontSize: 14 }}
         >
-          Verify the plant and access before harvesting
+          Conditions can change. Verify the plant, access, and current conditions
+          before harvesting.
         </span>
       </p>
 
