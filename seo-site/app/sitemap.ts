@@ -12,6 +12,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${SITE_ORIGIN}/locations/strawberry-tree`,
       priority: 0.85,
     },
+    {
+      url: `${SITE_ORIGIN}/locations/public-fruit-trees`,
+      priority: 0.85,
+    },
     { url: `${SITE_ORIGIN}/about`, priority: 0.8 },
     { url: `${SITE_ORIGIN}/faq`, priority: 0.85 },
     { url: `${SITE_ORIGIN}/seasonal-guide`, priority: 0.85 },
