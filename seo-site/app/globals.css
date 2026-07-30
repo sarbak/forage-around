@@ -497,6 +497,230 @@ ul.clean li {
   line-height: 1.35;
 }
 
+.wild-plants-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(220px, 0.88fr);
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 32px;
+}
+.wild-plants-hero .lead {
+  max-width: 39ch;
+  text-wrap: pretty;
+}
+.wild-plants-primary-action {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 22px;
+}
+.wild-plants-primary-action small {
+  max-width: 37ch;
+  line-height: 1.45;
+}
+.wild-plants-collage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 118px 118px auto;
+  gap: 7px;
+  margin: 0;
+}
+.wild-plants-collage img {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  display: block;
+}
+.wild-plants-collage .wild-plants-collage-main {
+  grid-row: 1 / 3;
+}
+.wild-plants-collage figcaption {
+  grid-column: 1 / -1;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.wild-plant-guide-list {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0 0;
+}
+.wild-plant-guide-card {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+}
+.wild-plant-guide-card img {
+  width: 132px;
+  height: 156px;
+  object-fit: cover;
+  border-radius: 11px;
+  display: block;
+}
+.wild-plant-guide-card h3 {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 21px;
+  line-height: 1.2;
+  margin: 2px 0 8px;
+}
+.wild-plant-guide-card h3 a {
+  color: var(--ink);
+  text-decoration: none;
+}
+.wild-plant-guide-card h3 a:hover {
+  color: var(--ripe);
+}
+.wild-plant-guide-card p {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 6px 0;
+}
+.wild-plant-guide-meta {
+  color: var(--forest);
+  font-size: 12px !important;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin: 0 !important;
+  text-transform: uppercase;
+}
+.wild-plant-guide-link {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 7px;
+  text-decoration: none;
+}
+
+.wild-plants-season-list {
+  border-bottom: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  margin: 18px 0;
+}
+.wild-plants-season-list > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  border-top: 1px solid var(--line);
+  padding: 9px 0;
+}
+.wild-plants-season-list > div:first-child {
+  border-top: 0;
+}
+.wild-plants-season-list a {
+  font-weight: 600;
+}
+.wild-plants-season-list span {
+  color: var(--ink-soft);
+  font-size: 14px;
+  text-align: right;
+}
+
+.wild-plants-checklist {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  margin: 18px 0;
+  padding: 0;
+}
+.wild-plants-checklist li {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  border-bottom: 1px solid var(--line);
+  padding: 0 0 16px;
+}
+.wild-plants-checklist li > span {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: var(--forest);
+  color: var(--white);
+  font-size: 13px;
+  font-weight: 700;
+}
+.wild-plants-checklist strong {
+  display: block;
+}
+.wild-plants-checklist p {
+  color: var(--ink-soft);
+  font-size: 15px;
+  margin: 3px 0 0;
+}
+
+.wild-plants-next-step {
+  background: var(--forest);
+  color: var(--white);
+  border-radius: 18px;
+  padding: 26px;
+  margin: 42px 0 12px;
+}
+.wild-plants-next-step .kicker {
+  color: rgba(255, 253, 248, 0.7);
+}
+.wild-plants-next-step h2 {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 24px;
+  line-height: 1.2;
+  margin: 0 0 8px;
+}
+.wild-plants-next-step p {
+  color: rgba(255, 253, 248, 0.78);
+  font-size: 15px;
+  max-width: 48ch;
+  margin: 0 0 12px;
+}
+.wild-plants-next-step a {
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .wild-plants-hero {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .wild-plants-collage {
+    grid-template-rows: 150px 150px auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .wild-plant-guide-card {
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 13px;
+    padding: 11px;
+  }
+
+  .wild-plant-guide-card img {
+    width: 92px;
+    height: 118px;
+  }
+
+  .wild-plant-guide-card h3 {
+    font-size: 19px;
+  }
+
+  .wild-plant-guide-card p {
+    font-size: 13px;
+  }
+}
+
 .seasonal-orientation {
   background: var(--white);
   border: 1px solid var(--line);

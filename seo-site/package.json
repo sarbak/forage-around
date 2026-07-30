@@ -5,10 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "npm run check:search-templates && npm run check:foraging-map && npm run check:faq && npm run check:controlled-journey && npm run check:walking-destination && npm run check:crawl-readiness",
+    "postbuild": "npm run check:search-templates && npm run check:foraging-map && npm run check:edible-wild-plants && npm run check:faq && npm run check:controlled-journey && npm run check:walking-destination && npm run check:crawl-readiness",
     "check:city-season-cues": "node scripts/check-city-season-cues.mjs",
     "check:controlled-journey": "node scripts/check-controlled-journey.mjs",
     "check:crawl-readiness": "npm run check:sitemap && npm run check:search-origin && npm run check:search-console-verification && npm run check:seasonal-discoverability",
+    "check:edible-wild-plants": "node scripts/check-edible-wild-plants.mjs",
     "check:foraging-map": "node scripts/check-foraging-map.mjs",
     "check:faq": "node scripts/check-faq.mjs",
     "check:seasonal-discoverability": "node scripts/check-seasonal-discoverability.mjs",

@@ -150,6 +150,16 @@ export default function LocationsPage() {
             </small>
           </span>
         </Link>
+        <Link href="/edible-wild-plants">
+          <span aria-hidden="true">🌿</span>
+          <span>
+            12 edible wild plants
+            <br />
+            <small className="muted">
+              Visual clues, usual seasons, and safety checks
+            </small>
+          </span>
+        </Link>
       </div>
 
       <h2 className="section">What may be ripe in {currentMonthName}</h2>

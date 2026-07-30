@@ -44,6 +44,10 @@
       "destination": "https://forage-around-seo.vercel.app/foraging-map"
     },
     {
+      "source": "/edible-wild-plants",
+      "destination": "https://forage-around-seo.vercel.app/edible-wild-plants"
+    },
+    {
       "source": "/species/:path*",
       "destination": "https://forage-around-seo.vercel.app/species/:path*"
     },
