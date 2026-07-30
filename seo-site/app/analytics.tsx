@@ -106,6 +106,13 @@ export function ForagingMapPageViewed() {
   return null;
 }
 
+export function EdibleWildPlantsPageViewed() {
+  useEffect(() => {
+    track("edible_wild_plants_page_viewed");
+  }, []);
+  return null;
+}
+
 export function FaqPageViewed() {
   useEffect(() => {
     track("faq_page_viewed");
@@ -194,6 +201,7 @@ type ToAppSource =
   | "home"
   | "locations"
   | "foraging_map"
+  | "edible_wild_plants"
   | "faq"
   | "seasonal_guide"
   | "portland_summer_guide"

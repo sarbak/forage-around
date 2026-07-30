@@ -11,6 +11,7 @@ const PRIORITY_ACQUISITION_ROUTES = [
   "/locations",
   "/seasonal-guide",
   "/foraging-map",
+  "/edible-wild-plants",
   "/locations/public-fruit-trees",
   "/locations/seattle",
   "/locations/berkeley",
@@ -26,6 +27,10 @@ const REQUIRED_SEO_REWRITES = new Map([
   ["/locations/:path*", `${SEO_DEPLOYMENT_ORIGIN}/locations/:path*`],
   ["/seasonal-guide", `${SEO_DEPLOYMENT_ORIGIN}/seasonal-guide`],
   ["/foraging-map", `${SEO_DEPLOYMENT_ORIGIN}/foraging-map`],
+  [
+    "/edible-wild-plants",
+    `${SEO_DEPLOYMENT_ORIGIN}/edible-wild-plants`,
+  ],
 ]);
 
 async function readOutput(path) {
