@@ -10,6 +10,6 @@ const loader = readFileSync(
 
 test("loads the managed analytics bootstrap in the exported web shell", () => {
   assert.match(html, /<script src="\/posthog-loader\.js" defer><\/script>/);
-  assert.match(loader, /phc_skySfZa6o44oxwoGTC7dm95wRrL3VB6YV2EeXbJBbVec/);
+  assert.match(loader, /phc_Ars7aCiAHXS5Lig9YAQaNtcXqXNAUqQx8zStDHr64d6X/);
   assert.match(loader, /https:\/\/us\.i\.posthog\.com/);
 });
