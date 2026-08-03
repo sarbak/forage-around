@@ -21,6 +21,121 @@ import { SpeciesPageViewed, ToAppLink } from "../../analytics";
 export const revalidate = 3600;
 export const dynamicParams = true;
 
+const BLACKBERRY_NAME = "Blackberry";
+const BLACKBERRY_TITLE =
+  "Blackberry foraging guide: season, identification and map";
+const BLACKBERRY_DESCRIPTION =
+  "Learn blackberry identification cues, typical July–September timing, how to judge crowd-sourced reports, and where picking is allowed before opening the map.";
+
+function BlackberryGuide() {
+  return (
+    <>
+      <h2 className="section">How to identify a blackberry patch</h2>
+      <p>
+        <strong>Look beyond berry color.</strong> Blackberry is a broad common
+        name for several <em>Rubus</em> species and hybrids. Match the fruit to
+        the leaves, flowers, canes, and growth habit instead of identifying a
+        plant from one dark berry.
+      </p>
+      <ul className="clean">
+        <li>
+          Follow a fruit cluster back to its cane. Wild types may trail, stand
+          upright, or form high arching thickets. Many have prickles, but some
+          cultivated and escaped blackberries are thornless.
+        </li>
+        <li>
+          Check the whole leaf and stem. Himalayan blackberry commonly has
+          large toothed leaflets, often in groups of five, on thick, ridged,
+          arching canes with curved prickles.
+        </li>
+        <li>
+          Notice the ripening sequence. Berries commonly change from green to
+          red and then deep purple-black, but color alone does not confirm the
+          species or that the fruit is ready to eat.
+        </li>
+        <li>
+          If you pick a confirmed ripe fruit, the pale core stays with a
+          blackberry. A raspberry usually leaves that core on the plant. Use
+          this as one supporting clue, not a complete identification.
+        </li>
+      </ul>
+      <p className="muted">
+        Blackberry species vary by region. Compare your plant with a trusted
+        local field guide. In the Pacific Northwest, see the{" "}
+        <a
+          href="https://extension.oregonstate.edu/catalog/pub/ec-1617-blackberry-cultivars-oregon"
+          rel="external noopener"
+        >
+          Oregon State University guide to blackberry types
+        </a>{" "}
+        and{" "}
+        <a
+          href="https://kingcounty.gov/en/dept/dnrp/nature-recreation/environment-ecology-conservation/noxious-weeds/identification-control/himalayan-blackberry"
+          rel="external noopener"
+        >
+          King County&apos;s Himalayan blackberry description
+        </a>
+        .
+      </p>
+
+      <h2 className="section">When blackberry season usually starts</h2>
+      <p>
+        Forage Around uses <strong>July through September</strong> as a broad
+        planning window, with August as the typical peak. Some trailing types
+        in the Pacific Northwest begin in June, while later cultivars can
+        continue into October. Sun, elevation, weather, and variety can shift
+        the timing by weeks.
+      </p>
+      <p>
+        Treat the calendar as a reason to check, not as evidence that a mapped
+        patch has ripe fruit. Look for berries at several color stages on the
+        plant and leave hard, red, damaged, moldy, or contaminated fruit alone.
+      </p>
+
+      <h2 className="section">How to judge a reported find</h2>
+      <p>
+        <strong>A pin is a lead, not proof.</strong> Forage Around shows
+        crowd-sourced locations from Falling Fruit. A report does not confirm
+        that the plant is still present, correctly named, ripe today, publicly
+        accessible, or available to pick.
+      </p>
+      <ol className="clean">
+        <li>
+          Check whether the coordinates point to a plausible growing space,
+          not a roadway, building, or fenced private yard.
+        </li>
+        <li>
+          Compare any report note with what is visible at the site. Do not
+          stretch the marker to a different nearby plant.
+        </li>
+        <li>
+          Confirm several plant features with trusted local sources before
+          treating the report as credible.
+        </li>
+        <li>
+          Recheck fruit condition, land status, posted rules, and permission
+          when you arrive. All of those can change after a report is added.
+        </li>
+      </ol>
+
+      <h2 className="section">Before you pick</h2>
+      <p>
+        <strong>Public access does not automatically allow harvest.</strong>{" "}
+        Check the land manager&apos;s rules for parks, trails, roadsides, and
+        natural areas. On private land, get permission from the owner before
+        entering or reaching across a boundary. Leave the patch alone when
+        ownership or the rule is unclear.
+      </p>
+      <p>
+        Avoid plants that may have been sprayed or exposed to unsafe roadside,
+        industrial, or polluted conditions. Wear clothing that protects you
+        from prickles, take only a modest amount, and leave plenty for wildlife
+        and other people.
+      </p>
+    </>
+  );
+}
+
 export async function generateStaticParams() {
   return allSpeciesNames()
     .filter((n) => allSpecies[n]?.edible)
@@ -37,6 +152,15 @@ export async function generateMetadata({
   if (!name) return { title: "Not found" };
   const s = getSpecies(name);
   const when = s ? seasonLabel(s) : null;
+  if (name === BLACKBERRY_NAME) {
+    return {
+      title: BLACKBERRY_TITLE,
+      description: BLACKBERRY_DESCRIPTION,
+      alternates: {
+        canonical: "/species/" + slug,
+      },
+    };
+  }
   return {
     title: `Foraging ${name}: typical season and guide notes`,
     description:
@@ -68,9 +192,14 @@ export default async function SpeciesPage({
 
   const photo = curated[0] || wiki?.image || null;
   const photoAlt =
-    name === "Plum" ? "Whole, halved, and sliced red plums" : name;
+    name === "Plum"
+      ? "Whole, halved, and sliced red plums"
+      : name === BLACKBERRY_NAME
+        ? "Ripe, red, and green blackberries on the same cane"
+        : name;
   const when = seasonLabel(s);
   const peak = peakLabel(s);
+  const isBlackberry = name === BLACKBERRY_NAME;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -94,8 +223,19 @@ export default async function SpeciesPage({
 
       <span className="emoji-big">{s.emoji}</span>
       <p className="kicker">{s.cat}</p>
-      <h1 className="title">Foraging {name}</h1>
-      {s.note ? <p className="lead">{s.note}</p> : null}
+      <h1 className="title">
+        {isBlackberry ? "Blackberry foraging guide" : "Foraging " + name}
+      </h1>
+      {isBlackberry ? (
+        <p className="lead">
+          Use season, cane, leaf, flower, and fruit clues together before
+          following a crowd-sourced blackberry report. This guide helps you
+          decide whether a mapped patch is worth checking, not whether any
+          berry is safe or available.
+        </p>
+      ) : s.note ? (
+        <p className="lead">{s.note}</p>
+      ) : null}
 
       <div className="seasonal-orientation" aria-label="Identification reminder">
         <strong>Confirm before eating</strong>
@@ -120,6 +260,8 @@ export default async function SpeciesPage({
           <span className="pill">Part noted: {s.part}</span>
         ) : null}
       </div>
+
+      {isBlackberry ? <BlackberryGuide /> : null}
 
       {s.uses && s.uses.length > 0 ? (
         <>

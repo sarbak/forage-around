@@ -211,6 +211,30 @@ const representatives = [
       "If the details do not match or you are unsure, leave it",
     ],
   },
+  {
+    output: "species/blackberry.html",
+    name: "Blackberry",
+    imageAlt: "Ripe, red, and green blackberries on the same cane",
+    title:
+      "Blackberry foraging guide: season, identification and map · Forage Around",
+    description:
+      "Learn blackberry identification cues, typical July–September timing, how to judge crowd-sourced reports, and where picking is allowed before opening the map.",
+    h1: "Blackberry foraging guide",
+    canonical: "https://foragearound.com/species/blackberry",
+    mapSource: "species",
+    speciesContext: "Blackberry",
+    mapLabel: "Check reported Blackberry locations",
+    seasonalGuideLabel: "Check Blackberry in the seasonal guide",
+    confidenceCues: [
+      "Confirm before eating",
+      "Look beyond berry color",
+      "July through September",
+      "A pin is a lead, not proof",
+      "Public access does not automatically allow harvest",
+      "the pale core stays with a blackberry",
+      "crowd-sourced locations from Falling Fruit",
+    ],
+  },
 ];
 
 function decodeHtml(value) {
@@ -402,5 +426,5 @@ for (const representative of representatives) {
 }
 
 console.log(
-  "Search template check passed for Seattle, Berkeley, Portland, Portland summer, Los Angeles, Chicago, New York, Apple, and Plum: metadata, H1s, canonical URLs, confidence boundaries, named map handoffs, reciprocal guide links, and the Plum image description remain intact.",
+  "Search template check passed for Seattle, Berkeley, Portland, Portland summer, Los Angeles, Chicago, New York, Apple, Plum, and Blackberry: metadata, H1s, canonical URLs, confidence boundaries, named map handoffs, reciprocal guide links, and image descriptions remain intact.",
 );
