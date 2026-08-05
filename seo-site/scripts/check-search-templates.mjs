@@ -47,6 +47,35 @@ const representatives = [
       "no label confirms that a reported plant is ripe or available",
       "Confirm the plant, local rules, and permission before picking",
     ],
+    reciprocalLinkLabel: "When figs are in season near Berkeley",
+    reciprocalLinkHref: "/locations/berkeley/fig-season",
+  },
+  {
+    output: "locations/berkeley/fig-season.html",
+    name: "Berkeley fig season",
+    title: "Fig tree season near Berkeley: field guide · Forage Around",
+    shareTitle: "Berkeley fig season guide | Forage Around",
+    description:
+      "Learn when fig tree season reaches Berkeley and the Bay Area, how to check ripeness and a crowd-sourced report, then open the local fig map.",
+    h1: "Fig tree season near Berkeley: when and where to look",
+    canonical: "https://foragearound.com/locations/berkeley/fig-season",
+    mapSource: "berkeley_fig_season_guide",
+    mapRef: "berkeley_fig_season",
+    mapLocation: "Berkeley, CA",
+    speciesContext: "Common fig",
+    mapLabel: "Check fig reports on the Berkeley map",
+    seasonalGuideLabel: "year-round seasonal foraging guide",
+    confidenceCues: [
+      "A map point is a lead, not a harvest promise",
+      "mid-May through November",
+      "fully ripe figs are soft, begin to droop on their stems",
+      "A sidewalk view does not make a tree public",
+      "Reports are leads, not live ripeness or permission",
+      "crowd-sourced plant locations from Falling Fruit",
+    ],
+    confidenceBeforeMap: "A map point is a lead, not a harvest promise",
+    reciprocalLinkLabel: "Open the full Berkeley foraging guide",
+    reciprocalLinkHref: "/locations/berkeley",
   },
   {
     output: "locations/portland.html",
@@ -270,7 +299,7 @@ function assertEqual(actual, expected, message) {
   }
 }
 
-const auditedGuides = representatives.slice(0, 7);
+const auditedGuides = representatives.slice(0, 8);
 const auditedTitles = new Map();
 const auditedDescriptions = new Map();
 
@@ -292,7 +321,9 @@ for (const representative of representatives) {
     const cityName =
       representative.name === "Portland summer"
         ? "Portland"
-        : representative.name;
+        : representative.name === "Berkeley fig season"
+          ? "Berkeley"
+          : representative.name;
 
     if (
       !decodedTitle.includes(cityName) ||
@@ -306,6 +337,9 @@ for (const representative of representatives) {
       representative.name === "Portland summer"
         ? !decodedTitle.toLowerCase().includes("summer") ||
           !decodedDescription.toLowerCase().includes("summer")
+        : representative.name === "Berkeley fig season"
+          ? !decodedTitle.toLowerCase().includes("season") ||
+            !decodedDescription.toLowerCase().includes("season")
         : !decodedTitle.toLowerCase().includes("foraging") ||
           !decodedDescription.toLowerCase().includes("season")
     ) {
@@ -426,5 +460,5 @@ for (const representative of representatives) {
 }
 
 console.log(
-  "Search template check passed for Seattle, Berkeley, Portland, Portland summer, Los Angeles, Chicago, New York, Apple, Plum, and Blackberry: metadata, H1s, canonical URLs, confidence boundaries, named map handoffs, reciprocal guide links, and image descriptions remain intact.",
+  "Search template check passed for Seattle, Berkeley, Berkeley fig season, Portland, Portland summer, Los Angeles, Chicago, New York, Apple, Plum, and Blackberry: metadata, H1s, canonical URLs, confidence boundaries, named map handoffs, reciprocal guide links, and image descriptions remain intact.",
 );

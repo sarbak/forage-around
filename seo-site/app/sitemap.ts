@@ -24,6 +24,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${SITE_ORIGIN}/locations/portland/summer`,
       priority: 0.85,
     },
+    {
+      url: `${SITE_ORIGIN}/locations/berkeley/fig-season`,
+      priority: 0.85,
+    },
   ];
 
   const speciesPages: MetadataRoute.Sitemap = allSpeciesNames()

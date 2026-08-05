@@ -819,6 +819,7 @@ export default async function CityHarvestPage({ params }: PageProps) {
   });
   const mapHref = `${APP_URL}?${mapParams.toString()}`;
   const isSeattle = city.slug === "seattle";
+  const isBerkeley = city.slug === "berkeley";
   const isPortland = city.slug === "portland";
   const isLosAngeles = city.slug === "los-angeles";
   const isChicago = city.slug === "chicago";
@@ -892,6 +893,14 @@ export default async function CityHarvestPage({ params }: PageProps) {
         {isPortland ? (
           <Link className="btn-outline" href="/locations/portland/summer">
             What to forage in Portland this summer
+          </Link>
+        ) : null}
+        {isBerkeley ? (
+          <Link
+            className="btn-outline"
+            href="/locations/berkeley/fig-season"
+          >
+            When figs are in season near Berkeley
           </Link>
         ) : null}
       </div>
