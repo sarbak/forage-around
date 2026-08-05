@@ -205,6 +205,7 @@ type ToAppSource =
   | "faq"
   | "seasonal_guide"
   | "portland_summer_guide"
+  | "berkeley_fig_season_guide"
   | "nav_header"
   | "nav_footer";
 

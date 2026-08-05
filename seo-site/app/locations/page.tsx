@@ -132,6 +132,16 @@ export default function LocationsPage() {
             </span>
           </Link>
         ))}
+        <Link href="/locations/berkeley/fig-season">
+          <span aria-hidden="true">🌿</span>
+          <span>
+            Fig tree season near Berkeley
+            <br />
+            <small className="muted">
+              Timing, ripeness checks, and the local fig map
+            </small>
+          </span>
+        </Link>
         <Link href="/locations/strawberry-tree">
           <span aria-hidden="true">🍓</span>
           <span>
