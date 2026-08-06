@@ -283,6 +283,57 @@ function PortlandSeasonGuide() {
   );
 }
 
+function BerkeleySeasonGuide() {
+  return (
+    <>
+      <h2 className="section">Follow Berkeley fruit from spring into fall</h2>
+      <p>
+        Three focused guides turn the city map into a seasonal sequence. Each
+        one explains a different fruit window, links to individual Berkeley
+        reports, and keeps current access and ripeness checks separate from the
+        old map record.
+      </p>
+      <div className="city-season-grid">
+        <section className="card">
+          <p className="kicker">Spring into early summer</p>
+          <h3>
+            <Link href="/locations/berkeley/loquat-season">Loquat season</Link>
+          </h3>
+          <p>
+            Use April through June as a first check, then compare the{ }
+            <Link href="/species/loquat">loquat guide</Link> and reports such as{ }
+            <Link href="/tree/423">South Berkeley spot 423</Link> with the fruit
+            and property boundary you find today.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Summer</p>
+          <h3>
+            <Link href="/locations/berkeley/plum-season">Plum season</Link>
+          </h3>
+          <p>
+            June through August is the practical guide window. Read the{ }
+            <Link href="/species/plum">plum guide</Link> and compare a record
+            such as <Link href="/tree/427">South Berkeley spot 427</Link> before
+            deciding whether a short walk is worthwhile.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Late summer into fall</p>
+          <h3>
+            <Link href="/locations/berkeley/fig-season">Fig season</Link>
+          </h3>
+          <p>
+            Many main-crop figs ripen later. Use the{ }
+            <Link href="/species/common-fig">common fig guide</Link> and compare
+            the current site with <Link href="/tree/414">Berkeley spot 414</Link>.
+          </p>
+        </section>
+      </div>
+    </>
+  );
+}
+
 function LosAngelesSeasonGuide() {
   return (
     <>
@@ -914,6 +965,7 @@ export default async function CityHarvestPage({ params }: PageProps) {
       </div>
 
       {isSeattle ? <SeattleSeasonGuide /> : null}
+      {isBerkeley ? <BerkeleySeasonGuide /> : null}
       {isPortland ? <PortlandSeasonGuide /> : null}
       {isLosAngeles ? <LosAngelesSeasonGuide /> : null}
       {isChicago ? <ChicagoSeasonGuide /> : null}

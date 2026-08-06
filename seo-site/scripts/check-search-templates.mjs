@@ -78,6 +78,63 @@ const representatives = [
     reciprocalLinkHref: "/locations/berkeley",
   },
   {
+    output: "locations/berkeley/plum-season.html",
+    name: "Berkeley plum season",
+    imageAlt:
+      "Whole, halved, and sliced red plums showing several ripeness cues",
+    title: "Plum season in California: Berkeley field guide · Forage Around",
+    shareTitle: "Berkeley plum season guide | Forage Around",
+    description:
+      "Learn when plum season reaches Berkeley and California, how to check ripe fruit and old map reports, then plan a careful neighborhood plum walk.",
+    h1: "Plum season in California: a Berkeley field guide",
+    canonical: "https://foragearound.com/locations/berkeley/plum-season",
+    mapSource: "berkeley_plum_season_guide",
+    mapRef: "berkeley_plum_season",
+    mapLocation: "Berkeley, CA",
+    speciesContext: "Plum",
+    mapLabel: "Check plum reports on the Berkeley map",
+    seasonalGuideLabel: "year-round seasonal foraging guide",
+    confidenceCues: [
+      "A report is a lead, not a picking invitation",
+      "May through October",
+      "starting to soften and taste sweet and juicy",
+      "South Berkeley plum report",
+      "Berkeley loquat season guide",
+      "Berkeley fig season guide",
+    ],
+    confidenceBeforeMap: "A report is a lead, not a picking invitation",
+    reciprocalLinkLabel: "Open the Berkeley foraging guide",
+    reciprocalLinkHref: "/locations/berkeley",
+  },
+  {
+    output: "locations/berkeley/loquat-season.html",
+    name: "Berkeley loquat season",
+    imageAlt: "Clusters of orange loquats among large dark green leaves",
+    title: "Loquat season in California: Berkeley guide · Forage Around",
+    shareTitle: "Berkeley loquat season guide | Forage Around",
+    description:
+      "Learn when loquat season reaches Berkeley and coastal California, how to check the fruit and old reports, then plan a careful spring walk.",
+    h1: "Loquat season in California: a Berkeley guide",
+    canonical: "https://foragearound.com/locations/berkeley/loquat-season",
+    mapSource: "berkeley_loquat_season_guide",
+    mapRef: "berkeley_loquat_season",
+    mapLocation: "Berkeley, CA",
+    speciesContext: "Loquat",
+    mapLabel: "Check loquat reports on the Berkeley map",
+    seasonalGuideLabel: "year-round seasonal foraging guide",
+    confidenceCues: [
+      "A mapped tree is not a harvest promise",
+      "spring and early summer",
+      "soft-firm and vividly colored",
+      "South Berkeley loquat report",
+      "Berkeley plum season guide",
+      "Berkeley fig season guide",
+    ],
+    confidenceBeforeMap: "A mapped tree is not a harvest promise",
+    reciprocalLinkLabel: "Open the Berkeley foraging guide",
+    reciprocalLinkHref: "/locations/berkeley",
+  },
+  {
     output: "locations/portland.html",
     name: "Portland",
     title: "Portland foraging: berries, fruit and a map · Forage Around",
@@ -326,7 +383,7 @@ function assertEqual(actual, expected, message) {
   }
 }
 
-const auditedGuides = representatives.slice(0, 8);
+const auditedGuides = representatives.slice(0, 10);
 const auditedTitles = new Map();
 const auditedDescriptions = new Map();
 
@@ -348,7 +405,7 @@ for (const representative of representatives) {
     const cityName =
       representative.name === "Portland summer"
         ? "Portland"
-        : representative.name === "Berkeley fig season"
+        : representative.name.startsWith("Berkeley ")
           ? "Berkeley"
           : representative.name;
 
@@ -364,7 +421,7 @@ for (const representative of representatives) {
       representative.name === "Portland summer"
         ? !decodedTitle.toLowerCase().includes("summer") ||
           !decodedDescription.toLowerCase().includes("summer")
-        : representative.name === "Berkeley fig season"
+        : representative.name.startsWith("Berkeley ")
           ? !decodedTitle.toLowerCase().includes("season") ||
             !decodedDescription.toLowerCase().includes("season")
         : !decodedTitle.toLowerCase().includes("foraging") ||
@@ -486,6 +543,73 @@ for (const representative of representatives) {
   }
 }
 
+const berkeleyCluster = [
+  {
+    output: "locations/berkeley.html",
+    name: "Berkeley city guide",
+    requiredLinks: [
+      "/locations/berkeley/loquat-season",
+      "/locations/berkeley/plum-season",
+      "/locations/berkeley/fig-season",
+      "/species/loquat",
+      "/species/plum",
+      "/species/common-fig",
+      "/tree/423",
+      "/tree/427",
+      "/tree/414",
+    ],
+  },
+  {
+    output: "locations/berkeley/loquat-season.html",
+    name: "Berkeley loquat season",
+    requiredLinks: [
+      "/locations/berkeley",
+      "/locations/berkeley/plum-season",
+      "/locations/berkeley/fig-season",
+      "/species/loquat",
+      "/tree/423",
+      "/tree/461",
+      "/tree/480",
+    ],
+  },
+  {
+    output: "locations/berkeley/plum-season.html",
+    name: "Berkeley plum season",
+    requiredLinks: [
+      "/locations/berkeley",
+      "/locations/berkeley/loquat-season",
+      "/locations/berkeley/fig-season",
+      "/species/plum",
+      "/tree/427",
+      "/tree/492",
+      "/tree/519",
+    ],
+  },
+  {
+    output: "locations/berkeley/fig-season.html",
+    name: "Berkeley fig season",
+    requiredLinks: [
+      "/locations/berkeley",
+      "/locations/berkeley/loquat-season",
+      "/locations/berkeley/plum-season",
+      "/species/common-fig",
+      "/tree/414",
+      "/tree/434",
+      "/tree/470",
+    ],
+  },
+];
+
+for (const page of berkeleyCluster) {
+  const html = await readFile(new URL(page.output, appOutput), "utf8");
+  const hrefs = new Set(anchorHrefs(html).map(({ href }) => href));
+  for (const href of page.requiredLinks) {
+    if (!hrefs.has(href)) {
+      throw new Error(`${page.name} must preserve cluster link ${href}.`);
+    }
+  }
+}
+
 const pawpawInboundSources = await Promise.all([
   readFile(new URL("locations.html", appOutput), "utf8"),
   readFile(new URL("locations/public-fruit-trees.html", appOutput), "utf8"),
@@ -501,5 +625,5 @@ for (const [index, html] of pawpawInboundSources.entries()) {
 }
 
 console.log(
-  "Search template check passed for Seattle, Berkeley, Berkeley fig season, Portland, Portland summer, Los Angeles, Chicago, New York, Pawpaw fruit map, Apple, Plum, and Blackberry: metadata, H1s, canonical URLs, confidence boundaries, named map handoffs, reciprocal and inbound guide links, and image descriptions remain intact.",
+  "Search template check passed for city, Berkeley seasonal-cluster, focused location, and species pages: metadata, H1s, canonical URLs, confidence boundaries, named map handoffs, reciprocal and inbound guide links, and image descriptions remain intact.",
 );
