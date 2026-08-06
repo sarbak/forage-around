@@ -66,6 +66,7 @@ import {
   submitEmailSignup,
   Submission,
 } from "./src/community";
+import { photoWallAnalytics } from "./src/photoWallAnalytics";
 import {
   walkingDestinationAccessibilityLabel,
   walkingDestinationLabel,
@@ -846,7 +847,8 @@ function PhotoWall({ refreshKey, onSubmit }: { refreshKey: number; onSubmit: () 
     getRecentSubmissions(limit).then((r) => {
       if (!cancelled) {
         setItems(r);
-        track("photo_wall_viewed", { count: r.length });
+        const analytics = photoWallAnalytics(r);
+        track(analytics.event, analytics.properties);
       }
     });
     return () => {
