@@ -325,8 +325,12 @@ export default function PublicFruitTreesPage() {
 
       <h2 className="section">Start with a local guide</h2>
       <p>
-        City pages add broad seasonal context before you open the same live map.
-        Try the <Link href="/locations/seattle">Seattle foraging guide</Link>,{" "}
+        Looking for one native fruit? The{" "}
+        <Link href="/locations/pawpaw-fruit-map">pawpaw fruit map guide</Link>{" "}
+        separates the species&apos; broad native range from reported local tree
+        locations. City pages add seasonal context before you open the same live
+        map. Try the{" "}
+        <Link href="/locations/seattle">Seattle foraging guide</Link>,{" "}
         <Link href="/locations/berkeley">Berkeley harvest guide</Link>,{" "}
         <Link href="/locations/portland">Portland foraging guide</Link>, or{" "}
         <Link href="/locations/los-angeles">Los Angeles foraging guide</Link>.

@@ -755,6 +755,47 @@ ul.clean li {
   margin-bottom: 0;
 }
 
+.pawpaw-hero-photo {
+  margin: 26px 0 8px;
+}
+.pawpaw-hero-photo img {
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+.pawpaw-hero-photo figcaption {
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.45;
+  margin-top: 7px;
+}
+.pawpaw-next-step {
+  background: var(--forest);
+  border-radius: 18px;
+  color: var(--white);
+  margin: 42px 0 12px;
+  padding: 26px;
+}
+.pawpaw-next-step .kicker {
+  color: rgba(255, 253, 248, 0.7);
+}
+.pawpaw-next-step h2 {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 24px;
+  line-height: 1.2;
+  margin: 0 0 8px;
+}
+.pawpaw-next-step p:not(.kicker) {
+  color: rgba(255, 253, 248, 0.82);
+  margin: 0 0 18px;
+}
+.pawpaw-next-step .btn {
+  background: var(--ripe);
+}
+.pawpaw-next-step .btn:hover {
+  background: var(--white);
+  color: var(--forest);
+}
+
 .photo {
   width: 100%;
   height: auto;

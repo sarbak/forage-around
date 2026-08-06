@@ -202,6 +202,33 @@ const representatives = [
     ],
   },
   {
+    output: "locations/pawpaw-fruit-map.html",
+    name: "Pawpaw fruit map",
+    imageAlt:
+      "Cluster of oblong green pawpaw fruit hanging beneath broad leaves",
+    title: "Pawpaw fruit map: find reported trees · Forage Around",
+    shareTitle: "Pawpaw fruit map and field guide | Forage Around",
+    description:
+      "Find reported pawpaw fruit trees near you, learn the native range, season and ripe-fruit clues, then check access and permission before you pick.",
+    h1: "Pawpaw fruit map: where and when to look",
+    canonical: "https://foragearound.com/locations/pawpaw-fruit-map",
+    mapSource: "pawpaw_fruit_map_guide",
+    mapRef: "pawpaw_fruit_map",
+    speciesContext: "Pawpaw",
+    mapLabel: "Search reported pawpaw spots",
+    seasonalGuideLabel: "seasonal foraging guide",
+    confidenceCues: [
+      "A map report is not a harvest promise",
+      "Two maps answer two different questions",
+      "Choose Everything edible",
+      "remove the skin and large dark seeds",
+      "Reports can be incomplete, duplicated, imprecise or out of date",
+    ],
+    confidenceBeforeMap: "A map report is not a harvest promise",
+    reciprocalLinkLabel: "public fruit tree guide",
+    reciprocalLinkHref: "/locations/public-fruit-trees",
+  },
+  {
     output: "species/apple.html",
     name: "Apple",
     title: "Foraging Apple: typical season and guide notes · Forage Around",
@@ -459,6 +486,20 @@ for (const representative of representatives) {
   }
 }
 
+const pawpawInboundSources = await Promise.all([
+  readFile(new URL("locations.html", appOutput), "utf8"),
+  readFile(new URL("locations/public-fruit-trees.html", appOutput), "utf8"),
+]);
+for (const [index, html] of pawpawInboundSources.entries()) {
+  if (!anchorHrefs(html).some(({ href }) => href === "/locations/pawpaw-fruit-map")) {
+    const pageName =
+      index === 0 ? "Locations index" : "Public fruit tree guide";
+    throw new Error(
+      pageName + " must link to the pawpaw fruit map guide.",
+    );
+  }
+}
+
 console.log(
-  "Search template check passed for Seattle, Berkeley, Berkeley fig season, Portland, Portland summer, Los Angeles, Chicago, New York, Apple, Plum, and Blackberry: metadata, H1s, canonical URLs, confidence boundaries, named map handoffs, reciprocal guide links, and image descriptions remain intact.",
+  "Search template check passed for Seattle, Berkeley, Berkeley fig season, Portland, Portland summer, Los Angeles, Chicago, New York, Pawpaw fruit map, Apple, Plum, and Blackberry: metadata, H1s, canonical URLs, confidence boundaries, named map handoffs, reciprocal and inbound guide links, and image descriptions remain intact.",
 );
