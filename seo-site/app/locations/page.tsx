@@ -142,6 +142,16 @@ export default function LocationsPage() {
             </small>
           </span>
         </Link>
+        <Link href="/locations/pawpaw-fruit-map">
+          <span aria-hidden="true">🌿</span>
+          <span>
+            Pawpaw fruit map
+            <br />
+            <small className="muted">
+              Native range, season, and reported tree checks
+            </small>
+          </span>
+        </Link>
         <Link href="/locations/strawberry-tree">
           <span aria-hidden="true">🍓</span>
           <span>

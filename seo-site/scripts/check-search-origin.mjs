@@ -21,6 +21,7 @@ const PRIORITY_ACQUISITION_ROUTES = [
   "/locations/new-york",
   "/locations/portland/summer",
   "/locations/berkeley/fig-season",
+  "/locations/pawpaw-fruit-map",
 ];
 const REQUIRED_SEO_REWRITES = new Map([
   ["/faq", `${SEO_DEPLOYMENT_ORIGIN}/faq`],
