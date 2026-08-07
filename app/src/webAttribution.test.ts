@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  analyticsEventName,
   cleanSpeciesContext,
   controlledTestRunFromHref,
   isControlledTestRun,
@@ -111,4 +112,10 @@ test("marks only an explicit controlled journey", () => {
     ),
     false,
   );
+});
+
+test("keeps visitor event names and isolates controlled event names", () => {
+  assert.equal(analyticsEventName("location_resolved", false), "location_resolved");
+  assert.equal(analyticsEventName("location_resolved", true), "qa_location_resolved");
+  assert.equal(analyticsEventName("qa_location_resolved", true), "qa_location_resolved");
 });
