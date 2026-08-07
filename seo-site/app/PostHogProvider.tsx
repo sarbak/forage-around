@@ -5,6 +5,8 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider } from "posthog-js/react";
+import { controlledTestRunFromSearch } from "@/lib/controlled-journey.mjs";
+import { track } from "@/lib/track";
 
 const POSTHOG_KEY = "phc_Ars7aCiAHXS5Lig9YAQaNtcXqXNAUqQx8zStDHr64d6X";
 const POSTHOG_HOST = "https://us.i.posthog.com";
@@ -12,6 +14,9 @@ const POSTHOG_HOST = "https://us.i.posthog.com";
 function initPostHog() {
   if (typeof window === "undefined") return;
   if ((window as unknown as { posthog?: unknown }).posthog && posthog.__loaded) return;
+  const testRun = controlledTestRunFromSearch(window.location.search);
+  (window as Window & { __forageAroundQaRun?: boolean }).__forageAroundQaRun =
+    testRun;
   posthog.init(POSTHOG_KEY, {
     api_host: POSTHOG_HOST,
     person_profiles: "identified_only",
@@ -19,7 +24,7 @@ function initPostHog() {
     // automatic one isn't double-counted on client-side navigation.
     capture_pageview: false,
     capture_pageleave: false,
-    autocapture: true,
+    autocapture: !testRun,
   });
   // Expose for the lightweight lib/track.ts helper and for live verification.
   (window as unknown as { posthog?: typeof posthog }).posthog = posthog;
@@ -37,7 +42,7 @@ function PageviewTracker() {
     let url = window.origin + pathname;
     const qs = searchParams?.toString();
     if (qs) url += "?" + qs;
-    posthog.capture("$pageview", { $current_url: url });
+    track("$pageview", { $current_url: url });
   }, [pathname, searchParams]);
 
   return null;

@@ -51,6 +51,11 @@ export function controlledTestRunFromHref(href: string): boolean {
   }
 }
 
+export function analyticsEventName(event: string, testRun: boolean): string {
+  if (!testRun || event.startsWith("qa_")) return event;
+  return `qa_${event}`;
+}
+
 export function withWebAttribution(
   source: string | null,
   speciesContext: string | null,

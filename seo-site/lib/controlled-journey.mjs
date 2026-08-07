@@ -10,6 +10,11 @@ export function controlledTestRunFromSearch(search) {
   );
 }
 
+export function analyticsEventName(event, testRun) {
+  if (!testRun || event.startsWith("qa_")) return event;
+  return `qa_${event}`;
+}
+
 export function hrefWithControlledTestRun(href, testRun) {
   if (!testRun) return href;
 

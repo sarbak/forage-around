@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {
+  analyticsEventName,
   controlledTestRunFromSearch,
   hrefWithControlledTestRun,
   isControlledTestRun,
@@ -13,6 +14,9 @@ assert.equal(isControlledTestRun(null), false);
 assert.equal(controlledTestRunFromSearch("?test_run=true"), true);
 assert.equal(controlledTestRunFromSearch("?test_run=false"), false);
 assert.equal(controlledTestRunFromSearch("?map_source=seasonal_guide"), false);
+assert.equal(analyticsEventName("tree_page_viewed", false), "tree_page_viewed");
+assert.equal(analyticsEventName("tree_page_viewed", true), "qa_tree_page_viewed");
+assert.equal(analyticsEventName("qa_tree_page_viewed", true), "qa_tree_page_viewed");
 
 const controlledSpeciesHref = hrefWithControlledTestRun(
   "/species/apple?map_source=seasonal_guide",

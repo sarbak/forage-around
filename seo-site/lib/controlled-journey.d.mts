@@ -6,6 +6,8 @@ export function isControlledTestRun(
 
 export function controlledTestRunFromSearch(search: string): boolean;
 
+export function analyticsEventName(event: string, testRun: boolean): string;
+
 export function hrefWithControlledTestRun(
   href: string,
   testRun: boolean,
