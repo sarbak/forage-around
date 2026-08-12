@@ -285,10 +285,34 @@ export default function BerkeleyFigSeasonPage() {
           cleanliness is uncertain.
         </li>
       </ol>
+
+      <h2 className="section">Three Berkeley fig reports to compare</h2>
+      <p>
+        These spot pages are old crowd-sourced records, not live fruit or access
+        confirmations. Comparing several nearby reports makes it easier to
+        abandon one stale point without turning the walk into a long trip.
+      </p>
+      <div className="season-spot-list">
+        <article>
+          <h3><Link href="/tree/414">Central Berkeley fig report</Link></h3>
+          <p>A simple report page for checking whether the mapped tree and current site still match.</p>
+        </article>
+        <article>
+          <h3><Link href="/tree/434">Stuart Street fig report</Link></h3>
+          <p>A named-street record that still requires a property-boundary and permission check.</p>
+        </article>
+        <article>
+          <h3><Link href="/tree/470">Rose and Josephine fig report</Link></h3>
+          <p>A record with an old autumn note, useful as history rather than a promise about this season.</p>
+        </article>
+      </div>
       <p>
         If figs are not ready, use the{" "}
         <Link href="/locations/berkeley">Berkeley foraging guide</Link> to check
-        other plants in season. The{" "}
+        other plants in season. Compare the{" "}
+        <Link href="/locations/berkeley/loquat-season">loquat season guide</Link>{" "}
+        and <Link href="/locations/berkeley/plum-season">plum season guide</Link>{" "}
+        for earlier fruit windows. The{" "}
         <Link href="/seasonal-guide">year-round seasonal foraging guide</Link>{" "}
         gives a broader month-by-month view, and the{" "}
         <Link href="/locations/public-fruit-trees">

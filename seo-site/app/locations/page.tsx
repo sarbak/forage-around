@@ -142,6 +142,26 @@ export default function LocationsPage() {
             </small>
           </span>
         </Link>
+        <Link href="/locations/berkeley/plum-season">
+          <span aria-hidden="true">🌿</span>
+          <span>
+            Plum season in Berkeley
+            <br />
+            <small className="muted">
+              California timing, ripe-fruit checks, and local reports
+            </small>
+          </span>
+        </Link>
+        <Link href="/locations/berkeley/loquat-season">
+          <span aria-hidden="true">🌿</span>
+          <span>
+            Loquat season in Berkeley
+            <br />
+            <small className="muted">
+              Spring timing, field clues, and local reports
+            </small>
+          </span>
+        </Link>
         <Link href="/locations/pawpaw-fruit-map">
           <span aria-hidden="true">🌿</span>
           <span>
