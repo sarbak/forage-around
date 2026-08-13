@@ -190,6 +190,16 @@ export default function LocationsPage() {
             </small>
           </span>
         </Link>
+        <Link href="/locations/oregon/fruit-in-season">
+          <span aria-hidden="true">🗓️</span>
+          <span>
+            What fruit is in season in Oregon?
+            <br />
+            <small className="muted">
+              Today&apos;s answer, a month-by-month guide, and local reports
+            </small>
+          </span>
+        </Link>
         <Link href="/edible-wild-plants">
           <span aria-hidden="true">🌿</span>
           <span>

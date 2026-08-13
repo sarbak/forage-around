@@ -205,6 +205,7 @@ type ToAppSource =
   | "faq"
   | "seasonal_guide"
   | "portland_summer_guide"
+  | "oregon_fruit_season_guide"
   | "berkeley_fig_season_guide"
   | "berkeley_plum_season_guide"
   | "berkeley_loquat_season_guide"

@@ -187,8 +187,12 @@ export default function PortlandSummerForagingPage() {
       <p>
         Need the broader city calendar? The{" "}
         <Link href="/locations/portland">Portland foraging guide</Link> covers
-        the seasons around summer as well. For a month-aware list across all
-        locations, use the{" "}
+        the seasons around summer as well. The{" "}
+        <Link href="/locations/oregon/fruit-in-season">
+          Oregon fruit season guide
+        </Link>{" "}
+        answers what is typically available this month across the state. For a
+        month-aware list across all locations, use the{" "}
         <Link href="/seasonal-guide">year-round seasonal foraging guide</Link>.
       </p>
 

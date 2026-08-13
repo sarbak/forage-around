@@ -29,6 +29,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.85,
     },
     {
+      url: `${SITE_ORIGIN}/locations/oregon/fruit-in-season`,
+      priority: 0.85,
+    },
+    {
       url: `${SITE_ORIGIN}/locations/berkeley/fig-season`,
       priority: 0.85,
     },

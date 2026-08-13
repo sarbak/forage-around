@@ -20,6 +20,7 @@ const PRIORITY_ACQUISITION_ROUTES = [
   "/locations/chicago",
   "/locations/new-york",
   "/locations/portland/summer",
+  "/locations/oregon/fruit-in-season",
   "/locations/berkeley/fig-season",
   "/locations/pawpaw-fruit-map",
 ];
