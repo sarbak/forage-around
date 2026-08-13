@@ -188,6 +188,32 @@ const representatives = [
     reciprocalLinkHref: "/locations/portland",
   },
   {
+    output: "locations/oregon/fruit-in-season.html",
+    name: "Oregon fruit season",
+    title: "What fruit is in season in Oregon right now? · Forage Around",
+    shareTitle: "Oregon fruit season by month | Forage Around",
+    description:
+      "See what fruit is in season in Oregon right now, use a month-by-month harvest guide, then check reported fruit plants on the free map.",
+    h1: "What fruit is in season in Oregon right now?",
+    canonical: "https://foragearound.com/locations/oregon/fruit-in-season",
+    mapSource: "oregon_fruit_season_guide",
+    mapRef: "oregon_fruit_in_season",
+    mapLocation: "Portland, OR",
+    mapLabel: "Check fruit reports around Portland",
+    seasonalGuideLabel: "Browse the year-round season guide",
+    confidenceCues: [
+      "availability varies by location",
+      "broad windows are for trip planning, not promises",
+      "does not confirm that fruit is present now",
+      "does not turn a reported plant into public property",
+      "Reports are leads, not live fruit or permission",
+      "Check land status and permission",
+    ],
+    confidenceBeforeMap: "availability varies by location",
+    reciprocalLinkLabel: "Open the Portland foraging guide",
+    reciprocalLinkHref: "/locations/portland",
+  },
+  {
     output: "locations/los-angeles.html",
     name: "Los Angeles",
     title: "Los Angeles foraging: fruit and a map · Forage Around",
@@ -403,7 +429,9 @@ for (const representative of representatives) {
     const decodedTitle = decodeHtml(title ?? "");
     const decodedDescription = decodeHtml(description ?? "");
     const cityName =
-      representative.name === "Portland summer"
+      representative.name === "Oregon fruit season"
+        ? "Oregon"
+        : representative.name === "Portland summer"
         ? "Portland"
         : representative.name.startsWith("Berkeley ")
           ? "Berkeley"
@@ -418,7 +446,10 @@ for (const representative of representatives) {
       );
     }
     if (
-      representative.name === "Portland summer"
+      representative.name === "Oregon fruit season"
+        ? !decodedTitle.toLowerCase().includes("fruit") ||
+          !decodedDescription.toLowerCase().includes("season")
+        : representative.name === "Portland summer"
         ? !decodedTitle.toLowerCase().includes("summer") ||
           !decodedDescription.toLowerCase().includes("summer")
         : representative.name.startsWith("Berkeley ")
@@ -621,6 +652,21 @@ for (const [index, html] of pawpawInboundSources.entries()) {
     throw new Error(
       pageName + " must link to the pawpaw fruit map guide.",
     );
+  }
+}
+
+const oregonFruitInboundSources = await Promise.all([
+  readFile(new URL("locations.html", appOutput), "utf8"),
+  readFile(new URL("locations/portland/summer.html", appOutput), "utf8"),
+]);
+for (const [index, html] of oregonFruitInboundSources.entries()) {
+  if (
+    !anchorHrefs(html).some(
+      ({ href }) => href === "/locations/oregon/fruit-in-season",
+    )
+  ) {
+    const pageName = index === 0 ? "Locations index" : "Portland summer guide";
+    throw new Error(pageName + " must link to the Oregon fruit season guide.");
   }
 }
 

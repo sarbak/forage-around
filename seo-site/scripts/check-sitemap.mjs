@@ -3,9 +3,9 @@ import { readFile } from "node:fs/promises";
 
 const sitemapPath =
   process.argv[2] || new URL("../.next/server/app/sitemap.xml.body", import.meta.url);
-const expectedEntryCount = 592;
+const expectedEntryCount = 593;
 const expectedPathPriorityHash =
-  "4035aa10662965a124fbc8e14f552f0c8b44afd5031021e218fea604d2334120";
+  "c25df6afbdfcfc77b2bbdb3f7bd663b38aaae5b94b974640017b16fc0c5d29c1";
 
 const xml = await readFile(sitemapPath, "utf8");
 const entries = [...xml.matchAll(/<url>([\s\S]*?)<\/url>/g)].map(
