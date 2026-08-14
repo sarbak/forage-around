@@ -306,6 +306,7 @@ export default function App() {
         return;
       }
       await go(point, { method: "address" });
+      track("address_resolved");
     } catch {
       setGeoError("Address lookup failed. Check your connection.");
       track("address_error");
