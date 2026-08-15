@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { cityHarvests } from "@/lib/city-harvests";
 import { allSpeciesNames, species, slugify, trees } from "@/lib/data";
 import { SITE_ORIGIN } from "@/lib/site-origin";
+import { MONTH_SEASON_PROFILES } from "@/lib/monthly-season-pages";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
@@ -58,10 +59,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
+  const monthlySeasonPages: MetadataRoute.Sitemap = MONTH_SEASON_PROFILES.map(
+    ({ slug }) => ({
+      url: `${SITE_ORIGIN}/seasonal-guide/${slug}`,
+      priority: 0.8,
+    }),
+  );
+
   const treePages: MetadataRoute.Sitemap = trees.map((t) => ({
     url: `${SITE_ORIGIN}/tree/${t.id}`,
     priority: 0.6,
   }));
 
-  return [...staticPages, ...cityPages, ...speciesPages, ...treePages];
+  return [
+    ...staticPages,
+    ...monthlySeasonPages,
+    ...cityPages,
+    ...speciesPages,
+    ...treePages,
+  ];
 }

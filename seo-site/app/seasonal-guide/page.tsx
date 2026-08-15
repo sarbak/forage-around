@@ -15,6 +15,7 @@ import {
   ToAppLink,
 } from "../analytics";
 import { APP_URL, Credits } from "../components";
+import { monthProfileFromNumber } from "@/lib/monthly-season-pages";
 
 export const revalidate = 86400;
 
@@ -258,16 +259,30 @@ export default function SeasonalGuide() {
         const monthItems = allItems.filter(({ details }) =>
           details.season.includes(index + 1),
         );
+        const monthPage = monthProfileFromNumber(index + 1);
 
         return (
           <section className="card" key={month}>
-            <h3 style={{ margin: "0 0 4px" }}>{month}</h3>
+            <h3 style={{ margin: "0 0 4px" }}>
+              {monthPage ? (
+                <Link href={`/seasonal-guide/${monthPage.slug}`}>{month}</Link>
+              ) : (
+                month
+              )}
+            </h3>
             <p className="muted" style={{ marginTop: 0 }}>
               {monthItems.length} guide
               {monthItems.length === 1 ? " entry" : " entries"} are usually in
               season.
             </p>
             <SpeciesGrid items={monthItems} />
+            {monthPage ? (
+              <p style={{ marginBottom: 0 }}>
+                <Link href={`/seasonal-guide/${monthPage.slug}`}>
+                  Read the {month} field guide →
+                </Link>
+              </p>
+            ) : null}
           </section>
         );
       })}
