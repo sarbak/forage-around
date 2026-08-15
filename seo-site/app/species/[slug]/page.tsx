@@ -14,6 +14,8 @@ import {
 } from "@/lib/data";
 import { getWikipedia } from "@/lib/wikipedia";
 import { submissionsForSpecies } from "@/lib/submissions";
+import { cityHarvestFromSlug } from "@/lib/city-harvests";
+import { MONTH_SEASON_PROFILES } from "@/lib/monthly-season-pages";
 import { Credits, APP_URL } from "../../components";
 import { SubmissionList } from "../../Submissions";
 import { SpeciesPageViewed, ToAppLink } from "../../analytics";
@@ -200,6 +202,11 @@ export default async function SpeciesPage({
   const when = seasonLabel(s);
   const peak = peakLabel(s);
   const isBlackberry = name === BLACKBERRY_NAME;
+  const monthGuides = MONTH_SEASON_PROFILES.filter(({ month }) =>
+    s.season.includes(month),
+  );
+  const oaklandGuide = cityHarvestFromSlug("oakland");
+  const appearsInOakland = oaklandGuide?.plantNames.includes(name) ?? false;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -260,6 +267,48 @@ export default async function SpeciesPage({
           <span className="pill">Part noted: {s.part}</span>
         ) : null}
       </div>
+
+      {monthGuides.length > 0 || appearsInOakland ? (
+        <nav
+          id="species-cluster-links"
+          className="species-cluster-links"
+          aria-labelledby="species-cluster-links-heading"
+        >
+          <p className="kicker">Plan the next check</p>
+          <h2 id="species-cluster-links-heading">
+            Keep planning with {name}
+          </h2>
+          <p>
+            These paths appear only where Forage Around&apos;s season calendar or
+            Oakland starter records include this plant.
+          </p>
+          {monthGuides.length > 0 ? (
+            <div className="species-cluster-link-group">
+              <strong>Published month guides</strong>
+              <div className="species-cluster-link-list">
+                {monthGuides.map((profile) => (
+                  <Link
+                    href={`/seasonal-guide/${profile.slug}`}
+                    key={profile.slug}
+                  >
+                    See {name} in the {profile.name} guide
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ) : null}
+          {appearsInOakland ? (
+            <div className="species-cluster-link-group">
+              <strong>Local report guide</strong>
+              <div className="species-cluster-link-list">
+                <Link href="/locations/oakland">
+                  See {name} in the Oakland foraging guide
+                </Link>
+              </div>
+            </div>
+          ) : null}
+        </nav>
+      ) : null}
 
       {isBlackberry ? <BlackberryGuide /> : null}
 
