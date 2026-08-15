@@ -15,6 +15,7 @@ import {
   seasonLabel,
   slugify,
   species,
+  getTree,
 } from "@/lib/data";
 
 export const revalidate = 86400;
@@ -92,6 +93,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     shareTitle = "Berkeley foraging: fruit and a map | Forage Around";
   }
 
+  if (city.slug === "oakland") {
+    title = "Oakland foraging: 6 fruit-tree reports and a map";
+    description =
+      "Check six Oakland fruit-tree reports for figs, plums, loquat, and pear, compare their usual seasons, then search the live map near your address.";
+    shareTitle = "Oakland foraging: 6 starter reports and a map | Forage Around";
+  }
+
   if (city.slug === "portland") {
     title = "Portland foraging: berries, fruit and a map";
     description =
@@ -147,6 +155,12 @@ function plantsForCity(city: CityHarvest, month: number) {
       const bAtPeak = b.details.peak?.includes(month) ? 0 : 1;
       return aInSeason - bInSeason || aAtPeak - bAtPeak;
     });
+}
+
+function starterSpotsForCity(city: CityHarvest) {
+  return (city.starterSpotIds ?? [])
+    .map((id) => getTree(id))
+    .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
 }
 
 function SeattleSeasonGuide() {
@@ -329,6 +343,112 @@ function BerkeleySeasonGuide() {
             the current site with <Link href="/tree/414">Berkeley spot 414</Link>.
           </p>
         </section>
+      </div>
+    </>
+  );
+}
+
+function OaklandSeasonGuide() {
+  return (
+    <>
+      <figure className="season-cluster-photo">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          className="photo"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Plums_African_Rose_-_whole%2C_halved_and_slice.jpg/1280px-Plums_African_Rose_-_whole%2C_halved_and_slice.jpg"
+          alt="Whole, halved, and sliced red plums showing several ripeness cues"
+        />
+        <figcaption>
+          Oakland&apos;s starter records include two plum trees, but color alone
+          cannot confirm variety or ripeness. Marco Schmidt image, CC BY-SA 2.5,
+          via Wikimedia Commons.
+        </figcaption>
+      </figure>
+
+      <h2 className="section">Four fruits, four different timing checks</h2>
+      <p>
+        The Oakland starter set is small enough to read record by record. It
+        spans spring loquats, summer plums, late-summer figs, and fall pears.
+        These are broad plant-guide windows, not a forecast for one tree.
+      </p>
+      <div className="city-season-grid">
+        <section className="card">
+          <p className="kicker">Spring into early summer</p>
+          <h3>Loquat begins the sequence</h3>
+          <p>
+            <Link href="/species/loquat">Loquats</Link> usually span April
+            through June, with May as the typical peak. The starter record may
+            no longer match the tree or access you find today.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Summer</p>
+          <h3>Two plum reports</h3>
+          <p>
+            <Link href="/species/plum">Plums</Link> usually span June through
+            August. Softening fruit and taste are stronger ripeness clues than
+            skin color, which varies by cultivar.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Summer into fall</p>
+          <h3>Figs carry the longest window</h3>
+          <p>
+            <Link href="/species/common-fig">Common figs</Link> usually span
+            June through October, with August and September as typical peaks.
+            Ripe figs soften and begin to droop on the stem.
+          </p>
+        </section>
+        <section className="card">
+          <p className="kicker">Late summer into fall</p>
+          <h3>Pears need an indoor finish</h3>
+          <p>
+            <Link href="/species/european-pear">European pears</Link> usually
+            span August through October. Picked fruit often finishes ripening
+            indoors, but first confirm the tree and permission to harvest.
+          </p>
+        </section>
+      </div>
+    </>
+  );
+}
+
+function StarterSpotList({ city }: { city: CityHarvest }) {
+  const spots = starterSpotsForCity(city);
+  if (spots.length === 0) return null;
+
+  return (
+    <>
+      <h2 className="section">
+        {spots.length} starter reports in {city.name}
+      </h2>
+      <p className="muted">
+        These are the complete {city.name} records in the bundled starter
+        dataset. Open a record for its coordinates and source note. Then confirm
+        identity, current conditions, ownership, and permission on site.
+      </p>
+      <div className="season-spot-list">
+        {spots.map((spot) => {
+          const details = species[spot.type];
+          const season = details ? seasonLabel(details) : null;
+          return (
+            <article key={spot.id}>
+              <h3>
+                <Link href={`/tree/${spot.id}`}>
+                  {spot.type} report #{spot.id}
+                </Link>
+              </h3>
+              <p>
+                {spot.desc?.trim() ||
+                  "This source record has coordinates but no site note."}
+              </p>
+              <small>
+                {season ? `Usual guide season: ${season}` : "Season varies"} ·
+                report, not live availability
+              </small>
+            </article>
+          );
+        })}
       </div>
     </>
   );
@@ -864,6 +984,7 @@ export default async function CityHarvestPage({ params }: PageProps) {
   const currentMonth = new Date().getUTCMonth() + 1;
   const currentMonthName = MONTHS[currentMonth - 1];
   const plants = plantsForCity(city, currentMonth);
+  const starterSpots = starterSpotsForCity(city);
   const mapParams = new URLSearchParams({
     ref: `nearby_harvest_${city.slug}`,
     location: city.searchLabel,
@@ -871,6 +992,7 @@ export default async function CityHarvestPage({ params }: PageProps) {
   const mapHref = `${APP_URL}?${mapParams.toString()}`;
   const isSeattle = city.slug === "seattle";
   const isBerkeley = city.slug === "berkeley";
+  const isOakland = city.slug === "oakland";
   const isPortland = city.slug === "portland";
   const isLosAngeles = city.slug === "los-angeles";
   const isChicago = city.slug === "chicago";
@@ -886,6 +1008,12 @@ export default async function CityHarvestPage({ params }: PageProps) {
     lead =
       "Plan a self-guided Seattle foraging walk with usual seasons for cherries, plums, apples, crabapples, nuts, and late fruit, then search crowd-sourced reports near your address.";
     mapActionLabel = "Open the Seattle foraging map";
+  } else if (isOakland) {
+    kicker = "Oakland starter foraging guide";
+    heading = "Foraging in Oakland: six fruit-tree reports to check";
+    lead =
+      "Start with every Oakland record in Forage Around's bundled dataset: two figs, two plums, one loquat, and one pear label across six mapped spots. Compare the usual seasons, then verify the tree and access on foot.";
+    mapActionLabel = "Open the Oakland foraging map";
   } else if (isPortland) {
     kicker = "Portland foraging guide";
     heading = "Foraging in Portland: berries, fruit, and a city map";
@@ -912,6 +1040,26 @@ export default async function CityHarvestPage({ params }: PageProps) {
     mapActionLabel = "Open the New York foraging map";
   }
 
+  const cityCollectionSchema = starterSpots.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: heading,
+        url: `${APP_URL}/locations/${city.slug}`,
+        description: lead,
+        mainEntity: {
+          "@type": "ItemList",
+          numberOfItems: starterSpots.length,
+          itemListElement: starterSpots.map((spot, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            name: `${spot.type} report ${spot.id}`,
+            url: `${APP_URL}/tree/${spot.id}`,
+          })),
+        },
+      }
+    : null;
+
   return (
     <>
       <LocationsPageViewed
@@ -923,6 +1071,14 @@ export default async function CityHarvestPage({ params }: PageProps) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(SEATTLE_FAQ_SCHEMA) }}
+        />
+      ) : null}
+      {cityCollectionSchema ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(cityCollectionSchema),
+          }}
         />
       ) : null}
       <p className="kicker">{kicker}</p>
@@ -966,6 +1122,7 @@ export default async function CityHarvestPage({ params }: PageProps) {
 
       {isSeattle ? <SeattleSeasonGuide /> : null}
       {isBerkeley ? <BerkeleySeasonGuide /> : null}
+      {isOakland ? <OaklandSeasonGuide /> : null}
       {isPortland ? <PortlandSeasonGuide /> : null}
       {isLosAngeles ? <LosAngelesSeasonGuide /> : null}
       {isChicago ? <ChicagoSeasonGuide /> : null}
@@ -1011,6 +1168,8 @@ export default async function CityHarvestPage({ params }: PageProps) {
           );
         })}
       </div>
+
+      <StarterSpotList city={city} />
 
       {isSeattle ? (
         <SeattlePlanningGuide mapHref={mapHref} />

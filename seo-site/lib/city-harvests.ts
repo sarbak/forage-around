@@ -5,6 +5,7 @@ export type CityHarvest = {
   searchLabel: string;
   localContext: string;
   plantNames: string[];
+  starterSpotIds?: string[];
 };
 
 // These guides are limited to curated edible plants represented in current
@@ -46,6 +47,16 @@ export const cityHarvests: CityHarvest[] = [
       "Paper mulberry",
       "Common fig",
     ],
+  },
+  {
+    slug: "oakland",
+    name: "Oakland",
+    region: "California",
+    searchLabel: "Oakland, CA",
+    localContext:
+      "The bundled starter data has six Oakland records across figs, plums, loquat, and European pear. That is enough for a careful first walk, but not enough to represent every Oakland neighborhood.",
+    plantNames: ["Common fig", "Plum", "Loquat", "European pear"],
+    starterSpotIds: ["464", "479", "494", "500", "505", "510"],
   },
   {
     slug: "portland",
