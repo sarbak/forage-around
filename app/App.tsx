@@ -91,6 +91,8 @@ type SubmitTarget = {
 } | null;
 
 const ffIdOf = (f: Find) => f.id.split("-")[0];
+const LANDING_MAP_CENTER = { lat: 37.8715, lng: -122.273 };
+const ignoreLandingMapSelection = (_find: Find) => {};
 const REFERRAL_PARAM_KEYS = [
   "utm_source",
   "utm_medium",
@@ -541,6 +543,9 @@ function Landing({
   onAbout: () => void;
 }) {
   const [addr, setAddr] = useState("");
+  const { width } = useWindowDimensions();
+  const wideLanding = width >= 900;
+  const narrowLanding = width < 430;
   const addrInputRef = useRef<TextInput>(null);
   const landingThumbnail = (url: string) =>
     Platform.OS === "web"
@@ -554,64 +559,90 @@ function Landing({
 
   return (
     <ScrollView contentContainerStyle={styles.landing} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-      <View style={styles.hero}>
-        <Text style={styles.wordmark}>Forage Around</Text>
-        <Text style={styles.heroHeadline} accessibilityRole="header">
-          Find likely-ripe wild food near you
-        </Text>
-        <Text style={styles.tagline}>
-          Explore reported fruit trees and edible plants with season notes to check before you pick. No account required.
-        </Text>
-
-        <Pressable
-          style={({ pressed }) => [styles.cta, pressed && styles.ctaPressed]}
-          onPress={onLocate}
-          disabled={busy}
-          accessibilityRole="button"
-          accessibilityLabel="Use my location to find likely-ripe wild food"
-        >
-          {busy ? <ActivityIndicator color={C.white} /> : <Text style={styles.ctaText}>Use my location</Text>}
-        </Pressable>
-
-        <View style={styles.orRow}>
-          <View style={styles.orLine} />
-          <Text style={styles.orText}>or search an address</Text>
-          <View style={styles.orLine} />
-        </View>
-
-        {!!geoError && (
+      <View style={[styles.hero, wideLanding && styles.heroWide]}>
+        <View style={[styles.heroCopy, wideLanding && styles.heroCopyWide]}>
+          <Text style={styles.wordmark}>Forage Around</Text>
           <Text
-            style={styles.geoError}
-            accessibilityRole="alert"
-            accessibilityLiveRegion="polite"
+            style={[
+              styles.heroHeadline,
+              !wideLanding && styles.heroHeadlineCompact,
+              narrowLanding && styles.heroHeadlineNarrow,
+            ]}
+            accessibilityRole="header"
           >
-            {geoError}
+            Find likely-ripe wild food near you
           </Text>
-        )}
-        <View style={styles.addrRow}>
-          <TextInput
-            ref={addrInputRef}
-            style={styles.addrInput}
-            placeholder="Enter an address or place"
-            placeholderTextColor={C.inkSoft}
-            value={addr}
-            onChangeText={setAddr}
-            onFocus={() => track("address_input_focused", { form_location: "hero" })}
-            onSubmitEditing={() => onAddress(addr)}
-            returnKeyType="search"
-            autoCapitalize="words"
-            autoCorrect={false}
-            accessibilityLabel="Address or place"
-          />
+          <Text style={styles.tagline}>
+            Explore reported fruit trees and edible plants with season notes to check before you pick. No account required.
+          </Text>
+
           <Pressable
-            style={({ pressed }) => [styles.addrGo, pressed && styles.addrGoPressed]}
-            onPress={() => onAddress(addr)}
+            style={({ pressed }) => [styles.cta, pressed && styles.ctaPressed]}
+            onPress={onLocate}
             disabled={busy}
             accessibilityRole="button"
-            accessibilityLabel="Search this address"
+            accessibilityLabel="Use my location to find likely-ripe wild food"
           >
-            <Text style={styles.addrGoText}>Search</Text>
+            {busy ? <ActivityIndicator color={C.white} /> : <Text style={styles.ctaText}>Use my location</Text>}
           </Pressable>
+
+          <View style={styles.orRow}>
+            <View style={styles.orLine} />
+            <Text style={styles.orText}>or search an address</Text>
+            <View style={styles.orLine} />
+          </View>
+
+          {!!geoError && (
+            <Text
+              style={styles.geoError}
+              accessibilityRole="alert"
+              accessibilityLiveRegion="polite"
+            >
+              {geoError}
+            </Text>
+          )}
+          <View style={styles.addrRow}>
+            <TextInput
+              ref={addrInputRef}
+              style={styles.addrInput}
+              placeholder="Enter an address or place"
+              placeholderTextColor={C.inkSoft}
+              value={addr}
+              onChangeText={setAddr}
+              onFocus={() => track("address_input_focused", { form_location: "hero" })}
+              onSubmitEditing={() => onAddress(addr)}
+              returnKeyType="search"
+              autoCapitalize="words"
+              autoCorrect={false}
+              accessibilityLabel="Address or place"
+            />
+            <Pressable
+              style={({ pressed }) => [styles.addrGo, pressed && styles.addrGoPressed]}
+              onPress={() => onAddress(addr)}
+              disabled={busy}
+              accessibilityRole="button"
+              accessibilityLabel="Search this address"
+            >
+              <Text style={styles.addrGoText}>Search</Text>
+            </Pressable>
+          </View>
+        </View>
+
+        <View
+          style={[styles.landingMapCard, wideLanding && styles.landingMapCardWide]}
+          accessibilityLabel="Map preview. Search to center the map near you and see reported plants."
+        >
+          <MapView
+            center={LANDING_MAP_CENTER}
+            finds={[]}
+            onSelect={ignoreLandingMapSelection}
+            showCenterMarker={false}
+            zoom={14}
+          />
+          <View style={styles.landingMapMessage}>
+            <Text style={styles.landingMapLabel}>Map preview</Text>
+            <Text style={styles.landingMapTitle}>Search to see reported plants near you</Text>
+          </View>
         </View>
       </View>
 
@@ -1688,11 +1719,16 @@ const styles = StyleSheet.create({
   center: { alignItems: "center", justifyContent: "center" },
 
   /* Landing */
-  landing: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 48, paddingBottom: 40, maxWidth: 620, alignSelf: "center", width: "100%" },
-  hero: { marginBottom: 44 },
-  wordmark: { fontFamily: F.display, fontSize: 26, lineHeight: 32, color: C.forest, marginBottom: 32 },
+  landing: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 32, paddingBottom: 40, maxWidth: 1160, alignSelf: "center", width: "100%" },
+  hero: { marginBottom: 44, gap: 28 },
+  heroWide: { flexDirection: "row", alignItems: "stretch", gap: 40 },
+  heroCopy: { flexShrink: 0 },
+  heroCopyWide: { flex: 1, justifyContent: "center" },
+  wordmark: { fontFamily: F.display, fontSize: 26, lineHeight: 32, color: C.forest, marginBottom: 24 },
   heroHeadline: { fontFamily: F.display, fontSize: 48, lineHeight: 52, color: C.ink, letterSpacing: -0.5, maxWidth: 540 },
-  tagline: { fontSize: 18, lineHeight: 27, color: C.inkSoft, marginTop: 18, marginBottom: 28, maxWidth: 520 },
+  heroHeadlineCompact: { fontSize: 42, lineHeight: 46 },
+  heroHeadlineNarrow: { fontSize: 38, lineHeight: 42 },
+  tagline: { fontSize: 18, lineHeight: 27, color: C.inkSoft, marginTop: 16, marginBottom: 24, maxWidth: 520 },
   cta: {
     backgroundColor: C.ripe,
     paddingVertical: 17,
@@ -1726,7 +1762,35 @@ const styles = StyleSheet.create({
   addrGoText: { color: C.forest, fontSize: 16, fontWeight: "700", fontFamily: F.display },
   geoError: { color: C.berry, fontSize: 13, marginBottom: 10, lineHeight: 19 },
 
-  seasonCard: { backgroundColor: C.white, borderRadius: 20, padding: 22, borderWidth: 1, borderColor: C.line },
+  landingMapCard: {
+    height: 240,
+    borderRadius: 20,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: C.line,
+    backgroundColor: C.white,
+    position: "relative",
+  },
+  landingMapCardWide: { flex: 1, minWidth: 0, height: 500 },
+  landingMapMessage: {
+    position: "absolute",
+    top: 16,
+    left: 16,
+    right: 56,
+    zIndex: 1000,
+    pointerEvents: "none",
+    maxWidth: 300,
+    backgroundColor: "rgba(255, 253, 248, 0.94)",
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: C.line,
+    paddingHorizontal: 15,
+    paddingVertical: 13,
+  },
+  landingMapLabel: { color: C.ripe, fontSize: 11, fontWeight: "800", letterSpacing: 1.1, textTransform: "uppercase", marginBottom: 4 },
+  landingMapTitle: { color: C.ink, fontFamily: F.display, fontSize: 18, lineHeight: 23 },
+
+  seasonCard: { backgroundColor: C.white, borderRadius: 20, padding: 22, borderWidth: 1, borderColor: C.line, maxWidth: 620, width: "100%", alignSelf: "center" },
   seasonLabel: { fontSize: 12, letterSpacing: 1.5, color: C.ripe, fontWeight: "700", marginBottom: 8 },
   seasonList: { fontFamily: F.display, fontSize: 24, lineHeight: 32, color: C.ink, textTransform: "capitalize", marginBottom: 12 },
   ripeStrip: { marginTop: 14, marginBottom: 14 },

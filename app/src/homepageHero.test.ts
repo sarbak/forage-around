@@ -22,3 +22,10 @@ test("keeps address search visually secondary to the location action", () => {
     /addrGo: \{ backgroundColor: C\.white, borderWidth: 1, borderColor: C\.forest,/,
   );
 });
+
+test("shows a truthful map preview before a visitor searches", () => {
+  assert.match(landingSource, /Map preview/);
+  assert.match(landingSource, /Search to see reported plants near you/);
+  assert.match(landingSource, /finds=\{\[\]\}/);
+  assert.match(landingSource, /showCenterMarker=\{false\}/);
+});
