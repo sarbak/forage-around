@@ -3,6 +3,10 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const appSource = readFileSync(new URL("../App.tsx", import.meta.url), "utf8");
+const homepageDocument = readFileSync(
+  new URL("../public/index.html", import.meta.url),
+  "utf8",
+);
 const vercelConfig = JSON.parse(
   readFileSync(new URL("../../vercel.json", import.meta.url), "utf8"),
 ) as { rewrites: { source: string; destination: string }[] };
@@ -15,6 +19,17 @@ test("leads first-time visitors with the nearby wild-food promise", () => {
   assert.match(landingSource, /Find likely-ripe wild food near you/);
   assert.match(landingSource, /No account required\./);
   assert.match(landingSource, /<Text style=\{styles\.ctaText\}>Use my location<\/Text>/);
+});
+
+test("describes the nearby wild-food map in homepage search metadata", () => {
+  const title = "Find nearby wild food on the map | Forage Around";
+  const description =
+    "Find nearby wild food on an interactive map, see what is likely in season, and explore plant guides with Forage Around. No account required.";
+
+  assert.equal(homepageDocument.match(/<title>/g)?.length, 1);
+  assert.ok(homepageDocument.includes(`<title>${title}</title>`));
+  assert.equal(homepageDocument.match(/name="description"/g)?.length, 1);
+  assert.ok(homepageDocument.includes(`content="${description}"`));
 });
 
 test("keeps address search visually secondary to the location action", () => {
