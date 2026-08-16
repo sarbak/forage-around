@@ -231,6 +231,19 @@ const SUPPORT_EMAIL = "foragearound-com@mail.tin.computer";
 const SITE_URL = "https://foragearound.com";
 const GITHUB_URL = "https://github.com/sarbak/forage-around";
 const LICENSE_URL = `${GITHUB_URL}/blob/main/LICENSE`;
+const MONTHLY_DISCOVERY_GUIDES = [
+  { label: "What to forage in August", path: "/seasonal-guide/august", slug: "august" },
+  { label: "What to forage in September", path: "/seasonal-guide/september", slug: "september" },
+  { label: "What to forage in October", path: "/seasonal-guide/october", slug: "october" },
+  { label: "What to forage in November", path: "/seasonal-guide/november", slug: "november" },
+  { label: "What to forage in December", path: "/seasonal-guide/december", slug: "december" },
+  { label: "What to forage in January", path: "/seasonal-guide/january", slug: "january" },
+] as const;
+const OAKLAND_DISCOVERY_GUIDE = {
+  label: "Foraging around Oakland",
+  path: "/locations/oakland",
+  slug: "oakland",
+} as const;
 
 type Loc = GeoPoint;
 
@@ -551,6 +564,16 @@ function Landing({
     Platform.OS === "web"
       ? `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=168&h=168&fit=cover&output=webp`
       : url;
+  const openDiscoveryGuide = (
+    guide: (typeof MONTHLY_DISCOVERY_GUIDES)[number] | typeof OAKLAND_DISCOVERY_GUIDE,
+    guideType: "month" | "place",
+  ) => {
+    track("discovery_guide_opened", {
+      guide_type: guideType,
+      guide_slug: guide.slug,
+    });
+    if (Platform.OS !== "web") Linking.openURL(`${SITE_URL}${guide.path}`);
+  };
 
   useEffect(() => {
     if (geoError !== LOCATION_ACCESS_RECOVERY_MESSAGE) return;
@@ -681,6 +704,67 @@ function Landing({
         <Text style={styles.seasonNote}>
           Knock on a neighbor's door before reaching over a fence. Take only what would otherwise fall.
         </Text>
+      </View>
+
+      <View style={[styles.discoverySection, wideLanding && styles.discoverySectionWide]}>
+        <View style={[styles.discoveryIntro, wideLanding && styles.discoveryIntroWide]}>
+          <Text style={styles.discoveryEyebrow}>Field guides</Text>
+          <Text
+            style={styles.discoveryTitle}
+            accessibilityRole="header"
+            {...(Platform.OS === "web" ? ({ "aria-level": 2 } as any) : {})}
+          >
+            Browse by month or place
+          </Text>
+          <Text style={styles.discoveryCopy}>
+            Check a seasonal overview before choosing where to search.
+          </Text>
+        </View>
+
+        <View style={styles.discoveryGroups}>
+          <View>
+            <Text style={styles.discoveryGroupLabel}>Month by month</Text>
+            <View style={styles.discoveryLinkWrap}>
+              {MONTHLY_DISCOVERY_GUIDES.map((guide) => (
+                <Pressable
+                  key={guide.slug}
+                  {...(Platform.OS === "web" ? ({ href: guide.path } as any) : {})}
+                  onPress={() => openDiscoveryGuide(guide, "month")}
+                  accessibilityRole="link"
+                  accessibilityLabel={guide.label}
+                  style={({ pressed }) => [
+                    styles.discoveryLink,
+                    pressed && styles.discoveryLinkPressed,
+                  ]}
+                >
+                  <Text style={styles.discoveryLinkText}>{guide.label}</Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.discoveryPlaceGroup}>
+            <Text style={styles.discoveryGroupLabel}>Local field guide</Text>
+            <Pressable
+              {...(Platform.OS === "web" ? ({ href: OAKLAND_DISCOVERY_GUIDE.path } as any) : {})}
+              onPress={() => openDiscoveryGuide(OAKLAND_DISCOVERY_GUIDE, "place")}
+              accessibilityRole="link"
+              accessibilityLabel={OAKLAND_DISCOVERY_GUIDE.label}
+              style={({ pressed }) => [
+                styles.discoveryPlaceLink,
+                pressed && styles.discoveryLinkPressed,
+              ]}
+            >
+              <Text style={styles.discoveryPlaceLinkText}>{OAKLAND_DISCOVERY_GUIDE.label}</Text>
+              <Text style={styles.discoveryArrow} accessibilityElementsHidden>
+                ›
+              </Text>
+            </Pressable>
+            <Text style={styles.discoveryPlaceNote}>
+              Four edible species and six reported Oakland spots.
+            </Text>
+          </View>
+        </View>
       </View>
 
       <Pressable onPress={onAbout} accessibilityRole="button" style={styles.footLink}>
@@ -1799,6 +1883,62 @@ const styles = StyleSheet.create({
   ripeEmoji: { alignItems: "center", justifyContent: "center" },
   ripeName: { fontSize: 12, color: C.ink, marginTop: 6, textAlign: "center", width: 84 },
   seasonNote: { fontSize: 14, lineHeight: 21, color: C.inkSoft },
+  discoverySection: {
+    width: "100%",
+    maxWidth: 820,
+    alignSelf: "center",
+    marginTop: 36,
+    paddingVertical: 30,
+    borderTopWidth: 1,
+    borderTopColor: C.line,
+    borderBottomWidth: 1,
+    borderBottomColor: C.line,
+    gap: 28,
+  },
+  discoverySectionWide: { flexDirection: "row", gap: 52, alignItems: "flex-start" },
+  discoveryIntro: { maxWidth: 420 },
+  discoveryIntroWide: { width: 250, flexShrink: 0 },
+  discoveryEyebrow: {
+    color: C.ripe,
+    fontSize: 11,
+    fontWeight: "800",
+    letterSpacing: 1.1,
+    textTransform: "uppercase",
+    marginBottom: 8,
+  },
+  discoveryTitle: { fontFamily: F.display, fontSize: 28, lineHeight: 34, color: C.ink },
+  discoveryCopy: { marginTop: 10, fontSize: 14, lineHeight: 21, color: C.inkSoft },
+  discoveryGroups: { flex: 1, minWidth: 0, gap: 24 },
+  discoveryGroupLabel: {
+    fontSize: 11,
+    lineHeight: 16,
+    color: C.inkSoft,
+    fontWeight: "700",
+    letterSpacing: 0.7,
+    textTransform: "uppercase",
+    marginBottom: 6,
+  },
+  discoveryLinkWrap: { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 2 },
+  discoveryLink: { minHeight: 44, justifyContent: "center" },
+  discoveryLinkPressed: { opacity: 0.58 },
+  discoveryLinkText: {
+    color: C.forest,
+    fontSize: 14,
+    lineHeight: 21,
+    fontWeight: "600",
+    textDecorationLine: "underline",
+  },
+  discoveryPlaceGroup: { borderTopWidth: 1, borderTopColor: C.line, paddingTop: 18 },
+  discoveryPlaceLink: {
+    minHeight: 44,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 16,
+  },
+  discoveryPlaceLinkText: { color: C.forest, fontFamily: F.display, fontSize: 19, lineHeight: 25 },
+  discoveryArrow: { color: C.forest, fontFamily: F.display, fontSize: 26, lineHeight: 28 },
+  discoveryPlaceNote: { marginTop: 2, fontSize: 13, lineHeight: 19, color: C.inkSoft },
   footLink: { marginTop: 28, alignSelf: "center" },
   footnote: { fontSize: 13, color: C.forest, textAlign: "center", fontWeight: "600" },
   footCredits: { alignItems: "center", gap: 7, marginTop: 8 },
