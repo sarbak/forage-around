@@ -555,10 +555,12 @@ function Landing({
   return (
     <ScrollView contentContainerStyle={styles.landing} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
       <View style={styles.hero}>
-        <Text style={styles.kicker}>FIELD GUIDE TO THE FREE HARVEST</Text>
-        <Text style={styles.wordmark}>Forage{"\n"}Around</Text>
+        <Text style={styles.wordmark}>Forage Around</Text>
+        <Text style={styles.heroHeadline} accessibilityRole="header">
+          Find likely-ripe wild food near you
+        </Text>
         <Text style={styles.tagline}>
-          Reported fruit, herbs and greens near you, with season and source notes to check before you pick.
+          Explore reported fruit trees and edible plants with season notes to check before you pick. No account required.
         </Text>
 
         <Pressable
@@ -566,14 +568,14 @@ function Landing({
           onPress={onLocate}
           disabled={busy}
           accessibilityRole="button"
-          accessibilityLabel="Find fruit near me using your location"
+          accessibilityLabel="Use my location to find likely-ripe wild food"
         >
-          {busy ? <ActivityIndicator color={C.white} /> : <Text style={styles.ctaText}>Find fruit near me</Text>}
+          {busy ? <ActivityIndicator color={C.white} /> : <Text style={styles.ctaText}>Use my location</Text>}
         </Pressable>
 
         <View style={styles.orRow}>
           <View style={styles.orLine} />
-          <Text style={styles.orText}>or type an address</Text>
+          <Text style={styles.orText}>or search an address</Text>
           <View style={styles.orLine} />
         </View>
 
@@ -608,10 +610,9 @@ function Landing({
             accessibilityRole="button"
             accessibilityLabel="Search this address"
           >
-            <Text style={styles.addrGoText}>Go</Text>
+            <Text style={styles.addrGoText}>Search</Text>
           </Pressable>
         </View>
-        <Text style={styles.noLogin}>No account needed</Text>
       </View>
 
       <View style={styles.seasonCard}>
@@ -1687,24 +1688,23 @@ const styles = StyleSheet.create({
   center: { alignItems: "center", justifyContent: "center" },
 
   /* Landing */
-  landing: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 72, paddingBottom: 40, maxWidth: 560, alignSelf: "center", width: "100%" },
-  hero: { marginBottom: 36 },
-  kicker: { fontSize: 11, letterSpacing: 2, color: C.ripe, fontWeight: "700", marginBottom: 14 },
-  wordmark: { fontFamily: F.display, fontSize: 72, lineHeight: 76, color: C.forest, letterSpacing: -1 },
-  tagline: { fontSize: 18, lineHeight: 27, color: C.inkSoft, marginTop: 14, marginBottom: 30, maxWidth: 440 },
+  landing: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 48, paddingBottom: 40, maxWidth: 620, alignSelf: "center", width: "100%" },
+  hero: { marginBottom: 44 },
+  wordmark: { fontFamily: F.display, fontSize: 26, lineHeight: 32, color: C.forest, marginBottom: 32 },
+  heroHeadline: { fontFamily: F.display, fontSize: 48, lineHeight: 52, color: C.ink, letterSpacing: -0.5, maxWidth: 540 },
+  tagline: { fontSize: 18, lineHeight: 27, color: C.inkSoft, marginTop: 18, marginBottom: 28, maxWidth: 520 },
   cta: {
-    backgroundColor: C.forest,
+    backgroundColor: C.ripe,
     paddingVertical: 17,
     borderRadius: 16,
     alignItems: "center",
-    shadowColor: C.forest,
+    shadowColor: C.ripe,
     shadowOpacity: 0.25,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 8 },
   },
-  ctaPressed: { backgroundColor: "#264E30" },
+  ctaPressed: { backgroundColor: "#8D3F10" },
   ctaText: { color: C.white, fontSize: 18, fontWeight: "700", fontFamily: F.display },
-  noLogin: { textAlign: "center", color: C.inkSoft, fontSize: 13, marginTop: 12 },
 
   orRow: { flexDirection: "row", alignItems: "center", marginTop: 22, marginBottom: 14, gap: 12 },
   orLine: { flex: 1, height: 1, backgroundColor: C.line },
@@ -1721,9 +1721,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: C.ink,
   },
-  addrGo: { backgroundColor: C.ripe, borderRadius: 14, paddingHorizontal: 22, alignItems: "center", justifyContent: "center" },
-  addrGoPressed: { backgroundColor: "#8D3F10" },
-  addrGoText: { color: C.white, fontSize: 16, fontWeight: "700", fontFamily: F.display },
+  addrGo: { backgroundColor: C.white, borderWidth: 1, borderColor: C.forest, borderRadius: 14, paddingHorizontal: 18, alignItems: "center", justifyContent: "center" },
+  addrGoPressed: { backgroundColor: C.forestSoft },
+  addrGoText: { color: C.forest, fontSize: 16, fontWeight: "700", fontFamily: F.display },
   geoError: { color: C.berry, fontSize: 13, marginBottom: 10, lineHeight: 19 },
 
   seasonCard: { backgroundColor: C.white, borderRadius: 20, padding: 22, borderWidth: 1, borderColor: C.line },
