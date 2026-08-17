@@ -1,10 +1,13 @@
 # Forage Around 🍐
 
-**The field guide to the free harvest.** Tell Forage Around where you are; it shows
-reported fruit, herbs and greens near you with season and source notes to check
-before you pick, plus what to ferment them into.
+**Find likely-ripe wild food near you.**
 
-Live (web): **https://foragearound.com**
+Forage Around is an account-free map and field guide for reported edible plants.
+Search a location, check what's likely in season, and learn how to use or preserve
+what you find.
+
+**[Open the live map](https://foragearound.com)** ·
+[Explore a species guide](https://foragearound.com/species/plum)
 
 ## What it does
 - Asks for your location once (no login, no account).
