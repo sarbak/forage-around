@@ -91,6 +91,8 @@ type SubmitTarget = {
 } | null;
 
 const ffIdOf = (f: Find) => f.id.split("-")[0];
+const LANDING_MAP_CENTER = { lat: 37.8715, lng: -122.273 };
+const ignoreLandingMapSelection = (_find: Find) => {};
 const REFERRAL_PARAM_KEYS = [
   "utm_source",
   "utm_medium",
@@ -229,6 +231,19 @@ const SUPPORT_EMAIL = "foragearound-com@mail.tin.computer";
 const SITE_URL = "https://foragearound.com";
 const GITHUB_URL = "https://github.com/sarbak/forage-around";
 const LICENSE_URL = `${GITHUB_URL}/blob/main/LICENSE`;
+const MONTHLY_DISCOVERY_GUIDES = [
+  { label: "What to forage in August", path: "/seasonal-guide/august", slug: "august" },
+  { label: "What to forage in September", path: "/seasonal-guide/september", slug: "september" },
+  { label: "What to forage in October", path: "/seasonal-guide/october", slug: "october" },
+  { label: "What to forage in November", path: "/seasonal-guide/november", slug: "november" },
+  { label: "What to forage in December", path: "/seasonal-guide/december", slug: "december" },
+  { label: "What to forage in January", path: "/seasonal-guide/january", slug: "january" },
+] as const;
+const OAKLAND_DISCOVERY_GUIDE = {
+  label: "Foraging around Oakland",
+  path: "/locations/oakland",
+  slug: "oakland",
+} as const;
 
 type Loc = GeoPoint;
 
@@ -541,11 +556,24 @@ function Landing({
   onAbout: () => void;
 }) {
   const [addr, setAddr] = useState("");
+  const { width } = useWindowDimensions();
+  const wideLanding = width >= 900;
+  const narrowLanding = width < 430;
   const addrInputRef = useRef<TextInput>(null);
   const landingThumbnail = (url: string) =>
     Platform.OS === "web"
       ? `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=168&h=168&fit=cover&output=webp`
       : url;
+  const openDiscoveryGuide = (
+    guide: (typeof MONTHLY_DISCOVERY_GUIDES)[number] | typeof OAKLAND_DISCOVERY_GUIDE,
+    guideType: "month" | "place",
+  ) => {
+    track("discovery_guide_opened", {
+      guide_type: guideType,
+      guide_slug: guide.slug,
+    });
+    if (Platform.OS !== "web") Linking.openURL(`${SITE_URL}${guide.path}`);
+  };
 
   useEffect(() => {
     if (geoError !== LOCATION_ACCESS_RECOVERY_MESSAGE) return;
@@ -554,64 +582,91 @@ function Landing({
 
   return (
     <ScrollView contentContainerStyle={styles.landing} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-      <View style={styles.hero}>
-        <Text style={styles.kicker}>FIELD GUIDE TO THE FREE HARVEST</Text>
-        <Text style={styles.wordmark}>Forage{"\n"}Around</Text>
-        <Text style={styles.tagline}>
-          Reported fruit, herbs and greens near you, with season and source notes to check before you pick.
-        </Text>
-
-        <Pressable
-          style={({ pressed }) => [styles.cta, pressed && styles.ctaPressed]}
-          onPress={onLocate}
-          disabled={busy}
-          accessibilityRole="button"
-          accessibilityLabel="Find fruit near me using your location"
-        >
-          {busy ? <ActivityIndicator color={C.white} /> : <Text style={styles.ctaText}>Find fruit near me</Text>}
-        </Pressable>
-
-        <View style={styles.orRow}>
-          <View style={styles.orLine} />
-          <Text style={styles.orText}>or type an address</Text>
-          <View style={styles.orLine} />
-        </View>
-
-        {!!geoError && (
+      <View style={[styles.hero, wideLanding && styles.heroWide]}>
+        <View style={[styles.heroCopy, wideLanding && styles.heroCopyWide]}>
+          <Text style={styles.wordmark}>Forage Around</Text>
           <Text
-            style={styles.geoError}
-            accessibilityRole="alert"
-            accessibilityLiveRegion="polite"
+            style={[
+              styles.heroHeadline,
+              !wideLanding && styles.heroHeadlineCompact,
+              narrowLanding && styles.heroHeadlineNarrow,
+            ]}
+            accessibilityRole="header"
           >
-            {geoError}
+            Find likely-ripe wild food near you
           </Text>
-        )}
-        <View style={styles.addrRow}>
-          <TextInput
-            ref={addrInputRef}
-            style={styles.addrInput}
-            placeholder="Enter an address or place"
-            placeholderTextColor={C.inkSoft}
-            value={addr}
-            onChangeText={setAddr}
-            onFocus={() => track("address_input_focused", { form_location: "hero" })}
-            onSubmitEditing={() => onAddress(addr)}
-            returnKeyType="search"
-            autoCapitalize="words"
-            autoCorrect={false}
-            accessibilityLabel="Address or place"
-          />
+          <Text style={styles.tagline}>
+            Explore reported fruit trees and edible plants with season notes to check before you pick. No account required.
+          </Text>
+
           <Pressable
-            style={({ pressed }) => [styles.addrGo, pressed && styles.addrGoPressed]}
-            onPress={() => onAddress(addr)}
+            style={({ pressed }) => [styles.cta, pressed && styles.ctaPressed]}
+            onPress={onLocate}
             disabled={busy}
             accessibilityRole="button"
-            accessibilityLabel="Search this address"
+            accessibilityLabel="Use my location to find likely-ripe wild food"
           >
-            <Text style={styles.addrGoText}>Go</Text>
+            {busy ? <ActivityIndicator color={C.white} /> : <Text style={styles.ctaText}>Use my location</Text>}
           </Pressable>
+
+          <View style={styles.orRow}>
+            <View style={styles.orLine} />
+            <Text style={styles.orText}>or search an address</Text>
+            <View style={styles.orLine} />
+          </View>
+
+          {!!geoError && (
+            <Text
+              style={styles.geoError}
+              accessibilityRole="alert"
+              accessibilityLiveRegion="polite"
+            >
+              {geoError}
+            </Text>
+          )}
+          <View style={styles.addrRow}>
+            <TextInput
+              ref={addrInputRef}
+              style={styles.addrInput}
+              placeholder="Enter an address or place"
+              placeholderTextColor={C.inkSoft}
+              value={addr}
+              onChangeText={setAddr}
+              onFocus={() => track("address_input_focused", { form_location: "hero" })}
+              onSubmitEditing={() => onAddress(addr)}
+              returnKeyType="search"
+              autoCapitalize="words"
+              autoCorrect={false}
+              accessibilityLabel="Address or place"
+            />
+            <Pressable
+              style={({ pressed }) => [styles.addrGo, pressed && styles.addrGoPressed]}
+              onPress={() => onAddress(addr)}
+              disabled={busy}
+              accessibilityRole="button"
+              accessibilityLabel="Search this address"
+            >
+              <Text style={styles.addrGoText}>Search</Text>
+            </Pressable>
+          </View>
         </View>
-        <Text style={styles.noLogin}>No account needed</Text>
+
+        <View
+          style={[styles.landingMapCard, wideLanding && styles.landingMapCardWide]}
+          accessibilityLabel="Map preview. Search to center the map near you and see reported plants."
+        >
+          <MapView
+            center={LANDING_MAP_CENTER}
+            finds={[]}
+            onSelect={ignoreLandingMapSelection}
+            showCenterMarker={false}
+            zoom={14}
+          />
+          <View style={styles.landingMapMessage}>
+            <Text style={styles.landingMapLabel}>Map preview</Text>
+            <Text style={styles.landingMapTitle}>Search to see reported plants near you</Text>
+          </View>
+        </View>
       </View>
 
       <View style={styles.seasonCard}>
@@ -649,6 +704,67 @@ function Landing({
         <Text style={styles.seasonNote}>
           Knock on a neighbor's door before reaching over a fence. Take only what would otherwise fall.
         </Text>
+      </View>
+
+      <View style={[styles.discoverySection, wideLanding && styles.discoverySectionWide]}>
+        <View style={[styles.discoveryIntro, wideLanding && styles.discoveryIntroWide]}>
+          <Text style={styles.discoveryEyebrow}>Field guides</Text>
+          <Text
+            style={styles.discoveryTitle}
+            accessibilityRole="header"
+            {...(Platform.OS === "web" ? ({ "aria-level": 2 } as any) : {})}
+          >
+            Browse by month or place
+          </Text>
+          <Text style={styles.discoveryCopy}>
+            Check a seasonal overview before choosing where to search.
+          </Text>
+        </View>
+
+        <View style={styles.discoveryGroups}>
+          <View>
+            <Text style={styles.discoveryGroupLabel}>Month by month</Text>
+            <View style={styles.discoveryLinkWrap}>
+              {MONTHLY_DISCOVERY_GUIDES.map((guide) => (
+                <Pressable
+                  key={guide.slug}
+                  {...(Platform.OS === "web" ? ({ href: guide.path } as any) : {})}
+                  onPress={() => openDiscoveryGuide(guide, "month")}
+                  accessibilityRole="link"
+                  accessibilityLabel={guide.label}
+                  style={({ pressed }) => [
+                    styles.discoveryLink,
+                    pressed && styles.discoveryLinkPressed,
+                  ]}
+                >
+                  <Text style={styles.discoveryLinkText}>{guide.label}</Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.discoveryPlaceGroup}>
+            <Text style={styles.discoveryGroupLabel}>Local field guide</Text>
+            <Pressable
+              {...(Platform.OS === "web" ? ({ href: OAKLAND_DISCOVERY_GUIDE.path } as any) : {})}
+              onPress={() => openDiscoveryGuide(OAKLAND_DISCOVERY_GUIDE, "place")}
+              accessibilityRole="link"
+              accessibilityLabel={OAKLAND_DISCOVERY_GUIDE.label}
+              style={({ pressed }) => [
+                styles.discoveryPlaceLink,
+                pressed && styles.discoveryLinkPressed,
+              ]}
+            >
+              <Text style={styles.discoveryPlaceLinkText}>{OAKLAND_DISCOVERY_GUIDE.label}</Text>
+              <Text style={styles.discoveryArrow} accessibilityElementsHidden>
+                ›
+              </Text>
+            </Pressable>
+            <Text style={styles.discoveryPlaceNote}>
+              Four edible species and six reported Oakland spots.
+            </Text>
+          </View>
+        </View>
       </View>
 
       <Pressable onPress={onAbout} accessibilityRole="button" style={styles.footLink}>
@@ -1687,24 +1803,28 @@ const styles = StyleSheet.create({
   center: { alignItems: "center", justifyContent: "center" },
 
   /* Landing */
-  landing: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 72, paddingBottom: 40, maxWidth: 560, alignSelf: "center", width: "100%" },
-  hero: { marginBottom: 36 },
-  kicker: { fontSize: 11, letterSpacing: 2, color: C.ripe, fontWeight: "700", marginBottom: 14 },
-  wordmark: { fontFamily: F.display, fontSize: 72, lineHeight: 76, color: C.forest, letterSpacing: -1 },
-  tagline: { fontSize: 18, lineHeight: 27, color: C.inkSoft, marginTop: 14, marginBottom: 30, maxWidth: 440 },
+  landing: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 32, paddingBottom: 40, maxWidth: 1160, alignSelf: "center", width: "100%" },
+  hero: { marginBottom: 44, gap: 28 },
+  heroWide: { flexDirection: "row", alignItems: "stretch", gap: 40 },
+  heroCopy: { flexShrink: 0 },
+  heroCopyWide: { flex: 1, justifyContent: "center" },
+  wordmark: { fontFamily: F.display, fontSize: 26, lineHeight: 32, color: C.forest, marginBottom: 24 },
+  heroHeadline: { fontFamily: F.display, fontSize: 48, lineHeight: 52, color: C.ink, letterSpacing: -0.5, maxWidth: 540 },
+  heroHeadlineCompact: { fontSize: 42, lineHeight: 46 },
+  heroHeadlineNarrow: { fontSize: 38, lineHeight: 42 },
+  tagline: { fontSize: 18, lineHeight: 27, color: C.inkSoft, marginTop: 16, marginBottom: 24, maxWidth: 520 },
   cta: {
-    backgroundColor: C.forest,
+    backgroundColor: C.ripe,
     paddingVertical: 17,
     borderRadius: 16,
     alignItems: "center",
-    shadowColor: C.forest,
+    shadowColor: C.ripe,
     shadowOpacity: 0.25,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 8 },
   },
-  ctaPressed: { backgroundColor: "#264E30" },
+  ctaPressed: { backgroundColor: "#8D3F10" },
   ctaText: { color: C.white, fontSize: 18, fontWeight: "700", fontFamily: F.display },
-  noLogin: { textAlign: "center", color: C.inkSoft, fontSize: 13, marginTop: 12 },
 
   orRow: { flexDirection: "row", alignItems: "center", marginTop: 22, marginBottom: 14, gap: 12 },
   orLine: { flex: 1, height: 1, backgroundColor: C.line },
@@ -1721,12 +1841,40 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: C.ink,
   },
-  addrGo: { backgroundColor: C.ripe, borderRadius: 14, paddingHorizontal: 22, alignItems: "center", justifyContent: "center" },
-  addrGoPressed: { backgroundColor: "#8D3F10" },
-  addrGoText: { color: C.white, fontSize: 16, fontWeight: "700", fontFamily: F.display },
+  addrGo: { backgroundColor: C.white, borderWidth: 1, borderColor: C.forest, borderRadius: 14, paddingHorizontal: 18, alignItems: "center", justifyContent: "center" },
+  addrGoPressed: { backgroundColor: C.forestSoft },
+  addrGoText: { color: C.forest, fontSize: 16, fontWeight: "700", fontFamily: F.display },
   geoError: { color: C.berry, fontSize: 13, marginBottom: 10, lineHeight: 19 },
 
-  seasonCard: { backgroundColor: C.white, borderRadius: 20, padding: 22, borderWidth: 1, borderColor: C.line },
+  landingMapCard: {
+    height: 240,
+    borderRadius: 20,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: C.line,
+    backgroundColor: C.white,
+    position: "relative",
+  },
+  landingMapCardWide: { flex: 1, minWidth: 0, height: 500 },
+  landingMapMessage: {
+    position: "absolute",
+    top: 16,
+    left: 16,
+    right: 56,
+    zIndex: 1000,
+    pointerEvents: "none",
+    maxWidth: 300,
+    backgroundColor: "rgba(255, 253, 248, 0.94)",
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: C.line,
+    paddingHorizontal: 15,
+    paddingVertical: 13,
+  },
+  landingMapLabel: { color: C.ripe, fontSize: 11, fontWeight: "800", letterSpacing: 1.1, textTransform: "uppercase", marginBottom: 4 },
+  landingMapTitle: { color: C.ink, fontFamily: F.display, fontSize: 18, lineHeight: 23 },
+
+  seasonCard: { backgroundColor: C.white, borderRadius: 20, padding: 22, borderWidth: 1, borderColor: C.line, maxWidth: 620, width: "100%", alignSelf: "center" },
   seasonLabel: { fontSize: 12, letterSpacing: 1.5, color: C.ripe, fontWeight: "700", marginBottom: 8 },
   seasonList: { fontFamily: F.display, fontSize: 24, lineHeight: 32, color: C.ink, textTransform: "capitalize", marginBottom: 12 },
   ripeStrip: { marginTop: 14, marginBottom: 14 },
@@ -1735,6 +1883,62 @@ const styles = StyleSheet.create({
   ripeEmoji: { alignItems: "center", justifyContent: "center" },
   ripeName: { fontSize: 12, color: C.ink, marginTop: 6, textAlign: "center", width: 84 },
   seasonNote: { fontSize: 14, lineHeight: 21, color: C.inkSoft },
+  discoverySection: {
+    width: "100%",
+    maxWidth: 820,
+    alignSelf: "center",
+    marginTop: 36,
+    paddingVertical: 30,
+    borderTopWidth: 1,
+    borderTopColor: C.line,
+    borderBottomWidth: 1,
+    borderBottomColor: C.line,
+    gap: 28,
+  },
+  discoverySectionWide: { flexDirection: "row", gap: 52, alignItems: "flex-start" },
+  discoveryIntro: { maxWidth: 420 },
+  discoveryIntroWide: { width: 250, flexShrink: 0 },
+  discoveryEyebrow: {
+    color: C.ripe,
+    fontSize: 11,
+    fontWeight: "800",
+    letterSpacing: 1.1,
+    textTransform: "uppercase",
+    marginBottom: 8,
+  },
+  discoveryTitle: { fontFamily: F.display, fontSize: 28, lineHeight: 34, color: C.ink },
+  discoveryCopy: { marginTop: 10, fontSize: 14, lineHeight: 21, color: C.inkSoft },
+  discoveryGroups: { flex: 1, minWidth: 0, gap: 24 },
+  discoveryGroupLabel: {
+    fontSize: 11,
+    lineHeight: 16,
+    color: C.inkSoft,
+    fontWeight: "700",
+    letterSpacing: 0.7,
+    textTransform: "uppercase",
+    marginBottom: 6,
+  },
+  discoveryLinkWrap: { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 2 },
+  discoveryLink: { minHeight: 44, justifyContent: "center" },
+  discoveryLinkPressed: { opacity: 0.58 },
+  discoveryLinkText: {
+    color: C.forest,
+    fontSize: 14,
+    lineHeight: 21,
+    fontWeight: "600",
+    textDecorationLine: "underline",
+  },
+  discoveryPlaceGroup: { borderTopWidth: 1, borderTopColor: C.line, paddingTop: 18 },
+  discoveryPlaceLink: {
+    minHeight: 44,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 16,
+  },
+  discoveryPlaceLinkText: { color: C.forest, fontFamily: F.display, fontSize: 19, lineHeight: 25 },
+  discoveryArrow: { color: C.forest, fontFamily: F.display, fontSize: 26, lineHeight: 28 },
+  discoveryPlaceNote: { marginTop: 2, fontSize: 13, lineHeight: 19, color: C.inkSoft },
   footLink: { marginTop: 28, alignSelf: "center" },
   footnote: { fontSize: 13, color: C.forest, textAlign: "center", fontWeight: "600" },
   footCredits: { alignItems: "center", gap: 7, marginTop: 8 },

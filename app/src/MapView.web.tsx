@@ -32,9 +32,11 @@ type Props = {
   center: { lat: number; lng: number };
   finds: Find[];
   onSelect: (f: Find) => void;
+  showCenterMarker?: boolean;
+  zoom?: number;
 };
 
-export default function MapView({ center, finds, onSelect }: Props) {
+export default function MapView({ center, finds, onSelect, showCenterMarker = true, zoom = 16 }: Props) {
   const elRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<any>(null);
   const markersRef = useRef<any>(null);
@@ -53,21 +55,22 @@ export default function MapView({ center, finds, onSelect }: Props) {
         markersRef.current = L.layerGroup().addTo(mapRef.current);
       }
       const map = mapRef.current;
-      map.setView([center.lat, center.lng], 16);
+      map.setView([center.lat, center.lng], zoom);
       // give the container a beat to size, then fix tile layout
       setTimeout(() => map.invalidateSize(), 60);
 
       markersRef.current.clearLayers();
-      // "you are here"
-      L.circleMarker([center.lat, center.lng], {
-        radius: 8,
-        color: "#fff",
-        weight: 2,
-        fillColor: C.forest,
-        fillOpacity: 1,
-      })
-        .addTo(markersRef.current)
-        .bindTooltip("You", { direction: "top" });
+      if (showCenterMarker) {
+        L.circleMarker([center.lat, center.lng], {
+          radius: 8,
+          color: "#fff",
+          weight: 2,
+          fillColor: C.forest,
+          fillOpacity: 1,
+        })
+          .addTo(markersRef.current)
+          .bindTooltip("You", { direction: "top" });
+      }
 
       finds.slice(0, 150).forEach((f) => {
         const ripe = f.inSeason;
@@ -90,13 +93,13 @@ export default function MapView({ center, finds, onSelect }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [center.lat, center.lng, finds, onSelect]);
+  }, [center.lat, center.lng, finds, onSelect, showCenterMarker, zoom]);
 
   // A plain DOM div is fine here — this file only loads on web.
   return (
     <div
       ref={elRef}
-      style={{ width: "100%", height: "100%", minHeight: 420, borderRadius: 16, overflow: "hidden" }}
+      style={{ width: "100%", height: "100%", minHeight: "100%", borderRadius: 16, overflow: "hidden" }}
     />
   );
 }
