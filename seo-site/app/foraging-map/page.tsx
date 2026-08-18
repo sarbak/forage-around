@@ -8,17 +8,17 @@ export const revalidate = 86400;
 
 const PAGE_PATH = "/foraging-map";
 const META_DESCRIPTION =
-  "Open a free foraging map to find reported fruit, herbs, and greens near you, then check season, plant identity, public access, and permission before picking.";
+  "Explore a free urban foraging map for reported berries, fruit trees, and nuts near you, with seasonal harvest windows and simple preservation ideas.";
 
 export const metadata: Metadata = {
-  title: "Free foraging map: find edible plants near you",
+  title: "Urban foraging map: find edible plants near you",
   description: META_DESCRIPTION,
   alternates: {
     canonical: PAGE_PATH,
   },
   openGraph: {
     type: "website",
-    title: "Free foraging map for edible plants near you",
+    title: "Urban foraging map for edible plants near you",
     description: META_DESCRIPTION,
     url: PAGE_PATH,
   },
@@ -45,6 +45,11 @@ const FAQS = [
     answer:
       "The starter map uses crowd-sourced plant locations from Falling Fruit, then adds season context and plant guides. Forage Around is an independent project and is not affiliated with Falling Fruit.",
   },
+  {
+    question: "What can I preserve after an urban foraging walk?",
+    answer:
+      "It depends on the plant and your confidence in its identity. Common ideas include freezing blackberries, cooking apples or plums into sauce or jam, drying figs, and drying hazelnuts or walnuts before storing them.",
+  },
 ] as const;
 
 const FAQ_SCHEMA = {
@@ -70,12 +75,35 @@ const representedSpeciesCount = new Set(
 ).size;
 
 const STARTER_GUIDES = [
-  { name: "Apple", note: "Late-summer and fall fruit" },
-  { name: "Common fig", note: "Warm-season fruit" },
-  { name: "Plum", note: "Early- to late-summer fruit" },
-  { name: "Blackberry", note: "Summer berries" },
-  { name: "Rosemary", note: "Aromatic leaves" },
-  { name: "Sugar maple", note: "Sap and seasonal notes" },
+  { name: "Blackberry", note: "Summer berry · freeze or make jam" },
+  { name: "Apple", note: "Late-summer fruit tree · sauce or dry" },
+  { name: "Common fig", note: "Warm-season fruit tree · dry or preserve" },
+  { name: "Plum", note: "Summer fruit tree · jam or dry" },
+  { name: "Hazelnut", note: "Early-fall nut · dry in the shell" },
+  { name: "Walnut", note: "Fall nut · dry before cracking" },
+] as const;
+
+const SEASONAL_WINDOWS = [
+  {
+    season: "Spring",
+    window: "March–May",
+    examples: "Tender greens, herbs, and early blossoms",
+  },
+  {
+    season: "Summer",
+    window: "June–August",
+    examples: "Blackberries, plums, figs, and mulberries",
+  },
+  {
+    season: "Fall",
+    window: "September–November",
+    examples: "Apples, hazelnuts, walnuts, and late figs",
+  },
+  {
+    season: "Winter",
+    window: "December–February",
+    examples: "Citrus in mild climates and a planning reset",
+  },
 ] as const;
 
 export default function ForagingMapPage() {
@@ -91,23 +119,44 @@ export default function ForagingMapPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_SCHEMA) }}
       />
 
-      <p className="kicker">Free urban foraging map</p>
-      <h1 className="title">Find edible plants near you on the foraging map</h1>
-      <p className="lead">
-        Search an address to explore reported fruit, herbs, and greens nearby.
-        Forage Around adds season notes and plant guides so you can decide what
-        is worth checking before you head out.
-      </p>
+      <section className="map-guide-hero">
+        <p className="kicker">Free urban foraging map</p>
+        <h1 className="title">
+          Find berries, fruit trees, and nuts on the urban foraging map
+        </h1>
+        <p className="lead">
+          Search an address to explore reported edible plants nearby. Then use
+          seasonal windows and plant guides to plan a short walk before you
+          check the site in person.
+        </p>
 
-      <div className="locations-actions">
-        <ToAppLink className="btn" href={APP_URL} from="foraging_map">
-          Open the free foraging map →
-        </ToAppLink>
-        <small className="locations-availability-note muted">
-          No account required. Reports are starting points, not permission to
-          pick.
-        </small>
-      </div>
+        <div className="locations-actions">
+          <ToAppLink className="btn" href={APP_URL} from="foraging_map">
+            Open the free foraging map →
+          </ToAppLink>
+          <small className="locations-availability-note muted">
+            No account required. Reports are starting points, not permission to
+            pick.
+          </small>
+        </div>
+
+        <div className="map-guide-route" aria-label="How the map helps">
+          <div>
+            <span aria-hidden="true">1</span>
+            <strong>Search a place</strong>
+          </div>
+          <span className="route-line" aria-hidden="true" />
+          <div>
+            <span aria-hidden="true">2</span>
+            <strong>Compare reports</strong>
+          </div>
+          <span className="route-line" aria-hidden="true" />
+          <div>
+            <span aria-hidden="true">3</span>
+            <strong>Plan a walk</strong>
+          </div>
+        </div>
+      </section>
 
       <div className="card">
         <p style={{ marginTop: 0 }}>
@@ -183,11 +232,36 @@ export default function ForagingMapPage() {
         still be private.
       </p>
 
+      <section aria-labelledby="seasonal-harvest-windows">
+        <h2 className="section" id="seasonal-harvest-windows">
+          Seasonal harvest windows at a glance
+        </h2>
+        <p>
+          The same neighborhood can look completely different from one season
+          to the next. Use these broad windows to choose what to search for,
+          then open a plant guide for the usual months in your area.
+        </p>
+        <div className="harvest-calendar">
+          {SEASONAL_WINDOWS.map(({ season, window, examples }) => (
+            <article key={season}>
+              <p>{window}</p>
+              <h3>{season}</h3>
+              <span>{examples}</span>
+            </article>
+          ))}
+        </div>
+        <p className="muted seasonal-caveat">
+          Timing varies by climate, weather, elevation, and the individual
+          plant. A calendar is a planning clue, never proof that a report is
+          ready.
+        </p>
+      </section>
+
       <h2 className="section">Plants to look up before you go</h2>
       <p className="muted">
-        These starter guides connect common mapped reports with usual season
-        timing and identification reminders. Open the guide first, then return
-        to the map to search near you.
+        Start with a named guide for a berry, fruit tree, or nut. Each guide
+        connects usual season timing with edible-part notes and practical ways
+        to use or keep what you find.
       </p>
       <div className="species-grid">
         {STARTER_GUIDES.map(({ name, note }) => (
@@ -204,6 +278,49 @@ export default function ForagingMapPage() {
           </Link>
         ))}
       </div>
+
+      <section aria-labelledby="preserve-the-harvest">
+        <h2 className="section" id="preserve-the-harvest">
+          Simple ways to preserve a small harvest
+        </h2>
+        <p>
+          Bring home only what you can identify, use, and process promptly.
+          Preservation is most useful for ripe fruit that would otherwise spoil
+          and for sound nuts that have been dried correctly.
+        </p>
+        <div className="preservation-grid">
+          <article>
+            <span aria-hidden="true">⬛</span>
+            <div>
+              <h3>Berries</h3>
+              <p>
+                Freeze blackberries in a single layer, or cook them into jam,
+                syrup, or a drinking shrub.
+              </p>
+            </div>
+          </article>
+          <article>
+            <span aria-hidden="true">🍏</span>
+            <div>
+              <h3>Fruit trees</h3>
+              <p>
+                Turn apples into sauce, plums into jam, and figs into dried
+                fruit. Refrigerate damaged fruit and use it first.
+              </p>
+            </div>
+          </article>
+          <article>
+            <span aria-hidden="true">🌰</span>
+            <div>
+              <h3>Nuts</h3>
+              <p>
+                Dry hazelnuts or walnuts in a well-ventilated place before
+                storing them in the shell. Discard moldy or rancid nuts.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
 
       <h2 className="section">What a reported location does not mean</h2>
       <p>
