@@ -761,6 +761,163 @@ ul.clean li {
   }
 }
 
+.map-guide-hero {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  margin-bottom: 22px;
+  overflow: hidden;
+  padding: 28px;
+}
+.map-guide-hero .lead {
+  max-width: 54ch;
+}
+.map-guide-route {
+  align-items: center;
+  display: grid;
+  grid-template-columns: auto minmax(20px, 1fr) auto minmax(20px, 1fr) auto;
+  margin-top: 28px;
+}
+.map-guide-route > div {
+  align-items: center;
+  color: var(--ink-soft);
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  gap: 4px;
+  text-align: center;
+}
+.map-guide-route > div > span {
+  align-items: center;
+  background: var(--forest);
+  border: 4px solid var(--paper-deep);
+  border-radius: 50%;
+  color: var(--white);
+  display: flex;
+  font-size: 16px;
+  height: 40px;
+  justify-content: center;
+  width: 40px;
+}
+.map-guide-route strong {
+  font-weight: 600;
+}
+.route-line {
+  border-top: 2px dotted var(--line);
+  margin: 0 8px 22px;
+}
+
+.harvest-calendar {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 18px 0 12px;
+}
+.harvest-calendar article {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  min-height: 148px;
+  padding: 16px;
+}
+.harvest-calendar article:nth-child(2),
+.harvest-calendar article:nth-child(3) {
+  background: var(--paper-deep);
+}
+.harvest-calendar p {
+  color: var(--forest);
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0 0 3px;
+}
+.harvest-calendar h3 {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 21px;
+  margin: 0 0 8px;
+}
+.harvest-calendar span {
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.45;
+}
+.seasonal-caveat {
+  font-size: 14px;
+}
+
+.preservation-grid {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0;
+}
+.preservation-grid article {
+  align-items: flex-start;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 42px 1fr;
+  padding: 0 0 16px;
+}
+.preservation-grid article > span {
+  align-items: center;
+  background: var(--paper-deep);
+  border-radius: 12px;
+  display: flex;
+  font-size: 21px;
+  height: 42px;
+  justify-content: center;
+}
+.preservation-grid h3 {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 18px;
+  margin: 0 0 3px;
+}
+.preservation-grid p {
+  color: var(--ink-soft);
+  font-size: 15px;
+  margin: 0;
+}
+
+@media (max-width: 520px) {
+  .map-guide-hero {
+    border-radius: 14px;
+    padding: 22px 18px;
+  }
+
+  .map-guide-route {
+    align-items: flex-start;
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: 0;
+  }
+
+  .map-guide-route > div {
+    flex-direction: row;
+    font-size: 13px;
+    text-align: left;
+  }
+
+  .map-guide-route > div > span {
+    flex: 0 0 36px;
+    height: 36px;
+    width: 36px;
+  }
+
+  .route-line {
+    border-left: 2px dotted var(--line);
+    border-top: 0;
+    height: 20px;
+    margin: 0 0 0 17px;
+  }
+
+  .harvest-calendar {
+    grid-template-columns: 1fr;
+  }
+
+  .harvest-calendar article {
+    min-height: 0;
+  }
+}
+
 .seasonal-orientation {
   background: var(--white);
   border: 1px solid var(--line);

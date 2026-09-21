@@ -23,24 +23,31 @@ const description = html.match(/<meta name="description" content="([^"]+)"\s*\/>
 const canonical = html.match(/<link rel="canonical" href="([^"]+)"\s*\/>/)?.[1];
 const h1 = decodeHtml(html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? "");
 
-if (title !== "Free foraging map: find edible plants near you · Forage Around") {
+if (title !== "Urban foraging map: find edible plants near you · Forage Around") {
   throw new Error(`Foraging map title changed: ${title || "missing"}`);
 }
 if (
   description !==
-  "Open a free foraging map to find reported fruit, herbs, and greens near you, then check season, plant identity, public access, and permission before picking."
+  "Explore a free urban foraging map for reported berries, fruit trees, and nuts near you, with seasonal harvest windows and simple preservation ideas."
 ) {
   throw new Error("Foraging map description changed.");
 }
 if (canonical !== "https://foragearound.com/foraging-map") {
   throw new Error(`Foraging map canonical changed: ${canonical || "missing"}`);
 }
-if (h1 !== "Find edible plants near you on the foraging map") {
+if (
+  h1 !==
+  "Find berries, fruit trees, and nuts on the urban foraging map"
+) {
   throw new Error(`Foraging map H1 changed: ${h1 || "missing"}`);
 }
 
 for (const cue of [
   "Reports are starting points, not permission to pick",
+  "Seasonal harvest windows at a glance",
+  "Blackberries, plums, figs, and mulberries",
+  "Simple ways to preserve a small harvest",
+  "Dry hazelnuts or walnuts",
   "What a reported location does not mean",
   "Confirm the species and edible part",
   "crowd-sourced location data from Falling Fruit",
